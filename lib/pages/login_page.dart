@@ -31,10 +31,12 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      //remove loading circle after login
+      // pop the load circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
+      // pop the load circle
       Navigator.pop(context);
+      // show error message
       showErrorMessage(e.code);
     }
   }
@@ -44,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
+        return AlertDialog(
           backgroundColor: Colors.red,
           title: Center(
             child: Text(
-              'Error', // cant figure this out
-              style: TextStyle(color: Colors.white),
+              message, // cant figure this out
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         );
