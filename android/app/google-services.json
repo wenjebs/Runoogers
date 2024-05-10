@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "654701318393",
+    "project_id": "runoogers",
+    "storage_bucket": "runoogers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654701318393:android:21ef331a359d5eca695228",
+        "android_client_info": {
+          "package_name": "com.example.runningapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgO6mqrt2UvshLiKzsIckUlmYksrwPxdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654701318393:android:abda200e1fdcb82a695228",
+        "android_client_info": {
+          "package_name": "com.example.runooger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgO6mqrt2UvshLiKzsIckUlmYksrwPxdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
