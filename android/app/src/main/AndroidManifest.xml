@@ -3,6 +3,10 @@
         android:label="runningapp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- GMAPS API -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyANrW91TLf2O8HOLPaogBF2pXD-0nC8dz8"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
