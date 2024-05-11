@@ -7,7 +7,7 @@ import 'package:runningapp/pages/social_page.dart';
 import 'package:runningapp/pages/user_page.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,10 +18,10 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    UserPage(),
-    RunPage(),
-    SocialPage(),
-    ProfilePage(),
+    const UserPage(),
+    const RunPage(),
+    const SocialPage(),
+    const ProfilePage(),
   ];
 
   // sign user out
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: GNav(
-        backgroundColor: Colors.grey,
+        backgroundColor: const Color(0xff4D869C),
         gap: 6,
         tabs: const [
           GButton(icon: Icons.home, text: "Home"),

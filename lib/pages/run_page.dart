@@ -5,11 +5,11 @@ class RunPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
           child: Text(
         "RUN TRACKING HERE",
-        style: const TextStyle(fontSize: 20),
+        style: TextStyle(fontSize: 20),
       )),
     );
   }

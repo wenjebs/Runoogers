@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: const Color(0xffEEF7FF),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // logo
                 const Icon(
-                  Icons.lock,
+                  Icons.directions_run,
                   size: 100,
                 ),
 
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // welcome back, you've been missed!
                 Text(
-                  'Welcome back you\'ve been missed!',
+                  'Welcome back!',
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontSize: 16,

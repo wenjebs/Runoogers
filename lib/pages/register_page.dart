@@ -64,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: const Color(0xffEEF7FF),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -75,18 +75,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 // logo
                 const Icon(
-                  Icons.lock,
+                  Icons.directions_run,
                   size: 50,
                 ),
 
                 const SizedBox(height: 50),
 
-                // welcome back, you've been missed!
+                // Welcome text
                 Text(
-                  'Make an account!',
+                  'Join Runoogers today, it\'s Free.',
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
