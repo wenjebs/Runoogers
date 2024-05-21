@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:runningapp/pages/logged_in/run_page/location_service.dart';
 
 class RunPage extends StatefulWidget {
   const RunPage({super.key});
@@ -15,10 +14,12 @@ class RunPage extends StatefulWidget {
 
 class _RunPageState extends State<RunPage> {
   final Completer<GoogleMapController> _controller = Completer();
+  final LocationService locationService = LocationService();
   Set<Marker> markers = {};
   static CameraPosition position = const CameraPosition(
       target: LatLng(1.6049480942814875, 991.49368172612661), zoom: 14);
   static Marker marker = const Marker(markerId: MarkerId("Current"));
+
   @override
   void initState() {
     super.initState();
@@ -26,35 +27,21 @@ class _RunPageState extends State<RunPage> {
   }
 
   void fetchCameraPosition() async {
-    CameraPosition cp = await getCameraPosition();
-    print(cp.toString());
-    setState(() {
-      position = cp;
-      marker = Marker(markerId: const MarkerId("first"), position: cp.target);
-      markers.add(marker);
-    });
+    CameraPosition cp = await locationService.getCameraPosition();
+    debugPrint(cp.toString());
+    if (mounted) {
+      setState(() {
+        position = cp;
+        marker = Marker(markerId: const MarkerId("first"), position: cp.target);
+        markers.add(marker);
+      });
+    }
   }
 
-  Future<CameraPosition> getCameraPosition() async {
-    Position pos = await getUserLocation();
-    return CameraPosition(
-        target: LatLng(pos.latitude, pos.longitude), zoom: 14);
-  }
-
-  Future<Position> getUserLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) {
-      print('error$error');
-    });
-
-    return await Geolocator.getCurrentPosition();
-  }
-
-  void packData() {
-    getUserLocation().then((value) async {
-      print('My Location');
-      print('${value.latitude} ${value.longitude}');
+  void printLocation() {
+    locationService.getUserLocation().then((value) async {
+      debugPrint('My Location');
+      debugPrint('${value.latitude} ${value.longitude}');
     });
   }
 
@@ -72,7 +59,8 @@ class _RunPageState extends State<RunPage> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          packData();
+          debugPrint("pressed");
+          printLocation();
         },
         child: const Icon((Icons.radio_button_off)),
       ),
