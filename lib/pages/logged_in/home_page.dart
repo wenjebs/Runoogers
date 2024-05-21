@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:runningapp/pages/profile_page.dart';
-import 'package:runningapp/pages/run_page.dart';
-import 'package:runningapp/pages/social_page.dart';
-import 'package:runningapp/pages/user_page.dart';
+import 'package:runningapp/pages/logged_in/profile_page.dart';
+import 'package:runningapp/pages/logged_in/run_page.dart';
+import 'package:runningapp/pages/logged_in/social_page.dart';
+import 'package:runningapp/pages/logged_in/user_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

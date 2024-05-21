@@ -1,22 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../components/my_button.dart';
-import '../components/my_textfield.dart';
+import '../../components/my_button.dart';
+import '../../components/my_textfield.dart';
 
-class RegisterPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   final Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  const LoginPage({super.key, required this.onTap});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
-  void signUserUp() async {
+  final passwordController = TextEditingController();
+
+  void signUserIn() async {
     //loading circle
     showDialog(
       context: context,
@@ -27,18 +27,16 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
     try {
-      if (passwordController.text == confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-      } else {
-        showErrorMessage("passwords dont match");
-      }
-      //remove loading circle after login
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      // pop the load circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
+      // pop the load circle
       Navigator.pop(context);
+      // show error message
       showErrorMessage(e.code);
     }
   }
@@ -82,18 +80,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   // logo
                   const Icon(
                     Icons.directions_run,
-                    size: 50,
+                    size: 100,
                   ),
 
                   const SizedBox(height: 50),
 
-                  // Welcome text
+                  // welcome back, you've been missed!
                   Text(
-                    'Join Runoogers today, it\'s Free.',
+                    'Welcome back!',
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
 
@@ -117,15 +114,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 10),
 
-                  // confirm password textfield
-                  MyTextField(
-                    controller: confirmPasswordController,
-                    hintText: 'Confirm Password',
-                    obscureText: true,
-                  ),
-
-                  const SizedBox(height: 10),
-
                   // forgot password?
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -144,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   // sign in button
                   MyButton(
-                    onTap: signUserUp,
+                    onTap: signUserIn,
                   ),
 
                   const SizedBox(height: 50),
@@ -200,14 +188,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Have an account?',
+                        'Not a member?',
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                       const SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,
                         child: const Text(
-                          'Login now',
+                          'Register now',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
