@@ -24,19 +24,9 @@ class _HomePageState extends State<HomePage> {
     const ProfilePage(),
   ];
 
-  // sign user out
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
-        ],
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: GNav(
         backgroundColor: const Color(0xff4D869C),
