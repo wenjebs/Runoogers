@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../components/my_button.dart';
 import '../../components/my_textfield.dart';
 
@@ -33,15 +34,25 @@ class _LoginPageState extends State<LoginPage> {
       );
       // pop the load circle
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
       if (mounted) {
-        Navigator.of(context).pop();
+        Navigator.pop(context);
       }
       // show error message
       showErrorMessage(e.code);
+    } on PlatformException catch (e) {
+      // pop the load circle
+      if (mounted) {
+        Navigator.pop(context);
+      }
+      // show error message
+      showErrorMessage(e.code);
+      print("sike im here");
+    } catch (e) {
+      print("im here");
     }
   }
 
