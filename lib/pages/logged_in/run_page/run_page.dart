@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:runningapp/pages/logged_in/run_page/location_service.dart';
 
 class RunPage extends StatefulWidget {
@@ -19,7 +19,8 @@ class RunPage extends StatefulWidget {
 class _RunPageState extends State<RunPage> {
   final Completer<GoogleMapController> _controller = Completer();
   final LocationService locationService = LocationService();
-  LocationData? currentLocation;
+  Position? currentPosition;
+  StreamSubscription? _positionSubscription;
   List<LatLng> polylineCoordinates = [];
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
@@ -49,28 +50,32 @@ class _RunPageState extends State<RunPage> {
   }
 
   void getCurrentLocation() async {
-    Location location = Location();
-
-    location.getLocation().then(
-      (location) {
-        currentLocation = location;
-      },
-    );
-
+    Position newPosition = await Geolocator.getCurrentPosition();
+    currentPosition = newPosition;
+    if (mounted) {
+      setState(() {});
+    }
     GoogleMapController mapController = await _controller.future;
 
-    location.onLocationChanged.listen((newLocation) {
-      currentLocation = newLocation;
-      mapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          zoom: 18,
-          target: LatLng(newLocation.latitude!, newLocation.longitude!),
-        ),
-      ));
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    const LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+
+    _positionSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+      (newPosition) {
+        currentPosition = newPosition;
+        CameraPosition newCameraPosition = CameraPosition(
+            zoom: 18,
+            target: LatLng(newPosition.latitude, newPosition.longitude));
+        mapController
+            .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
   }
 
   @override
@@ -97,7 +102,7 @@ class _RunPageState extends State<RunPage> {
         title: const Text("Track run",
             style: TextStyle(color: Colors.black, fontSize: 16)),
       ),
-      body: currentLocation == null
+      body: currentPosition == null
           ? const Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +119,7 @@ class _RunPageState extends State<RunPage> {
               child: GoogleMap(
               initialCameraPosition: CameraPosition(
                 target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
+                    currentPosition!.latitude, currentPosition!.longitude),
                 zoom: 14,
               ),
               polylines: {
@@ -139,7 +144,7 @@ class _RunPageState extends State<RunPage> {
                   icon: currentIcon,
                   markerId: const MarkerId("current"),
                   position: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
+                      currentPosition!.latitude, currentPosition!.longitude),
                 ),
               },
               onMapCreated: (GoogleMapController controller) {
@@ -160,6 +165,13 @@ class _RunPageState extends State<RunPage> {
     );
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return const Scaffold(
+  //     body: Text("Hey!"),
+  //   );
+  // }
+
   @override
   void dispose() {
     // Release Google Map Controller
@@ -170,6 +182,8 @@ class _RunPageState extends State<RunPage> {
     // Clear polylines and markers
     polylineCoordinates.clear();
 
+// Cancel Stream subscription
+    _positionSubscription?.cancel();
     super.dispose();
   }
 }
