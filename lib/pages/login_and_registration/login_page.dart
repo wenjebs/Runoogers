@@ -33,21 +33,21 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
       // pop the load circle
-      if (mounted) {
-        Navigator.pop(context);
-      }
+      // if (mounted) {
+      Navigator.pop(context);
+      // }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
-      if (mounted) {
-        Navigator.pop(context);
-      }
+      // if (mounted) {
+      Navigator.pop(context);
+      // }
       // show error message
       showErrorMessage(e.code);
     } on PlatformException catch (e) {
       // pop the load circle
-      if (mounted) {
-        Navigator.pop(context);
-      }
+      // if (mounted) {
+      Navigator.pop(context);
+      // }
       // show error message
       showErrorMessage(e.code);
       print("sike im here");
