@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:runningapp/pages/logged_in/profile_page.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/social_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: GNav(
-        backgroundColor: const Color(0xff4D869C),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).focusColor,
+        activeColor: Theme.of(context).primaryColor,
         gap: 6,
         tabs: const [
           GButton(icon: Icons.home, text: "Home"),
