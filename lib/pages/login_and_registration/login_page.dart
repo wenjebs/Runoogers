@@ -18,12 +18,17 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   void signUserIn() async {
+    final GlobalKey<State> key = GlobalKey();
     //loading circle
     showDialog(
       context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Container(
+          key: key, // Assign the key to the Container
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
@@ -33,26 +38,26 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
       // pop the load circle
-      // if (mounted) {
-      Navigator.pop(context);
-      // }
+      if (Navigator.canPop(key.currentContext!)) {
+        Navigator.pop(key.currentContext!);
+      }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
-      // if (mounted) {
-      Navigator.pop(context);
-      // }
+      if (Navigator.canPop(key.currentContext!)) {
+        Navigator.pop(key.currentContext!);
+      }
       // show error message
       showErrorMessage(e.code);
     } on PlatformException catch (e) {
       // pop the load circle
-      // if (mounted) {
-      Navigator.pop(context);
-      // }
+      if (Navigator.canPop(key.currentContext!)) {
+        Navigator.pop(key.currentContext!);
+      }
       // show error message
       showErrorMessage(e.code);
-      print("sike im here");
+      // print("sike im here");
     } catch (e) {
-      print("im here");
+      debugPrint("im here");
     }
   }
 

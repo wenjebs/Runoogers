@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:runningapp/pages/logged_in/run_page/location_service.dart';
 
 class RunPage extends StatefulWidget {
   const RunPage({super.key});
@@ -18,7 +16,6 @@ class RunPage extends StatefulWidget {
 
 class _RunPageState extends State<RunPage> {
   final Completer<GoogleMapController> _controller = Completer();
-  final LocationService locationService = LocationService();
   Position? currentPosition;
   StreamSubscription? _positionSubscription;
   List<LatLng> polylineCoordinates = [];
@@ -50,6 +47,34 @@ class _RunPageState extends State<RunPage> {
   }
 
   void getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, show an error message or prompt the user to enable them
+      return;
+    }
+
+    // Check if the app has permission to access location
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      // Location permission is denied, ask the user for permission
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Location permission is still denied, show an error message or prompt the user to grant permission
+        return;
+      }
+    }
+
+    // Check if the app has background location permission (only for iOS)
+    if (permission == LocationPermission.deniedForever) {
+      // Background location permission is denied, show an error message or prompt the user to grant permission
+      return;
+    }
+    debugPrint(permission.toString());
+    // Get the current position
     Position newPosition = await Geolocator.getCurrentPosition();
     currentPosition = newPosition;
     if (mounted) {
@@ -85,14 +110,14 @@ class _RunPageState extends State<RunPage> {
     getPolyPoints();
   }
 
-  void printLocation() {
-    locationService.getUserLocation().then((value) async {
-      if (kDebugMode) {
-        print('My Location');
-        print('${value.latitude} ${value.longitude}');
-      }
-    });
-  }
+  // void printLocation() {
+  //   locationService.getUserLocation().then((value) async {
+  //     if (kDebugMode) {
+  //       print('My Location');
+  //       print('${value.latitude} ${value.longitude}');
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,50 +142,50 @@ class _RunPageState extends State<RunPage> {
             )
           : SafeArea(
               child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentPosition!.latitude, currentPosition!.longitude),
-                zoom: 14,
-              ),
-              polylines: {
-                Polyline(
-                  polylineId: const PolylineId("route"),
-                  points: polylineCoordinates,
-                  color: Colors.red,
-                  width: 6,
-                )
-              },
-              mapType: MapType.normal,
-              markers: {
-                Marker(
-                    icon: sourceIcon,
-                    markerId: const MarkerId("start"),
-                    position: LatLng(starttest.latitude, starttest.longitude)),
-                Marker(
-                    icon: destinationIcon,
-                    markerId: const MarkerId("end"),
-                    position: LatLng(startend.latitude, startend.longitude)),
-                Marker(
-                  icon: currentIcon,
-                  markerId: const MarkerId("current"),
-                  position: LatLng(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
                       currentPosition!.latitude, currentPosition!.longitude),
+                  zoom: 14,
                 ),
-              },
-              onMapCreated: (GoogleMapController controller) {
-                if (mounted) {
-                  setState(() {
-                    _controller.complete(controller);
-                  });
-                }
-              },
-            )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("pressed");
-          printLocation();
-        },
-        child: const Icon((Icons.radio_button_off)),
+                polylines: {
+                  Polyline(
+                    polylineId: const PolylineId("route"),
+                    points: polylineCoordinates,
+                    color: Colors.red,
+                    width: 6,
+                  )
+                },
+                mapType: MapType.normal,
+                markers: {
+                  Marker(
+                      icon: sourceIcon,
+                      markerId: const MarkerId("start"),
+                      position:
+                          LatLng(starttest.latitude, starttest.longitude)),
+                  Marker(
+                      icon: destinationIcon,
+                      markerId: const MarkerId("end"),
+                      position: LatLng(startend.latitude, startend.longitude)),
+                  Marker(
+                    icon: currentIcon,
+                    markerId: const MarkerId("current"),
+                    position: LatLng(
+                        currentPosition!.latitude, currentPosition!.longitude),
+                  ),
+                },
+                onMapCreated: (GoogleMapController controller) {
+                  if (mounted) {
+                    setState(() {
+                      _controller.complete(controller);
+                    });
+                  }
+                },
+              ),
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        label: const Text("Start Run"),
       ),
     );
   }
