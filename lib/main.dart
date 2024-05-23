@@ -7,12 +7,19 @@ import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  // ensure widgetbinding is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  // load env variables
   await dotenv.load(fileName: "dotenv.env");
+
+  // check if all required env variables are defined
   const requiredEnvVars = ["MAPS_API_KEY"];
   if (!dotenv.isEveryDefined(requiredEnvVars)) {
     throw ("no api!");
   }
+
+  // initialize firebase auth
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

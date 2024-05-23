@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -121,7 +121,15 @@ class _RunPageState extends State<RunPage> {
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _isRunning
-          ? runDetailsAndStop(context)
+          ? Animate(
+              effects: [
+                SlideEffect(
+                    duration: 500.ms,
+                    begin: const Offset(0, 1),
+                    end: const Offset(0, 0)),
+              ],
+              child: runDetailsAndStop(context),
+            )
           : FloatingActionButton.extended(
               onPressed: () {
                 setState(() {
