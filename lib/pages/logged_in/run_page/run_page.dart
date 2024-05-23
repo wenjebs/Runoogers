@@ -1,9 +1,13 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:runningapp/pages/logged_in/run_page/draw_poly_line.dart';
+import 'package:runningapp/pages/logged_in/run_page/google_maps_container.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
+
+import 'loading_map.dart';
 
 class RunPage extends StatefulWidget {
   const RunPage({super.key});
@@ -15,109 +19,53 @@ class RunPage extends StatefulWidget {
 }
 
 class _RunPageState extends State<RunPage> {
-  final Completer<GoogleMapController> _controller = Completer();
-  Position? currentPosition;
-  StreamSubscription? _positionSubscription;
-  List<LatLng> polylineCoordinates = [];
+  // TEMPORARY
+  PointLatLng starttest = const PointLatLng(
+      1.38421039476496, 103.7428801911649); // TODO REMOVE THIS SHIT
+  PointLatLng startend =
+      const PointLatLng(1.3847101970640396, 103.75290227627711);
 
+  bool _isRunning = false;
+
+  // Current Position
+  Position? currPos;
+
+  // Intiaise Google Map Container
+  final GoogleMapsContainer googleMapsContainer = GoogleMapsContainer();
+
+  // Initialise Poly Line drawer
+  final MapLineDrawer mapLineDrawer = MapLineDrawer();
+
+  // Initialise stopwatch
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer(
+    mode: StopWatchMode.countUp,
+  );
+
+  // icons for start, end, current
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon =
       BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
 
-  PointLatLng starttest =
-      const PointLatLng(1.38421039476496, 103.7428801911649);
-  PointLatLng startend =
-      const PointLatLng(1.3847101970640396, 103.75290227627711);
-
-  void getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        dotenv.env['MAPS_API_KEY']!, starttest, startend);
-
-    if (result.points.isNotEmpty) {
-      for (PointLatLng point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      }
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled, show an error message or prompt the user to enable them
-      return;
-    }
-
-    // Check if the app has permission to access location
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      // Location permission is denied, ask the user for permission
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Location permission is still denied, show an error message or prompt the user to grant permission
-        return;
-      }
-    }
-
-    // Check if the app has background location permission (only for iOS)
-    if (permission == LocationPermission.deniedForever) {
-      // Background location permission is denied, show an error message or prompt the user to grant permission
-      return;
-    }
-    debugPrint(permission.toString());
-    // Get the current position
-    Position newPosition = await Geolocator.getCurrentPosition();
-    currentPosition = newPosition;
-    if (mounted) {
-      setState(() {});
-    }
-    GoogleMapController mapController = await _controller.future;
-
-    const LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
-
-    _positionSubscription =
-        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-      (newPosition) {
-        currentPosition = newPosition;
-        CameraPosition newCameraPosition = CameraPosition(
-            zoom: 18,
-            target: LatLng(newPosition.latitude, newPosition.longitude));
-        mapController
-            .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
-        if (mounted) {
-          setState(() {});
-        }
-      },
-    );
-  }
+  // Constants
+  static const double zoomLevel = 18;
+  static const int polylineWidth = 6;
+  static const double paddingValue = 24;
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
-    getPolyPoints();
+    googleMapsContainer.getCurrentLocation().then((position) {
+      currPos = position;
+      setState(() {});
+    });
+    googleMapsContainer
+        .listenToLocationChanges((Position newPos) => setState(() {
+              currPos = newPos;
+            }));
+    mapLineDrawer.getPolyPoints();
+    setState(() {});
   }
-
-  // void printLocation() {
-  //   locationService.getUserLocation().then((value) async {
-  //     if (kDebugMode) {
-  //       print('My Location');
-  //       print('${value.latitude} ${value.longitude}');
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -127,32 +75,21 @@ class _RunPageState extends State<RunPage> {
         title: const Text("Track run",
             style: TextStyle(color: Colors.black, fontSize: 16)),
       ),
-      body: currentPosition == null
-          ? const Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text("Loading"),
-                  ),
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )
+      body: currPos == null
+          ? const LoadingMap()
           : SafeArea(
               child: GoogleMap(
+                zoomControlsEnabled: false,
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                      currentPosition!.latitude, currentPosition!.longitude),
-                  zoom: 14,
+                  target: LatLng(currPos!.latitude, currPos!.longitude),
+                  zoom: zoomLevel,
                 ),
                 polylines: {
                   Polyline(
                     polylineId: const PolylineId("route"),
-                    points: polylineCoordinates,
+                    points: mapLineDrawer.polylineCoordinates,
                     color: Colors.red,
-                    width: 6,
+                    width: polylineWidth,
                   )
                 },
                 mapType: MapType.normal,
@@ -169,23 +106,130 @@ class _RunPageState extends State<RunPage> {
                   Marker(
                     icon: currentIcon,
                     markerId: const MarkerId("current"),
-                    position: LatLng(
-                        currentPosition!.latitude, currentPosition!.longitude),
+                    position: LatLng(currPos!.latitude, currPos!.longitude),
                   ),
                 },
                 onMapCreated: (GoogleMapController controller) {
                   if (mounted) {
                     setState(() {
-                      _controller.complete(controller);
+                      googleMapsContainer.controller.complete(controller);
+                      // googleMapsContainer.complete(controller);
                     });
                   }
                 },
               ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        label: const Text("Start Run"),
+      floatingActionButton: _isRunning
+          ? runDetailsAndStop(context)
+          : FloatingActionButton.extended(
+              onPressed: () {
+                setState(() {
+                  _isRunning = true;
+                });
+              },
+              label: const Text("Start Run"),
+            ),
+    );
+  }
+
+  Padding runDetailsAndStop(BuildContext context) {
+    _stopWatchTimer.onStartTimer();
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: paddingValue, vertical: paddingValue / 2),
+      child: Container(
+        width: MediaQuery.of(context).size.width - (paddingValue * 2),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(paddingValue / 2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(4),
+              child: Text(
+                'TIME',
+                style: TextStyle(
+                  fontFamily: 'Readex Pro',
+                  letterSpacing: 0,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Column(
+                children: [
+                  /// Display stop watch time
+                  StreamBuilder<int>(
+                      stream: _stopWatchTimer.rawTime,
+                      initialData: _stopWatchTimer.rawTime.value,
+                      builder: (context, snap) {
+                        final value = snap.data!;
+                        final displayTime =
+                            StopWatchTimer.getDisplayTime(value, hours: false);
+                        return Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                displayTime,
+                                style: const TextStyle(
+                                    fontSize: 40,
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                ],
+              ),
+            ),
+            const Divider(),
+            const Text(
+              'PACE',
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                '6 : 00 MIN/KM',
+              ),
+            ),
+            const Divider(),
+            const Text(
+              'DISTANCE',
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12),
+              child: Text(
+                '0 KM',
+              ),
+            ),
+            const Divider(),
+            FilledButton(
+              style: ButtonStyle(
+                shape: WidgetStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(paddingValue / 4),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  // Stop timer.
+                  _stopWatchTimer.onStopTimer();
+                  // Reset timer
+                  _stopWatchTimer.onResetTimer();
+                  _isRunning = false;
+                });
+              },
+              child: const Text("Stop Run"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -199,16 +243,13 @@ class _RunPageState extends State<RunPage> {
 
   @override
   void dispose() {
+    super.dispose();
     // Release Google Map Controller
-    _controller.future.then((controller) {
-      controller.dispose();
-    });
+    googleMapsContainer.dispose();
 
     // Clear polylines and markers
-    polylineCoordinates.clear();
+    mapLineDrawer.clear();
 
-// Cancel Stream subscription
-    _positionSubscription?.cancel();
-    super.dispose();
+    _stopWatchTimer.dispose();
   }
 }
