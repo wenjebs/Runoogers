@@ -29,7 +29,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: GNav(
-        backgroundColor: const Color(0xff4D869C),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).focusColor,
+        activeColor: Theme.of(context).primaryColor,
         gap: 6,
         tabs: const [
           GButton(icon: Icons.home, text: "Home"),
