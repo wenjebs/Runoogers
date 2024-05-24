@@ -38,21 +38,21 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text,
       );
       // pop the load circle
-      if (Navigator.canPop(key.currentContext!)) {
-        Navigator.pop(key.currentContext!);
-      }
+      // if (Navigator.canPop(key.currentContext!)) {
+      Navigator.pop(key.currentContext!);
+      // }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
-      if (Navigator.canPop(key.currentContext!)) {
-        Navigator.pop(key.currentContext!);
-      }
+      // if (Navigator.canPop(key.currentContext!)) {
+      Navigator.pop(key.currentContext!);
+      // }
       // show error message
       showErrorMessage(e.code);
     } on PlatformException catch (e) {
       // pop the load circle
-      if (Navigator.canPop(key.currentContext!)) {
-        Navigator.pop(key.currentContext!);
-      }
+      // if (Navigator.canPop(key.currentContext!)) {
+      Navigator.pop(key.currentContext!);
+      // }
       // show error message
       showErrorMessage(e.code);
       // print("sike im here");

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/database.dart';
+import 'package:runningapp/database/repository.dart';
 import '../../components/my_button.dart';
 import '../../components/my_textfield.dart';
 
@@ -32,6 +34,10 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
+        Repository(database: db).addData('users', {
+          'email': emailController.text,
+          'uid': FirebaseAuth.instance.currentUser!.uid,
+        });
       } else {
         showErrorMessage("passwords dont match");
       }
