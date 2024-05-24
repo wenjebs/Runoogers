@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/global_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
@@ -16,7 +17,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print(dotenv.env["MAPS_API_KEY"]);
+      // print(dotenv.env["MAPS_API_KEY"]);
     }
     return MaterialApp(
       theme: GlobalThemeData.lightThemeData,
