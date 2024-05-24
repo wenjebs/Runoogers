@@ -72,27 +72,36 @@ class RunDetailsAndStop extends ConsumerWidget {
                 ],
               ),
             ),
-            const Divider(),
+            const Divider(
+              indent: 40,
+              endIndent: 40,
+            ),
             const Text(
               'PACE',
             ),
             const Padding(
               padding: EdgeInsets.all(8),
               child: Text(
-                '6 : 00 MIN/KM',
+                '6 : 00 MIN/KM', // TODO DONT HARDCODE THIS
               ),
             ),
-            const Divider(),
+            const Divider(
+              indent: 40,
+              endIndent: 40,
+            ),
             const Text(
               'DISTANCE',
             ),
-            const Padding(
-              padding: EdgeInsets.all(12),
+            Padding(
+              padding: const EdgeInsets.all(12),
               child: Text(
-                '0 KM',
+                '${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
               ),
             ),
-            const Divider(),
+            const Divider(
+              indent: 40,
+              endIndent: 40,
+            ),
             FilledButton(
               style: ButtonStyle(
                 shape: WidgetStateProperty.all<OutlinedBorder>(

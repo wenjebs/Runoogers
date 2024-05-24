@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
@@ -49,14 +52,19 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
-
-    // get current location and set it to currPos
-    locationService.getCurrentLocation().then((position) {
-      currPos = position;
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    locationService.checkPermission();
+    locationService.listenToLocationChangesBeforeStart(
+      (newPos) => {
+        if (mounted)
+          {
+            setState(
+              () {
+                currPos = newPos;
+              },
+            )
+          }
+      },
+    );
   }
 
   @override
@@ -70,37 +78,43 @@ class _RunPageState extends State<RunPage> {
       body: currPos == null
           ? const LoadingMap()
           : SafeArea(
-              child: GoogleMap(
-                zoomControlsEnabled: false,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(currPos!.latitude, currPos!.longitude),
-                  zoom: zoomLevel,
-                ),
-                polylines: {
-                  Polyline(
-                    polylineId: const PolylineId("route"),
-                    points: MapLineDrawer.polylineCoordinates,
-                    color: Colors.red,
-                    width: polylineWidth,
-                  )
-                },
-                mapType: MapType.normal,
-                markers: {
-                  Marker(
-                    icon: currentIcon,
-                    markerId: const MarkerId("current"),
-                    position: LatLng(currPos!.latitude, currPos!.longitude),
+              child: Builder(builder: (context) {
+                return GoogleMap(
+                  zoomControlsEnabled: false,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(currPos!.latitude, currPos!.longitude),
+                    zoom: zoomLevel,
                   ),
-                },
-                onMapCreated: (GoogleMapController controller) {
-                  if (mounted) {
-                    setState(() {
-                      googleMapsContainer.controller.complete(controller);
-                      // googleMapsContainer.complete(controller);
-                    });
-                  }
-                },
-              ),
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId("route"),
+                      points: MapLineDrawer.polylineCoordinates,
+                      color: Colors.red,
+                      width: polylineWidth,
+                    )
+                  },
+                  mapType: MapType.normal,
+                  markers: {
+                    Marker(
+                      icon: currentIcon,
+                      markerId: const MarkerId("current"),
+                      position: LatLng(currPos!.latitude, currPos!.longitude),
+                    ),
+                  },
+                  onMapCreated: (GoogleMapController controller) {
+                    if (mounted) {
+                      setState(() {
+                        Completer<GoogleMapController> mapCompleter =
+                            GoogleMapsContainer.controller;
+                        if (!mapCompleter.isCompleted) {
+                          googleMapsContainer.complete(controller);
+                        }
+                        // googleMapsContainer.complete(controller);
+                      });
+                    }
+                  },
+                );
+              }),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Consumer(
@@ -121,11 +135,14 @@ class _RunPageState extends State<RunPage> {
                     _stopWatchTimer.onStartTimer();
 
                     // start location tracking
+                    LocationService.reset();
                     locationService.listenToLocationChanges(
-                        (Position newPos) => setState(() {
-                              currPos = newPos;
-                            }),
-                        googleMapsContainer.controller);
+                      (Position newPos) => setState(() {
+                        currPos = newPos;
+                      }),
+                      GoogleMapsContainer.controller,
+                      true,
+                    );
                   },
                   label: const Text("Start Run"),
                 );
@@ -137,6 +154,9 @@ class _RunPageState extends State<RunPage> {
   @override
   void dispose() {
     super.dispose();
+    // reset location services
+    LocationService.reset();
+
     // Release Google Map Controller
     googleMapsContainer.dispose();
 
