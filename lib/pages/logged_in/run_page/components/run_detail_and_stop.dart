@@ -24,7 +24,9 @@ class RunDetailsAndStop extends ConsumerWidget {
             style: ButtonStyle(
               shape: WidgetStateProperty.all<OutlinedBorder>(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(paddingValue / 4),
+                  borderRadius: BorderRadius.circular(
+                    paddingValue / 4,
+                  ),
                 ),
               ),
             ),
@@ -35,7 +37,9 @@ class RunDetailsAndStop extends ConsumerWidget {
           )
         : Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: paddingValue, vertical: paddingValue / 2),
+              horizontal: paddingValue,
+              vertical: paddingValue / 2,
+            ),
             child: Container(
               width: MediaQuery.of(context).size.width - (paddingValue * 2),
               decoration: BoxDecoration(
@@ -46,14 +50,11 @@ class RunDetailsAndStop extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(4),
+                  Padding(
+                    padding: const EdgeInsets.all(4),
                     child: Text(
                       'TIME',
-                      style: TextStyle(
-                        fontFamily: 'Readex Pro',
-                        letterSpacing: 0,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   Padding(
@@ -91,8 +92,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                     indent: 40,
                     endIndent: 40,
                   ),
-                  const Text(
+                  Text(
                     'PACE',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
@@ -100,7 +102,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                         stream: _stopWatchTimer.rawTime,
                         initialData: _stopWatchTimer.rawTime.value,
                         builder: (context, snap) {
-                          debugPrint((snap.data! / 1000).toString());
+                          // debugPrint((snap.data! / 1000).toString());
                           final value = snap.data!;
                           final currentTime = value;
                           return Column(
@@ -112,9 +114,10 @@ class RunDetailsAndStop extends ConsumerWidget {
                                       ? '0'
                                       : "${((currentTime / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km",
                                   style: const TextStyle(
-                                      fontSize: 40,
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 40,
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
@@ -125,99 +128,107 @@ class RunDetailsAndStop extends ConsumerWidget {
                     indent: 40,
                     endIndent: 40,
                   ),
-                  const Text(
+                  Text(
                     'DISTANCE',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
                       '${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Divider(
-                    indent: 40,
-                    endIndent: 40,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FilledButton(
-                        style: ButtonStyle(
-                          shape: WidgetStateProperty.all<OutlinedBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(paddingValue / 4),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: FilledButton(
+                          style: ButtonStyle(
+                            shape: WidgetStateProperty.all<OutlinedBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(paddingValue / 4),
+                              ),
                             ),
                           ),
-                        ),
-                        onPressed: () {
-                          // stop timer
-                          _stopWatchTimer.onStopTimer();
+                          onPressed: () {
+                            // stop timer
+                            _stopWatchTimer.onStopTimer();
 
-                          // get the time
-                          final int time = _stopWatchTimer.rawTime.value;
+                            // get the time
+                            final int time = _stopWatchTimer.rawTime.value;
 
-                          // get distance travelled
-                          final double distance =
-                              LocationService.distanceTravelled;
+                            // get distance travelled
+                            final double distance =
+                                LocationService.distanceTravelled;
 
-                          // get pace of run
+                            // get pace of run
 
-                          // show run page
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Run Completed"),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "Time: ${StopWatchTimer.getDisplayTime(time, hours: false)}",
-                                    ),
-                                    Text(
-                                      "Distance: $distance",
+                            // show run page
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Run Completed"),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Time: ${StopWatchTimer.getDisplayTime(time, hours: false)}",
+                                      ),
+                                      Text(
+                                        "Distance: $distance",
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("Close"),
                                     ),
                                   ],
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text("Close"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                                );
+                              },
+                            );
 
-                          // stop location tracking and reset dist
-                          LocationService.reset();
+                            // stop location tracking and reset dist
+                            LocationService.reset();
 
-                          // reset timer
-                          _stopWatchTimer.onResetTimer();
+                            // reset timer
+                            _stopWatchTimer.onResetTimer();
 
-                          // set boolean to false
-                          ref.read(timerProvider.notifier).startStopTimer();
-                        },
-                        child: const Text("Stop Run"),
+                            // set boolean to false
+                            ref.read(timerProvider.notifier).startStopTimer();
+                          },
+                          child: const Text("Stop Run"),
+                        ),
                       ),
-                      FilledButton(
-                        style: ButtonStyle(
-                          shape: WidgetStateProperty.all<OutlinedBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(paddingValue / 4),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: FilledButton(
+                          style: ButtonStyle(
+                            shape: WidgetStateProperty.all<OutlinedBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(paddingValue / 4),
+                              ),
                             ),
                           ),
+                          onPressed: () {
+                            ref
+                                .read(runDetailsProvider.notifier)
+                                .showHideRunDetails();
+                          },
+                          child: const Text("Hide Details"),
                         ),
-                        onPressed: () {
-                          ref
-                              .read(runDetailsProvider.notifier)
-                              .showHideRunDetails();
-                        },
-                        child: const Text("Hide Details"),
                       ),
                     ],
                   ),
