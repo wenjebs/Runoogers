@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -123,18 +122,18 @@ class _RunPageState extends State<RunPage> {
           final isRunning = ref.watch(timerProvider);
           return isRunning
               ? Animate(
-              effects: [
-                SlideEffect(
-                    duration: 500.ms,
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0)),
-              ],
-              child: RunDetailsAndStop(
-                  paddingValue: paddingValue,
-                  stopWatchTimer: _stopWatchTimer,
-                  context: context,
-                ),
-            )
+                  effects: [
+                    SlideEffect(
+                        duration: 500.ms,
+                        begin: const Offset(0, 1),
+                        end: const Offset(0, 0)),
+                  ],
+                  child: RunDetailsAndStop(
+                    paddingValue: paddingValue,
+                    stopWatchTimer: _stopWatchTimer,
+                    context: context,
+                  ),
+                )
               : FloatingActionButton.extended(
                   onPressed: () {
                     // update the state of running
