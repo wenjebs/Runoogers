@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:runningapp/pages/logged_in/run_page/draw_poly_line.dart';
-import 'package:runningapp/pages/logged_in/run_page/google_maps_container.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-import 'loading_map.dart';
-import 'run_detail_and_stop.dart';
+import 'map_and_location_logic/loading_map.dart';
+import 'components/run_detail_and_stop.dart';
 
 class RunPage extends StatefulWidget {
   const RunPage({super.key});
@@ -21,14 +21,11 @@ class RunPage extends StatefulWidget {
 }
 
 class _RunPageState extends State<RunPage> {
-  // TEMPORARY
-  PointLatLng starttest = const PointLatLng(
-      1.38421039476496, 103.7428801911649); // TODO REMOVE THIS SHIT
-  PointLatLng startend =
-      const PointLatLng(1.3847101970640396, 103.75290227627711);
-
   // Current Position
   Position? currPos;
+
+  // Initialise location services
+  final LocationService locationService = LocationService();
 
   // Intiaise Google Map Container
   final GoogleMapsContainer googleMapsContainer = GoogleMapsContainer();
@@ -55,16 +52,14 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
-    googleMapsContainer.getCurrentLocation().then((position) {
+
+    // get current location and set it to currPos
+    locationService.getCurrentLocation().then((position) {
       currPos = position;
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
-    googleMapsContainer
-        .listenToLocationChanges((Position newPos) => setState(() {
-              currPos = newPos;
-            }));
-    mapLineDrawer.getPolyPoints();
-    setState(() {});
   }
 
   @override
@@ -95,15 +90,6 @@ class _RunPageState extends State<RunPage> {
                 mapType: MapType.normal,
                 markers: {
                   Marker(
-                      icon: sourceIcon,
-                      markerId: const MarkerId("start"),
-                      position:
-                          LatLng(starttest.latitude, starttest.longitude)),
-                  Marker(
-                      icon: destinationIcon,
-                      markerId: const MarkerId("end"),
-                      position: LatLng(startend.latitude, startend.longitude)),
-                  Marker(
                     icon: currentIcon,
                     markerId: const MarkerId("current"),
                     position: LatLng(currPos!.latitude, currPos!.longitude),
@@ -127,7 +113,8 @@ class _RunPageState extends State<RunPage> {
               ? RunDetailsAndStop(
                   paddingValue: paddingValue,
                   stopWatchTimer: _stopWatchTimer,
-                  context: context)
+                  context: context,
+                )
               : FloatingActionButton.extended(
                   onPressed: () {
                     // update the state of running
@@ -135,6 +122,13 @@ class _RunPageState extends State<RunPage> {
 
                     // start the timer
                     _stopWatchTimer.onStartTimer();
+
+                    // start location tracking
+                    locationService.listenToLocationChanges(
+                        (Position newPos) => setState(() {
+                              currPos = newPos;
+                            }),
+                        googleMapsContainer.controller);
                   },
                   label: const Text("Start Run"),
                 );

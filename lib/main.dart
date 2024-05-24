@@ -19,8 +19,8 @@ void main() async {
   );
 
   runApp(
-    ProviderScope(
-      child: const MyApp(),
+    const ProviderScope(
+      child: MyApp(),
     ),
   );
 }
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print(dotenv.env["MAPS_API_KEY"]);
+      // print(dotenv.env["MAPS_API_KEY"]);
     }
     return MaterialApp(
       theme: GlobalThemeData.lightThemeData,
