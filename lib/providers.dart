@@ -11,3 +11,14 @@ class TimerController extends StateNotifier<bool> {
 
 final timerProvider =
     StateNotifierProvider<TimerController, bool>((ref) => TimerController());
+
+class RunDetailsController extends StateNotifier<bool> {
+  RunDetailsController() : super(false);
+
+  void showHideRunDetails() {
+    state = !state;
+  }
+}
+
+final runDetailsProvider = StateNotifierProvider<RunDetailsController, bool>(
+    (ref) => RunDetailsController());

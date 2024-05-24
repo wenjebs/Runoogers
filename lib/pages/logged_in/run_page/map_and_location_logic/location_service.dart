@@ -12,7 +12,7 @@ class LocationService {
   // a listener for the current position
   static StreamSubscription? _positionSubscription;
 
-  // store the current position and distance travelled;
+  // store the current position and distance travelled (KM);
   static Position? _currentPosition;
   static double distance = 0;
 
@@ -113,11 +113,12 @@ class LocationService {
         if (_currentPosition != null) {
           debugPrint("updating dist");
           distance += Geolocator.distanceBetween(
-            _currentPosition!.latitude,
-            _currentPosition!.longitude,
-            newPosition.latitude,
-            newPosition.longitude,
-          );
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+                newPosition.latitude,
+                newPosition.longitude,
+              ) /
+              1000.0;
         }
 
         // update the current position
