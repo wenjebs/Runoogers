@@ -27,8 +27,6 @@ class _RunPageState extends State<RunPage> {
   PointLatLng startend =
       const PointLatLng(1.3847101970640396, 103.75290227627711);
 
-  bool _isRunning = false;
-
   // Current Position
   Position? currPos;
 
