@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/pages/logged_in/run_page/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/google_maps_container.dart';
+import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import 'loading_map.dart';
+import 'run_detail_and_stop.dart';
 
 class RunPage extends StatefulWidget {
   const RunPage({super.key});
@@ -120,126 +122,28 @@ class _RunPageState extends State<RunPage> {
               ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _isRunning
-          ? runDetailsAndStop(context)
-          : FloatingActionButton.extended(
-              onPressed: () {
-                setState(() {
-                  _isRunning = true;
-                });
-              },
-              label: const Text("Start Run"),
-            ),
-    );
-  }
+      floatingActionButton: Consumer(
+        builder: (context, ref, child) {
+          final isRunning = ref.watch(timerProvider);
+          return isRunning
+              ? RunDetailsAndStop(
+                  paddingValue: paddingValue,
+                  stopWatchTimer: _stopWatchTimer,
+                  context: context)
+              : FloatingActionButton.extended(
+                  onPressed: () {
+                    // update the state of running
+                    ref.read(timerProvider.notifier).startStopTimer();
 
-  Padding runDetailsAndStop(BuildContext context) {
-    _stopWatchTimer.onStartTimer();
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: paddingValue, vertical: paddingValue / 2),
-      child: Container(
-        width: MediaQuery.of(context).size.width - (paddingValue * 2),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(paddingValue / 2),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(4),
-              child: Text(
-                'TIME',
-                style: TextStyle(
-                  fontFamily: 'Readex Pro',
-                  letterSpacing: 0,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Column(
-                children: [
-                  /// Display stop watch time
-                  StreamBuilder<int>(
-                      stream: _stopWatchTimer.rawTime,
-                      initialData: _stopWatchTimer.rawTime.value,
-                      builder: (context, snap) {
-                        final value = snap.data!;
-                        final displayTime =
-                            StopWatchTimer.getDisplayTime(value, hours: false);
-                        return Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Text(
-                                displayTime,
-                                style: const TextStyle(
-                                    fontSize: 40,
-                                    fontFamily: 'Helvetica',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                ],
-              ),
-            ),
-            const Divider(),
-            const Text(
-              'PACE',
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                '6 : 00 MIN/KM',
-              ),
-            ),
-            const Divider(),
-            const Text(
-              'DISTANCE',
-            ),
-            const Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                '0 KM',
-              ),
-            ),
-            const Divider(),
-            FilledButton(
-              style: ButtonStyle(
-                shape: WidgetStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(paddingValue / 4),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                setState(() {
-                  // Stop timer.
-                  _stopWatchTimer.onStopTimer();
-                  // Reset timer
-                  _stopWatchTimer.onResetTimer();
-                  _isRunning = false;
-                });
-              },
-              child: const Text("Stop Run"),
-            ),
-          ],
-        ),
+                    // start the timer
+                    _stopWatchTimer.onStartTimer();
+                  },
+                  label: const Text("Start Run"),
+                );
+        },
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const Scaffold(
-  //     body: Text("Hey!"),
-  //   );
-  // }
 
   @override
   void dispose() {
