@@ -30,9 +30,6 @@ class _RunPageState extends State<RunPage> {
   // Intiaise Google Map Container
   final GoogleMapsContainer googleMapsContainer = GoogleMapsContainer();
 
-  // Initialise Poly Line drawer
-  final MapLineDrawer mapLineDrawer = MapLineDrawer();
-
   // Initialise stopwatch
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countUp,
@@ -82,7 +79,7 @@ class _RunPageState extends State<RunPage> {
                 polylines: {
                   Polyline(
                     polylineId: const PolylineId("route"),
-                    points: mapLineDrawer.polylineCoordinates,
+                    points: MapLineDrawer.polylineCoordinates,
                     color: Colors.red,
                     width: polylineWidth,
                   )
@@ -144,7 +141,7 @@ class _RunPageState extends State<RunPage> {
     googleMapsContainer.dispose();
 
     // Clear polylines and markers
-    mapLineDrawer.clear();
+    MapLineDrawer.clear();
 
     _stopWatchTimer.dispose();
   }
