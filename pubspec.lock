@@ -97,6 +97,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  cloud_firestore:
+    dependency: "direct main"
+    description:
+      name: cloud_firestore
+      sha256: f71bdc277a2a79674d276e43a1d35fbf9d642c87d59ec381aa833e96122df1d8
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.17.4"
+  cloud_firestore_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_firestore_platform_interface
+      sha256: "671e8b750cdc68c7ebacc7bd8ce812534d3e90a319e579334cc108a9e090428a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.4"
+  cloud_firestore_web:
+    dependency: transitive
+    description:
+      name: cloud_firestore_web
+      sha256: c1b9cfd768e05b2530196a87ca40274ba9f1eec1408a71ee119b89838c2b5b80
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.12.4"
   collection:
     dependency: transitive
     description:
@@ -262,6 +286,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animate:
+    dependency: "direct main"
+    description:
+      name: flutter_animate
+      sha256: "7c8a6594a9252dad30cc2ef16e33270b6248c4dedc3b3d06c86c4f3f4dc05ae5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.0"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -310,6 +342,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
+  flutter_shaders:
+    dependency: transitive
+    description:
+      name: flutter_shaders
+      sha256: "02750b545c01ff4d8e9bbe8f27a7731aa3778402506c67daa1de7f5fc3f4befe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
