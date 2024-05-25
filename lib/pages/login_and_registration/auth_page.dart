@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/pages/logged_in/home_page.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
 
 import 'login_or_register_page.dart';
 

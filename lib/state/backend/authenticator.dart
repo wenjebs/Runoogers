@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:runningapp/state/auth/constants/constants.dart';
@@ -73,6 +74,15 @@ class Authenticator {
       return AuthResult.success;
     } catch (e) {
       return AuthResult.failure;
+    }
+  }
+
+  Future<void> sendPasswordResetLink(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      // FirebaseAuth.instance.confirmPasswordReset(code: code, newPassword: newPassword)
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

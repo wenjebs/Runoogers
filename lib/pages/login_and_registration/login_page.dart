@@ -2,8 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:runningapp/components/square_tile.dart';
-import '../../../components/my_button.dart';
-import '../../../components/my_textfield.dart';
+import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
+import '../../components/my_button.dart';
+import '../../components/my_textfield.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -138,9 +139,19 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            'Forgot Password?',
-                            style: TextStyle(color: Colors.grey[600]),
+                          InkWell(
+                            onTap: () {
+                              debugPrint("forgot password");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPassword()));
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
                           ),
                         ],
                       ),
