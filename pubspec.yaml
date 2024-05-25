@@ -38,7 +38,9 @@ dependencies:
   firebase_auth: ^4.19.5
   google_nav_bar: ^5.0.6
   google_maps_flutter: ^2.6.1
-  dotenv: ^4.2.0
+  font_awesome_flutter: ^10.1.0
+  flutter_facebook_auth: ^4.4.1
+  google_sign_in: ^5.4.1
   flutter_dotenv: ^5.1.0
   geolocator: ^12.0.0
   flutter_riverpod: ^2.5.1

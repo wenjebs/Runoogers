@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:runningapp/database/database.dart';
 import 'package:runningapp/database/repository.dart';
 import '../../components/my_button.dart';
 import '../../components/my_textfield.dart';
@@ -14,6 +13,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  bool isLoaded = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } on FirebaseAuthException catch (e) {
       // if (mounted) {
       Navigator.pop(context);
-      // }5
+      // }
       showErrorMessage(e.code);
     }
   }

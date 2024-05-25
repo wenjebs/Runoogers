@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:runningapp/components/square_tile.dart';
 import '../../components/my_button.dart';
 import '../../components/my_textfield.dart';
 
@@ -14,21 +15,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
 
   void signUserIn() async {
-    final GlobalKey<State> key = GlobalKey();
     //loading circle
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Container(
-          key: key, // Assign the key to the Container
-          child: const Center(
-            child: CircularProgressIndicator(),
-          ),
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       },
     );
@@ -39,19 +35,19 @@ class _LoginPageState extends State<LoginPage> {
       );
       // pop the load circle
       // if (Navigator.canPop(key.currentContext!)) {
-      Navigator.pop(key.currentContext!);
+      Navigator.pop(context);
       // }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
       // if (Navigator.canPop(key.currentContext!)) {
-      Navigator.pop(key.currentContext!);
+      Navigator.pop(context);
       // }
       // show error message
       showErrorMessage(e.code);
     } on PlatformException catch (e) {
       // pop the load circle
       // if (Navigator.canPop(key.currentContext!)) {
-      Navigator.pop(key.currentContext!);
+      Navigator.pop(context);
       // }
       // show error message
       showErrorMessage(e.code);
@@ -158,48 +154,48 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 50),
 
                   // or continue with
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: Divider(
-                  //           thickness: 0.5,
-                  //           color: Colors.grey[400],
-                  //         ),
-                  //       ),
-                  //       Padding(
-                  //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  //         child: Text(
-                  //           'Or continue with',
-                  //           style: TextStyle(color: Colors.grey[700]),
-                  //         ),
-                  //       ),
-                  //       Expanded(
-                  //         child: Divider(
-                  //           thickness: 0.5,
-                  //           color: Colors.grey[400],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            'Or continue with',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                   const SizedBox(height: 50),
 
                   // google + apple sign in buttons
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: const [
-                  //     // google button
-                  //     SquareTile(imagePath: 'lib/images/google.png'),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // google button
+                      SquareTile(imagePath: 'lib/images/google.png'),
 
-                  //     SizedBox(width: 25),
+                      SizedBox(width: 25),
 
-                  //     // apple button
-                  //     SquareTile(imagePath: 'lib/images/apple.png')
-                  //   ],
-                  // ),
+                      // apple button
+                      SquareTile(imagePath: 'lib/images/apple.png')
+                    ],
+                  ),
 
                   const SizedBox(height: 50),
 
