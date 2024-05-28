@@ -10,7 +10,7 @@ class SquareTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () => Authenticator().loginWithGoogle(),
       child: Container(
         padding: const EdgeInsets.all(20),
