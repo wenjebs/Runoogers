@@ -34,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
-        Repository(database: db).addData('users', {
+        Repository.addUser('users', {
           'email': emailController.text,
           'uid': FirebaseAuth.instance.currentUser!.uid,
         });
