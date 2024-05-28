@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/state/auth/constants/constants.dart';
 import 'package:runningapp/state/auth/models/auth_results.dart';
 import 'package:runningapp/state/auth/typedefs.dart';
@@ -70,7 +71,15 @@ class Authenticator {
       idToken: googleAuth.idToken,
     );
     try {
-      await FirebaseAuth.instance.signInWithCredential(oauthCredentials);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(oauthCredentials);
+      final user = userCredential.user;
+      if (user != null) {
+        Repository.addUser('users', {
+          'email': user.email,
+          'uid': user.uid,
+        });
+      }
       return AuthResult.success;
     } catch (e) {
       return AuthResult.failure;
