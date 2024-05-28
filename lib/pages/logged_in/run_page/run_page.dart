@@ -120,40 +120,42 @@ class _RunPageState extends State<RunPage> {
       floatingActionButton: Consumer(
         builder: (context, ref, child) {
           final isRunning = ref.watch(timerProvider);
-          return isRunning
-              ? Animate(
-                  effects: [
-                    SlideEffect(
-                        duration: 500.ms,
-                        begin: const Offset(0, 1),
-                        end: const Offset(0, 0)),
-                  ],
-                  child: RunDetailsAndStop(
-                    paddingValue: paddingValue,
-                    stopWatchTimer: _stopWatchTimer,
-                    context: context,
-                  ),
-                )
-              : FloatingActionButton.extended(
-                  onPressed: () {
-                    // update the state of running
-                    ref.read(timerProvider.notifier).startStopTimer();
+          return currPos == null
+              ? const SizedBox()
+              : isRunning
+                  ? Animate(
+                      effects: [
+                        SlideEffect(
+                            duration: 500.ms,
+                            begin: const Offset(0, 1),
+                            end: const Offset(0, 0)),
+                      ],
+                      child: RunDetailsAndStop(
+                        paddingValue: paddingValue,
+                        stopWatchTimer: _stopWatchTimer,
+                        context: context,
+                      ),
+                    )
+                  : FloatingActionButton.extended(
+                      onPressed: () {
+                        // update the state of running
+                        ref.read(timerProvider.notifier).startStopTimer();
 
-                    // start the timer
-                    _stopWatchTimer.onStartTimer();
+                        // start the timer
+                        _stopWatchTimer.onStartTimer();
 
-                    // start location tracking
-                    LocationService.reset();
-                    locationService.listenToLocationChanges(
-                      (Position newPos) => setState(() {
-                        currPos = newPos;
-                      }),
-                      GoogleMapsContainer.controller,
-                      true,
+                        // start location tracking
+                        LocationService.reset();
+                        locationService.listenToLocationChanges(
+                          (Position newPos) => setState(() {
+                            currPos = newPos;
+                          }),
+                          GoogleMapsContainer.controller,
+                          true,
+                        );
+                      },
+                      label: const Text("Start Run"),
                     );
-                  },
-                  label: const Text("Start Run"),
-                );
         },
       ),
     );
