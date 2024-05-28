@@ -5,6 +5,7 @@ import 'package:runningapp/models/run.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
 
+// this class is an adaptor to any database
 class Repository {
   static final Database database = db;
 
@@ -18,8 +19,6 @@ class Repository {
     return database.streamCollection(collection);
   }
 
-  // Add other methods for update, delete, etc.
-
   // Add user
   static Future<void> addUser(String collection, Map<String, dynamic> data) {
     return database.addUser(collection, data);
@@ -29,5 +28,11 @@ class Repository {
   static Future<void> addRun(String collection, Run run) {
     debugPrint("Adding run to database");
     return database.addRun(collection, run);
+  }
+
+  // Get runs
+  static Future<QuerySnapshot> getRuns(String userId) {
+    debugPrint("getting runs");
+    return database.getRuns(userId, "runs");
   }
 }

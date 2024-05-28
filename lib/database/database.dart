@@ -48,4 +48,13 @@ class Database {
     Run newRun = run.copyWith(id: id);
     await ref.set(newRun);
   }
+
+  // Get runs
+  Future<QuerySnapshot> getRuns(String userId, String collection) {
+    return firestore
+        .collection("users")
+        .doc(userId)
+        .collection(collection)
+        .get();
+  }
 }
