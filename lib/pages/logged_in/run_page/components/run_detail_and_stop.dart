@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -151,9 +153,12 @@ class RunDetailsAndStop extends ConsumerWidget {
                         ),
                       ),
                     ),
+
+                    // STOP RUN BUTTON AND HIDE BUTTON
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        // STOP BUTTON
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: FilledButton(
@@ -177,8 +182,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   LocationService.distanceTravelled;
 
                               // get pace of run
+                              final double pace = (time / 60000) / distance;
 
-                              // show run page
+                              // show completed run details
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -192,6 +198,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                                         ),
                                         Text(
                                           "Distance: $distance",
+                                        ),
+                                        Text(
+                                          "Pace: $pace min/km",
                                         ),
                                       ],
                                     ),
@@ -207,6 +216,19 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 },
                               );
 
+                              // add run to database
+                              Repository.addRun(
+                                "runs",
+                                Run(
+                                  id: "",
+                                  name: "Run",
+                                  description: "Run",
+                                  distance: distance.toStringAsFixed(2),
+                                  time: StopWatchTimer.getDisplayTime(time,
+                                      hours: false),
+                                  date: DateTime.now().toString(),
+                                ),
+                              );
                               // stop location tracking and reset dist
                               LocationService.reset();
 
@@ -219,6 +241,8 @@ class RunDetailsAndStop extends ConsumerWidget {
                             child: const Text("Stop Run"),
                           ),
                         ),
+
+                        // HIDE BUTTON
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: FilledButton(

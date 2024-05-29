@@ -53,12 +53,14 @@ dependencies:
   riverpod_lint: ^2.3.10
   flutter_hooks: ^0.20.5
   google_fonts: ^6.2.1
+  riverpod_generator: ^2.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   custom_lint:
-
+  # a tool for running code generators
+  build_runner:
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
