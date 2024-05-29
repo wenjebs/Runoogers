@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/providers.dart';
@@ -228,6 +229,8 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   time: StopWatchTimer.getDisplayTime(time,
                                       hours: false),
                                   date: DateTime.now().toString(),
+                                  polylinePoints:
+                                      MapLineDrawer.polylineCoordinates,
                                 ),
                               );
                               // stop location tracking and reset dist
