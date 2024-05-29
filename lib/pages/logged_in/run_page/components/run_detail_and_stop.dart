@@ -230,6 +230,21 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 ),
                               ),
                             ),
+                            onPressed: () {},
+                            child: const Text("Pause"),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: FilledButton(
+                            style: ButtonStyle(
+                              shape: WidgetStateProperty.all<OutlinedBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(paddingValue / 4),
+                                ),
+                              ),
+                            ),
                             onPressed: () {
                               ref
                                   .read(runDetailsProvider.notifier)
