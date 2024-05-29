@@ -19,7 +19,22 @@ class PausedPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Paused'),
+            Column(
+              // Time taken so far
+              children: <Widget>[
+                Text(
+                  'Time: ${StopWatchTimer.getDisplayTime(_stopWatchTimer.rawTime.value)}',
+                ),
+                // Distance travelled so far
+                Text(
+                  'Distance: ${LocationService.distanceTravelled} km',
+                ),
+                // Pace so far
+                Text(
+                  'Pace: ${(_stopWatchTimer.rawTime.value / 1000 / 60) / (LocationService.distanceTravelled)} min/km',
+                ),
+              ],
+            ),
             ElevatedButton(
               onPressed: () {
                 // Resume Stopwatch
@@ -30,7 +45,7 @@ class PausedPage extends StatelessWidget {
 
                 Navigator.of(context).pop();
               },
-              child: Text('Resume'),
+              child: const Text('Resume'),
             ),
           ],
         ),
