@@ -34,22 +34,22 @@ class LocationService {
       await Geolocator.requestPermission(); // TODO HANDLE NO LOCATION DATA
     }
 
-    // // Check if the app has permission to access location
-    // permission = await Geolocator.checkPermission();
-    // if (permission == LocationPermission.denied) {
-    //   // Location permission is denied, ask the user for permission
-    //   permission = await Geolocator.requestPermission();
-    //   if (permission == LocationPermission.denied) {
-    //     // Location permission is still denied, show an error message or prompt the user to grant permission
-    //     Geolocator.requestPermission(); // TODO HANDLE NO LOCATION DATA
-    // }
-    // }
+    // Check if the app has permission to access location
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      // Location permission is denied, ask the user for permission
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Location permission is still denied, show an error message or prompt the user to grant permission
+        Geolocator.requestPermission(); // TODO HANDLE NO LOCATION DATA
+      }
+    }
 
-    // // Check if the app has background location permission (only for iOS)
-    // if (permission == LocationPermission.deniedForever) {
-    //   // Background location permission is denied, show an error message or prompt the user to grant permission
-    //   Geolocator.requestPermission();
-    // }
+    // Check if the app has background location permission (only for iOS)
+    if (permission == LocationPermission.deniedForever) {
+      // Background location permission is denied, show an error message or prompt the user to grant permission
+      Geolocator.requestPermission();
+    }
     debugPrint("Checking done");
   }
 
@@ -88,7 +88,8 @@ class LocationService {
                 },
               );
             },
-            onError: (Object error) => debugPrint("NOOOO"),
+            onError: (Object error) =>
+                {debugPrint(error.toString()), debugPrint("NOOOO")},
             onDone: () {
               debugPrint('Stream has been closed');
             });
@@ -156,6 +157,16 @@ class LocationService {
     controller.future.then((controller) {
       controller.dispose();
     });
+  }
+
+  static void pauseLocationTracking() {
+    // Cancel Stream subscription
+    _positionSubscription?.pause();
+  }
+
+  static void resumeLocationTracking() {
+    // Resume Stream subscription
+    _positionSubscription?.resume();
   }
 
   static void stopTrackingLocation() {
