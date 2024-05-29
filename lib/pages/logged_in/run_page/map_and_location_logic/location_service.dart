@@ -159,6 +159,16 @@ class LocationService {
     });
   }
 
+  static void pauseLocationTracking() {
+    // Cancel Stream subscription
+    _positionSubscription?.pause();
+  }
+
+  static void resumeLocationTracking() {
+    // Resume Stream subscription
+    _positionSubscription?.resume();
+  }
+
   static void stopTrackingLocation() {
     // Cancel Stream subscription
     _positionSubscription?.cancel();

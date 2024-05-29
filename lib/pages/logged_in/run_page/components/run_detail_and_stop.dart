@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
+import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -230,7 +231,21 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              // Pause Stopwatch
+                              _stopWatchTimer.onStopTimer();
+                              // Pause Location Tracking
+                              LocationService.pauseLocationTracking();
+                              // Show a new page of current stats
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PausedPage(
+                                    stopWatchTimer: _stopWatchTimer,
+                                  ),
+                                ),
+                              );
+                            },
                             child: const Text("Pause"),
                           ),
                         ),
