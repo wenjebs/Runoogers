@@ -112,7 +112,7 @@ class LocationService {
       (newPosition) {
         // update the distance travelled
         if (_currentPosition != null) {
-          debugPrint("updating dist");
+          // debugPrint("updating dist");
           distance += Geolocator.distanceBetween(
                 _currentPosition!.latitude,
                 _currentPosition!.longitude,

@@ -13,25 +13,27 @@ class PausedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Paused'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: const Text('Paused'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Column(
-              // Time taken so far
               children: <Widget>[
                 Text(
-                  'Time: ${StopWatchTimer.getDisplayTime(_stopWatchTimer.rawTime.value)}',
+                  'Distance: ${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
+                  style: TextStyle(fontSize: 20),
                 ),
-                // Distance travelled so far
                 Text(
-                  'Distance: ${LocationService.distanceTravelled} km',
+                  'Time: ${StopWatchTimer.getDisplayTime(_stopWatchTimer.rawTime.value, hours: false)}',
+                  style: TextStyle(fontSize: 20),
                 ),
-                // Pace so far
                 Text(
-                  'Pace: ${(_stopWatchTimer.rawTime.value / 1000 / 60) / (LocationService.distanceTravelled)} min/km',
+                  'Pace: ${((_stopWatchTimer.rawTime.value / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km',
+                  style: TextStyle(fontSize: 20),
                 ),
               ],
             ),
