@@ -47,7 +47,7 @@ class PausedPage extends StatelessWidget {
 
                 Navigator.of(context).pop();
               },
-              child: Text('Resume'),
+              child: const Text('Resume'),
             ),
           ],
         ),
