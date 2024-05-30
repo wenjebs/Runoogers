@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'profile_widgets/profile_details.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/achievements.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/run_achievement_button.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/test.dart';
 import 'profile_widgets/profile_hero.dart';
 import 'profile_widgets/profile_settings.dart';
 
@@ -16,6 +19,17 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleTextStyle:
+            Theme.of(context).textTheme.titleLarge, // Need hot restart to see
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        leading: IconButton(
+          onPressed: () {
+            // Add your button functionality here
+          },
+          icon: const Icon(Icons.menu),
+        ),
+        title: const Text('Profile'),
+        centerTitle: true,
         actions: [
           IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
         ],
@@ -32,26 +46,18 @@ class ProfilePage extends StatelessWidget {
             child: const ProfileHero(),
           ),
 
-          Divider(
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.2),
-          ),
-
           // Profile details
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: ProfileDetails(),
           ),
 
-          Divider(
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.2),
-          ),
+          const RunAchievementButton(),
 
+          // const AchievementsSection(),
+          const RunsSection(),
           // Profile actions/settings
-          const ProfileSettings()
+          // const ProfileSettings()
         ]),
       ),
     );
