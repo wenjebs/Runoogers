@@ -1,19 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/achievements.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/achievements.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/run_achievement_button.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/test.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
+import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 import 'profile_widgets/profile_hero.dart';
-import 'profile_widgets/profile_settings.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  // sign user out
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +27,8 @@ class ProfilePage extends StatelessWidget {
         title: const Text('Profile'),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
+          IconButton(
+              onPressed: Authenticator().logOut, icon: const Icon(Icons.logout))
         ],
       ),
       body: Center(
@@ -52,12 +49,16 @@ class ProfilePage extends StatelessWidget {
             child: ProfileDetails(),
           ),
 
+          // Button to alternate run or achievement section
           const RunAchievementButton(),
 
-          // const AchievementsSection(),
-          const RunsSection(),
-          // Profile actions/settings
-          // const ProfileSettings()
+          // Run or Achievement section
+          // ignore: avoid_types_as_parameter_names
+          Consumer(builder: (context, ref, child) {
+            return ref.watch(selectedIndexProvider) == 0
+                ? const AchievementsSection()
+                : const RunsSection();
+          })
         ]),
       ),
     );

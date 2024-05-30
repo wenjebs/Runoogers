@@ -26,16 +26,48 @@ class RunsSection extends ConsumerWidget {
                       Run run = Run.fromFirestore(
                           doc as DocumentSnapshot<Map<String, dynamic>>, null);
                       return ListTile(
-                        title: Text(doc['name']),
+                        title: Text(doc['name'],
+                            style: Theme.of(context).textTheme.headlineMedium),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${run.distance} km"),
-                            Text("Time Taken: ${run.time}"),
                             Text("Date: ${run.date}"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      const Text("Distance"),
+                                      Text("${run.distance} km"),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      const Text("Time"),
+                                      Text(run.time),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      const Text("Pace"),
+                                      Text("hehe")
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                             SizedBox(
                               height: 300, // adjust as needed
                               child: GoogleMap(
+                                zoomControlsEnabled: false,
                                 initialCameraPosition: CameraPosition(
                                   target: run.getPolylinePoints
                                       .first, // assuming Run has a position field of type LatLng
