@@ -19,7 +19,9 @@ class ProfileDetails extends StatelessWidget {
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Total Progress"),
+                Expanded(
+                  child: Text("Total Progress"),
+                ),
                 Icon(
                   Icons.chevron_right_rounded,
                   size: 24,
@@ -30,37 +32,43 @@ class ProfileDetails extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(),
-                child: const Text(
-                    "Distance: 100km"), // TODO : MAKE IT FROM DATABASE!!!!!
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: const BoxDecoration(),
+                  child: const Text(
+                      "Distance: 100km"), // TODO : MAKE IT FROM DATABASE!!!!!
+                ),
               ),
               const SizedBox(
                 height: 30,
                 child: VerticalDivider(
                     width: 20, thickness: 1, color: Colors.teal),
               ),
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: const Text(
+                      "Calories: 1.5kcal"), // TODO : MAKE IT FROM DATABASE!!!!!
                 ),
-                child: const Text(
-                    "Calories: 1.5kcal"), // TODO : MAKE IT FROM DATABASE!!!!!
               ),
               const SizedBox(
                 height: 30,
                 child: VerticalDivider(
                     width: 20, thickness: 1, color: Colors.teal),
               ),
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: const Text(
+                      "Time: 121hrs"), // TODO : MAKE IT FROM DATABASE!!!!!
                 ),
-                child: const Text(
-                    "Time: 121hrs"), // TODO : MAKE IT FROM DATABASE!!!!!
               ),
             ],
           ),

@@ -37,6 +37,31 @@ class _HomePageState extends State<HomePage> {
     const SettingsPage(),
   ];
 
+  String getTitle(int index) {
+    switch (index) {
+      case 0:
+        return "Home";
+      case 1:
+        return "Run";
+      case 2:
+        return "Social";
+      case 3:
+        return "Profile";
+      case 4:
+        return "Story";
+      case 5:
+        return "Training";
+      case 6:
+        return "Run Stats";
+      case 7:
+        return "Leaderboards";
+      case 8:
+        return "Settings";
+      default:
+        return "Home";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,13 +74,7 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         title: Text(
-          _selectedIndex == 0
-              ? "Home"
-              : _selectedIndex == 1
-                  ? "Run"
-                  : _selectedIndex == 2
-                      ? "Social"
-                      : "Profile",
+          getTitle(_selectedIndex),
         ),
         backgroundColor: Colors.red,
       ),
