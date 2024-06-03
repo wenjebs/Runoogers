@@ -23,6 +23,7 @@ class GlobalThemeData {
         titleLarge: GoogleFonts.oswald(
           fontSize: 30,
           fontStyle: FontStyle.italic,
+          color: colorScheme.secondary,
         ),
         bodyMedium: GoogleFonts.merriweather(),
         displaySmall: GoogleFonts.pacifico(),

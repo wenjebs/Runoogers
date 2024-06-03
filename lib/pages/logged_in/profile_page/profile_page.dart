@@ -1,23 +1,34 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'profile_widgets/profile_details.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/achievements.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
+import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 import 'profile_widgets/profile_hero.dart';
-import 'profile_widgets/profile_settings.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  // sign user out
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleTextStyle:
+            Theme.of(context).textTheme.titleLarge, // Need hot restart to see
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        leading: IconButton(
+          onPressed: () {
+            // Add your button functionality here
+          },
+          icon: const Icon(Icons.menu),
+        ),
+        title: const Text('Profile'),
+        centerTitle: true,
         actions: [
-          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
+          IconButton(
+              onPressed: Authenticator().logOut, icon: const Icon(Icons.logout))
         ],
       ),
       body: Center(
@@ -32,26 +43,22 @@ class ProfilePage extends StatelessWidget {
             child: const ProfileHero(),
           ),
 
-          Divider(
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.2),
-          ),
-
           // Profile details
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: ProfileDetails(),
           ),
 
-          Divider(
-            indent: 20,
-            endIndent: 20,
-            color: Colors.black.withOpacity(0.2),
-          ),
+          // Button to alternate run or achievement section
+          const RunAchievementButton(),
 
-          // Profile actions/settings
-          const ProfileSettings()
+          // Run or Achievement section
+          // ignore: avoid_types_as_parameter_names
+          Consumer(builder: (context, ref, child) {
+            return ref.watch(selectedIndexProvider) == 0
+                ? const AchievementsSection()
+                : const RunsSection();
+          })
         ]),
       ),
     );
