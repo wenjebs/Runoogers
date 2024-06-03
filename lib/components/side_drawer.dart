@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 
 class SideDrawer extends StatelessWidget {
   final Function(int) onTap;
 
-  const SideDrawer({required this.onTap});
+  const SideDrawer({required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class SideDrawer extends StatelessWidget {
               'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60'),
         )),
         decoration: const BoxDecoration(
-          color: Colors.orangeAccent,
+          color: Colors.red,
         ),
       ),
       ListTile(

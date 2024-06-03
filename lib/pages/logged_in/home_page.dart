@@ -13,6 +13,7 @@ import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
 import 'package:runningapp/providers.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -65,14 +66,35 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideDrawer(
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      drawer: Consumer(
+        builder: (BuildContext context, WidgetRef ref, Widget? child) {
+          final isRunning = ref.watch(timerProvider);
+          return isRunning
+              ? const SizedBox()
+              : SideDrawer(
+                  onTap: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                );
         },
+        child: SideDrawer(
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
       appBar: AppBar(
+        actions: _selectedIndex == 3
+            ? [
+                IconButton(
+                    onPressed: Authenticator().logOut,
+                    icon: const Icon(Icons.logout)),
+              ]
+            : [],
         title: Text(
           getTitle(_selectedIndex),
         ),
