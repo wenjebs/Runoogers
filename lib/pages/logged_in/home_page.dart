@@ -65,11 +65,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final isRunning = ref.watch(timerProvider);
-          return isRunning
+    return Consumer(
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        final isRunning = ref.watch(timerProvider);
+        return Scaffold(
+          drawer: isRunning
               ? const SizedBox()
               : SideDrawer(
                   onTap: (index) {
@@ -77,34 +77,24 @@ class _HomePageState extends State<HomePage> {
                       _selectedIndex = index;
                     });
                   },
-                );
-        },
-        child: SideDrawer(
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-        ),
-      ),
-      appBar: AppBar(
-        actions: _selectedIndex == 3
-            ? [
-                IconButton(
-                    onPressed: Authenticator().logOut,
-                    icon: const Icon(Icons.logout)),
-              ]
-            : [],
-        title: Text(
-          getTitle(_selectedIndex),
-        ),
-        backgroundColor: Colors.red,
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final isRunning = ref.watch(timerProvider);
-          return isRunning
+                ),
+          appBar: isRunning
+              ? null
+              : AppBar(
+                  actions: _selectedIndex == 3
+                      ? [
+                          IconButton(
+                              onPressed: Authenticator().logOut,
+                              icon: const Icon(Icons.logout)),
+                        ]
+                      : [],
+                  title: Text(
+                    getTitle(_selectedIndex),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+          body: _pages[_selectedIndex],
+          bottomNavigationBar: isRunning
               ? const SizedBox()
               : GNav(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -123,9 +113,9 @@ class _HomePageState extends State<HomePage> {
                       _selectedIndex = index;
                     });
                   },
-                );
-        },
-      ),
+                ),
+        );
+      },
     );
   }
 }
