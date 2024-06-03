@@ -6,6 +6,7 @@ import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/social_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
+import 'package:runningapp/pages/test/test_page.dart';
 import 'package:runningapp/providers.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     const RunPage(),
     const SocialPage(),
     const ProfilePage(),
+    const SectionTextStreamInput(),
   ];
 
   @override
@@ -46,6 +48,7 @@ class _HomePageState extends State<HomePage> {
                     GButton(icon: Icons.groups, text: "Social"),
                     GButton(
                         icon: Icons.account_circle_rounded, text: "Profile"),
+                    GButton(icon: Icons.abc),
                   ],
                   onTabChange: (index) {
                     setState(() {
