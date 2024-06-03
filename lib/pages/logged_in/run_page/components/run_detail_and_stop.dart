@@ -66,7 +66,6 @@ class RunDetailsAndStop extends ConsumerWidget {
                       padding: const EdgeInsets.all(4),
                       child: Text(
                         'TIME',
-                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
                     Padding(
@@ -106,7 +105,6 @@ class RunDetailsAndStop extends ConsumerWidget {
                     ),
                     Text(
                       'PACE',
-                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
@@ -142,7 +140,6 @@ class RunDetailsAndStop extends ConsumerWidget {
                     ),
                     Text(
                       'DISTANCE',
-                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(12),
