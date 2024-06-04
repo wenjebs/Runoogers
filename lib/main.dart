@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       theme: GlobalThemeData.lightThemeData,
       darkTheme: GlobalThemeData.darkThemeData,
       themeMode: ThemeMode.system,
-      title: 'Runoogers',
+      title: 'Goorunners',
       debugShowCheckedModeBanner: false,
       home: const AuthPage(),
     );

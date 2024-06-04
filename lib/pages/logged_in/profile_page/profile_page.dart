@@ -5,7 +5,6 @@ import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
 import 'profile_widgets/profile_hero.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -14,23 +13,6 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        titleTextStyle:
-            Theme.of(context).textTheme.titleLarge, // Need hot restart to see
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        leading: IconButton(
-          onPressed: () {
-            // Add your button functionality here
-          },
-          icon: const Icon(Icons.menu),
-        ),
-        title: const Text('Profile'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: Authenticator().logOut, icon: const Icon(Icons.logout))
-        ],
-      ),
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           // Profile hero

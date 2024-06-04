@@ -5,22 +5,32 @@ class ProfileDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-          child: Text(
-            style: Theme.of(context).textTheme.headlineLarge,
-            'James Jameson', // TODO FROM DATABASE
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
+                child: Text(
+                  'James Jameson', // TODO FROM DATABASE
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(24, 4, 0, 16),
+                child: Text(
+                  'I love running bro',
+                ),
+              )
+            ],
           ),
-        ),
-        const Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(24, 4, 0, 16),
-          child: Text(
-            'I love running bro',
-          ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
