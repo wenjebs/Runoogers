@@ -12,7 +12,7 @@ import 'package:runningapp/pages/logged_in/social_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
-import 'package:runningapp/pages/test/test_page.dart';
+import 'package:runningapp/pages/test/generated_plan.dart';
 import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
@@ -32,8 +32,8 @@ class _HomePageState extends State<HomePage> {
     const RunPage(),
     const SocialPage(),
     const ProfilePage(),
-    const SectionTextStreamInput(),
     const StoryPage(),
+    // const SectionTextStreamInput(),
     const TrainingPage(),
     const RunStatsPage(),
     const LeaderboardsPage(),
@@ -75,6 +75,7 @@ class _HomePageState extends State<HomePage> {
               ? const SizedBox()
               : SideDrawer(
                   onTap: (index) {
+                    debugPrint("Index: $index");
                     setState(() {
                       _selectedIndex = index;
                     });
@@ -109,7 +110,6 @@ class _HomePageState extends State<HomePage> {
                     GButton(icon: Icons.groups, text: "Social"),
                     GButton(
                         icon: Icons.account_circle_rounded, text: "Profile"),
-                    GButton(icon: Icons.abc),
                   ],
                   onTabChange: (index) {
                     setState(() {
