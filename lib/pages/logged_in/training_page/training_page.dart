@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
@@ -69,6 +67,7 @@ class _TrainingPageState extends State<TrainingPage> {
                                         );
                                       }).toList(),
                                     ),
+                                    const Divider()
                                   ],
                                 );
                               }).toList(),

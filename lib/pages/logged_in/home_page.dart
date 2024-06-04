@@ -12,7 +12,6 @@ import 'package:runningapp/pages/logged_in/social_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
-import 'package:runningapp/pages/test/generated_plan.dart';
 import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
@@ -33,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     const SocialPage(),
     const ProfilePage(),
     const StoryPage(),
-    // const SectionTextStreamInput(),
     const TrainingPage(),
     const RunStatsPage(),
     const LeaderboardsPage(),
