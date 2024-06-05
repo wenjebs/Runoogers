@@ -12,6 +12,7 @@ import 'package:runningapp/pages/logged_in/social_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
+import 'package:runningapp/pages/login_and_registration/login_or_register_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
