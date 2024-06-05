@@ -18,7 +18,7 @@ class _SectionTextInputStreamState extends State<SectionTextStreamInput> {
       // result,
       _finishReason;
 
-  Text result = Text('nothin here');
+  Text result = const Text('nothin here');
 
   bool loading = false;
   String? get finishReason => _finishReason;

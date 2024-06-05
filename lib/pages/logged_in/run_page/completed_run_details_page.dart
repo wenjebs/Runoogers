@@ -14,7 +14,7 @@ class _CompletedRunDetailsPageState extends State<CompletedRunDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Completed Run Details'),
+        title: const Text('Completed Run Details'),
       ),
       body: Container(
           // Add your content here
