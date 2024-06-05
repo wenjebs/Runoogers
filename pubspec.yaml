@@ -54,6 +54,7 @@ dependencies:
   google_fonts: ^6.2.1
   riverpod_generator: ^2.4.0
   open_route_service: ^1.2.6
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:

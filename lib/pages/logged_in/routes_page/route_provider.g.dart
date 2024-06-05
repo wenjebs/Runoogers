@@ -6,7 +6,7 @@ part of 'route_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$routeHash() => r'837fecc967cba4c2122b430e84e9f09cbf9dccf0';
+String _$routeHash() => r'5e47dde889a99bf555edfa0450447bb539ef8f65';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -41,9 +41,11 @@ class RouteFamily extends Family<AsyncValue<Set<Object>>> {
   /// See also [route].
   RouteProvider call(
     int seed,
+    int distance,
   ) {
     return RouteProvider(
       seed,
+      distance,
     );
   }
 
@@ -53,6 +55,7 @@ class RouteFamily extends Family<AsyncValue<Set<Object>>> {
   ) {
     return call(
       provider.seed,
+      provider.distance,
     );
   }
 
@@ -76,10 +79,12 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
   /// See also [route].
   RouteProvider(
     int seed,
+    int distance,
   ) : this._internal(
           (ref) => route(
             ref as RouteRef,
             seed,
+            distance,
           ),
           from: routeProvider,
           name: r'routeProvider',
@@ -90,6 +95,7 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
           dependencies: RouteFamily._dependencies,
           allTransitiveDependencies: RouteFamily._allTransitiveDependencies,
           seed: seed,
+          distance: distance,
         );
 
   RouteProvider._internal(
@@ -100,9 +106,11 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.seed,
+    required this.distance,
   }) : super.internal();
 
   final int seed;
+  final int distance;
 
   @override
   Override overrideWith(
@@ -118,6 +126,7 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         seed: seed,
+        distance: distance,
       ),
     );
   }
@@ -129,13 +138,16 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
 
   @override
   bool operator ==(Object other) {
-    return other is RouteProvider && other.seed == seed;
+    return other is RouteProvider &&
+        other.seed == seed &&
+        other.distance == distance;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, seed.hashCode);
+    hash = _SystemHash.combine(hash, distance.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -144,6 +156,9 @@ class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
 mixin RouteRef on AutoDisposeFutureProviderRef<Set<Object>> {
   /// The parameter `seed` of this provider.
   int get seed;
+
+  /// The parameter `distance` of this provider.
+  int get distance;
 }
 
 class _RouteProviderElement
@@ -152,6 +167,8 @@ class _RouteProviderElement
 
   @override
   int get seed => (origin as RouteProvider).seed;
+  @override
+  int get distance => (origin as RouteProvider).distance;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
