@@ -50,15 +50,14 @@ dependencies:
   flutter_animate: ^4.5.0
   cloud_firestore: ^4.17.4
   riverpod_annotation: ^2.3.5
-  riverpod_lint: ^2.3.10
   flutter_hooks: ^0.20.5
   google_fonts: ^6.2.1
   riverpod_generator: ^2.4.0
+  open_route_service: ^1.2.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  custom_lint:
   # a tool for running code generators
   build_runner:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -67,6 +66,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  custom_lint:
+  riverpod_lint:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
