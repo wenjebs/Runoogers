@@ -8,7 +8,7 @@ import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
-import 'package:runningapp/pages/logged_in/social_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const UserPage(),
     const RunPage(),
-    const SocialPage(),
+    const SocialMediaPage(),
     const ProfilePage(),
     const StoryPage(),
     const TrainingPage(),
