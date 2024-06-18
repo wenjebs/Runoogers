@@ -12,9 +12,7 @@ class SocialMediaPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = FirebaseAuth.instance.currentUser;
-    final userInfoAsyncValue = ref.watch(userInfoProvider);
-    var friendUids = <String>[];
+    final friendUids = ref.watch(friendsProvider);
     // TODO look into pagination
     // final Future<List<List<RunningPost>>> posts = FirebaseFirestore.instance.collection('posts').where('uid', whereIn: friendUids).snapshots().map((snapshot) {
     //   return snapshot.docs.map((doc) {
@@ -28,33 +26,36 @@ class SocialMediaPage extends ConsumerWidget {
     //     );
     //   }).toList();
     // }).toList();
-    final postStream =
-        GetUserPostService().getPosts(["oRzn1b8M3mN1322UewNXF0TCGBx1"]);
-    return userInfoAsyncValue.when(
-      data: (userInfo) {
+    return friendUids.when(
+      data: (friendUids) {
         return Scaffold(
-          body: Container(
-            child: StreamBuilder(
-              builder: (context, snapshot) => Builder(
-                builder: (context) {
-                  List posts = snapshot.data?.docs ?? [];
-                  return ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      return RunningPost(
-                        id: posts[index]['id'],
-                        userId: posts[index]['userId'],
-                        caption: posts[index]['post'],
-                        run: posts[index]['run'],
-                        likes: posts[index]['likes'],
-                        comments: posts[index]['comments'],
-                      );
-                    },
-                  );
+          body: StreamBuilder<QuerySnapshot>(
+            stream: GetUserPostService().getPosts(friendUids),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                print("something wrong with the stream");
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final posts = snapshot.data!.docs.map((doc) {
+                return RunningPost(
+                  id: doc['id'],
+                  userId: doc['userId'],
+                  caption: doc['caption'],
+                  run: doc['run'],
+                  likes: doc['likes'],
+                  comments: List<String>.from(
+                      doc['comments'].map((item) => item.toString())),
+                );
+              }).toList();
+              return ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return posts[index];
                 },
-              ),
-              stream: postStream,
-            ),
+              );
+            },
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -63,12 +64,12 @@ class SocialMediaPage extends ConsumerWidget {
                 MaterialPageRoute(builder: (context) => PostCreationPage()),
               );
             },
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         );
       },
-      loading: () => CircularProgressIndicator(),
-      error: (err, stack) => Text('Error: $err'),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Center(child: Text('Error: $error')),
     );
   }
 }

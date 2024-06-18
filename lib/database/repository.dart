@@ -30,6 +30,11 @@ class Repository {
     return database.addRun(collection, run);
   }
 
+  // Add post
+  static Future<void> addPost(String collection, Map<String, dynamic> data) {
+    return database.addPost(collection, data);
+  }
+
   // Get runs
   static Future<QuerySnapshot> getRuns(String userId) {
     debugPrint("getting runs");

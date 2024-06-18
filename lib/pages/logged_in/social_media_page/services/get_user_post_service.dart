@@ -8,7 +8,7 @@ class GetUserPostService {
   Stream<QuerySnapshot> getPosts(List<String> friendUids) {
     return _firestore
         .collection('posts')
-        .where('uid', whereIn: friendUids)
+        .where('userId', whereIn: friendUids)
         .snapshots();
   }
 }

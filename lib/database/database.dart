@@ -49,6 +49,28 @@ class Database {
     await ref.set(newRun);
   }
 
+  // Add post
+  Future<void> addPost(String collection, Map<String, dynamic> data) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    // adding post to posts main collection
+    final ref = firestore.collection(collection).doc();
+    final id = ref.id;
+    await ref.set({
+      'id': id,
+      ...data,
+    });
+
+    // adding the above post's reference to the users document
+    final userRef = firestore.collection('users').doc(userId);
+    await userRef.update({
+      'posts': FieldValue.arrayUnion([ref]),
+    });
+  }
+
   // Get runs
   Future<QuerySnapshot> getRuns(String userId, String collection) {
     return firestore

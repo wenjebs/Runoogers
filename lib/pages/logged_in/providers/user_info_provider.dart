@@ -13,3 +13,13 @@ final userInfoProvider = StreamProvider.autoDispose<QuerySnapshot>((ref) {
   }
   return const Stream.empty();
 });
+
+final friendsProvider = StreamProvider.autoDispose<List<String>>((ref) async* {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception('User not logged in');
+  final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+  yield* userDoc.snapshots().map((snapshot) {
+    List<dynamic> friendsList = snapshot.data()?['friends'] ?? [];
+    return friendsList.map((friend) => friend as String).toList();
+  });
+});
