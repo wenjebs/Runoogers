@@ -53,6 +53,7 @@ dependencies:
   flutter_hooks: ^0.20.5
   google_fonts: ^6.2.1
   riverpod_generator: ^2.4.0
+  open_route_service: ^1.2.6
   flutter_gemini: ^2.0.4
   lottie: ^3.1.2
   flutter_markdown: ^0.7.1
@@ -61,8 +62,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  custom_lint:
-  riverpod_lint:
   # a tool for running code generators
   build_runner:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -71,6 +70,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  custom_lint:
+  riverpod_lint:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
