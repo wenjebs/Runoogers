@@ -47,7 +47,7 @@ class _PostCommentFeedState extends State<PostCommentFeed> {
               caption: caption,
               run: run,
               likes: likes,
-              disableCommentButton: true),
+              disableCommentButton: true), // TODO make this a riverpod
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {
@@ -94,16 +94,19 @@ class _PostCommentFeedState extends State<PostCommentFeed> {
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-                    FirebaseFirestore.instance
-                        .collection('posts')
-                        .doc(id)
-                        .collection('comments')
-                        .add({
-                      'userId': 'TODO: Get user ID',
-                      'comment': _commentController.text,
-                      'likes': 0,
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      FirebaseFirestore.instance
+                          .collection('posts')
+                          .doc(id)
+                          .collection('comments')
+                          .add({
+                        'userId':
+                            'placeholder, change in post_comment_feed.dart',
+                        'comment': _commentController.text,
+                        'likes': 0,
+                      });
                     });
-                    Navigator.pop(context);
                   },
                 ),
               ],
