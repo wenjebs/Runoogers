@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
               ? const SizedBox()
               : SideDrawer(
                   onTap: (index) {
+                    debugPrint("Index: $index");
                     setState(() {
                       _selectedIndex = index;
                     });
