@@ -79,4 +79,10 @@ class Database {
         .collection(collection)
         .get();
   }
+
+  // Fetch names
+  Future<String> fetchName(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    return doc['name'];
+  }
 }

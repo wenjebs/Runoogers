@@ -1,6 +1,4 @@
-import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/components/post_json_stuff.dart';
 
 class GetUserPostService {
   final _firestore = FirebaseFirestore.instance;

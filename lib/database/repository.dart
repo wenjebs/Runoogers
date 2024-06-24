@@ -40,4 +40,9 @@ class Repository {
     debugPrint("getting runs");
     return database.getRuns(userId, "runs");
   }
+
+  // Fetch names from user ID
+  static Future<String> fetchName(String userId) {
+    return database.fetchName(userId);
+  }
 }
