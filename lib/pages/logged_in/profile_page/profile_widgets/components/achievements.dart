@@ -21,7 +21,7 @@ class AchievementsSectionState extends State<AchievementsSection> {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                children: [
+                children: const [
                   child(),
                   child(),
                   child(),

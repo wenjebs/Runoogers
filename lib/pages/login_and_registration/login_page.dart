@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
-          image: AssetImage("lib/images/running.jpg"),
+          image: AssetImage("lib/assets/images/running.jpg"),
           fit: BoxFit.cover,
         )),
         child: Scaffold(
@@ -202,12 +202,12 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // google button
-                        SquareTile(imagePath: 'lib/images/google.png'),
+                        SquareTile(imagePath: 'lib/assets/images/google.png'),
 
                         SizedBox(width: 25),
 
                         // apple button
-                        SquareTile(imagePath: 'lib/images/apple.png')
+                        SquareTile(imagePath: 'lib/assets/images/apple.png')
                       ],
                     ),
 
