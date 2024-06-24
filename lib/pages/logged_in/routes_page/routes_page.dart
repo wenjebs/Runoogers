@@ -80,6 +80,10 @@ class _RoutesPageState extends ConsumerState<RoutesPage> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
+                        } else if (int.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        } else if (int.parse(value) >= 99) {
+                          return 'Please a number less than 99';
                         }
                         return null;
                       },
