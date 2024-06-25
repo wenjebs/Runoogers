@@ -35,9 +35,4 @@ class Repository {
     debugPrint("getting runs");
     return database.getRuns(userId, "runs");
   }
-
-  // Get name from user ID
-  static Future<String> getName(String userId) {
-    return database.getName(userId);
-  }
 }
