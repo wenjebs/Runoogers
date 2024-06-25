@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 
 class RunningPostComment extends StatefulWidget {
-  final String id;
+  final String postId;
+  final String commentId;
   final String userId;
   final String comment;
-  final int likes;
 
   const RunningPostComment({
     super.key,
-    required this.id,
+    required this.postId,
+    required this.commentId,
     required this.userId,
     required this.comment,
-    required this.likes,
   });
 
   @override
@@ -19,14 +20,6 @@ class RunningPostComment extends StatefulWidget {
 }
 
 class _RunningPostCommentState extends State<RunningPostComment> {
-  int likes = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    likes = widget.likes;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -60,14 +53,14 @@ class _RunningPostCommentState extends State<RunningPostComment> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                widget.likes.toString(),
-              ),
+                  // likes here
+                  ),
               IconButton(
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {
                   setState(() {
-                    likes++;
-                    // TODO connect likes to backend
+                    Repository.addLikeToComment(
+                        postId, widget.id, widget.userId);
                   });
                 },
               ),

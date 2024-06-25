@@ -20,6 +20,9 @@ final friendsProvider = StreamProvider.autoDispose<List<String>>((ref) async* {
   final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
   yield* userDoc.snapshots().map((snapshot) {
     List<dynamic> friendsList = snapshot.data()?['friends'] ?? [];
-    return friendsList.map((friend) => friend as String).toList();
+    List<String> result =
+        friendsList.map((friend) => friend as String).toList();
+    result.add(user.uid);
+    return result;
   });
 });

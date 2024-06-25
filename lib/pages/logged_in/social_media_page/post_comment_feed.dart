@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post_comment.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/services/post_provider.dart';
 
 final commentControllerProvider =
     StateProvider.autoDispose<TextEditingController>((ref) {
@@ -26,7 +25,7 @@ class PostCommentFeed extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _commentController = ref.watch(commentControllerProvider);
+    final commentController = ref.watch(commentControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,10 +50,10 @@ class PostCommentFeed extends ConsumerWidget {
                 }
                 final comments = snapshot.data!.docs.map((doc) {
                   return RunningPostComment(
-                    id: doc.id,
+                    postId: id,
+                    commentId: doc.id,
                     userId: doc['userId'],
                     comment: doc['comment'],
-                    likes: doc['likes'],
                   );
                 }).toList();
                 return ListView.builder(
@@ -77,7 +76,7 @@ class PostCommentFeed extends ConsumerWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _commentController,
+                    controller: commentController,
                     decoration: InputDecoration(
                       hintText: 'Write a comment...',
                       border: OutlineInputBorder(
@@ -96,11 +95,11 @@ class PostCommentFeed extends ConsumerWidget {
                         .collection('comments')
                         .add({
                       'userId': 'placeholder, change in post_comment_feed.dart',
-                      'comment': _commentController.text,
+                      'comment': commentController.text,
                       'likes': 0,
                     });
                     // Clear the text field after sending the comment
-                    _commentController.clear();
+                    commentController.clear();
                   },
                 ),
               ],

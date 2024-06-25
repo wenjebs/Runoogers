@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -32,7 +31,7 @@ class RunningPost extends ConsumerWidget {
         children: <Widget>[
           ListTile(
             title: name.when(
-                data: (String name) => Text('$name',
+                data: (String name) => Text(name,
                     style: const TextStyle(fontWeight: FontWeight.bold)),
                 loading: () => const Text('Loading...'),
                 error: (error, _) => const Text('Error!')),
@@ -78,7 +77,7 @@ class RunningPost extends ConsumerWidget {
                 builder: (context, ref, _) {
                   final commentsCount = ref.watch(commentsCountProvider(id));
                   return commentsCount.when(
-                    data: (count) => Text('$count comments'),
+                    data: (comment) => Text('$comment comments'),
                     loading: () => const CircularProgressIndicator(),
                     error: (error, _) => const Text('Error!'),
                   );

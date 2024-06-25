@@ -82,9 +82,6 @@ class Database {
     final DocumentReference postRef = firestore.collection('posts').doc(postId);
     final DocumentReference likeRef = postRef.collection('likes').doc(userId);
 
-    print(postId);
-    print(userId);
-
     return firestore.runTransaction((transaction) async {
       final likeSnapshot = await transaction.get(likeRef);
 
@@ -93,6 +90,33 @@ class Database {
         transaction.delete(likeRef);
       } else {
         // If like does not exist, like the post
+        transaction.set(likeRef, {
+          'liked': true,
+          'userId': userId,
+          // 'timestamp':
+          //     FieldValue.serverTimestamp(), // Optional: Add a timestamp
+        });
+      }
+    });
+  }
+
+  // Add like to comment
+  Future<void> addLikeToComment(
+      String postId, String commentId, String userId) {
+    final DocumentReference postRef = firestore.collection('posts').doc(postId);
+    final DocumentReference commentRef =
+        postRef.collection('comments').doc(commentId);
+    final DocumentReference likeRef =
+        commentRef.collection('likes').doc(userId);
+
+    return firestore.runTransaction((transaction) async {
+      final likeSnapshot = await transaction.get(likeRef);
+
+      if (likeSnapshot.exists) {
+        // If like exists, unlike the comment
+        transaction.delete(likeRef);
+      } else {
+        // If like does not exist, like the comment
         transaction.set(likeRef, {
           'liked': true,
           'userId': userId,
