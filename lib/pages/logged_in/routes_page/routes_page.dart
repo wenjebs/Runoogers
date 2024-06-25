@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class RoutesPage extends ConsumerStatefulWidget {
