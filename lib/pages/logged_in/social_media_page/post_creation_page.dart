@@ -45,7 +45,6 @@ class _PostCreationPageState extends State<PostCreationPage> {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
-                      'comments': [],
                       'run': {},
                     });
                     Navigator.pop(context);

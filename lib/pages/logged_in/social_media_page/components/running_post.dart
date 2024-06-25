@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_comment_feed.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/services/post_provider.dart';
 
-class RunningPost extends StatefulWidget {
+class RunningPost extends ConsumerWidget {
   final String id;
   final String userId;
   final String caption;
   final Object run; // TODO figure out how to settle run object / map object
-  final int likes;
-
   final bool disableCommentButton;
 
   const RunningPost({
@@ -17,54 +18,25 @@ class RunningPost extends StatefulWidget {
     required this.userId,
     required this.caption,
     required this.run,
-    required this.likes,
     this.disableCommentButton = false,
   });
 
   @override
-  State<RunningPost> createState() => _RunningPostState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final likes = ref.watch(likesCountProvider(id));
+    final name =
+        ref.watch(userNameProvider(userId)); // Assuming userNameProvider exists
 
-class _RunningPostState extends State<RunningPost> {
-  int likes = 0;
-  List<String> comments = [];
-
-  @override
-  void initState() {
-    super.initState();
-    likes = widget.likes;
-    fetchComments();
-  }
-
-  void fetchComments() async {
-    final commentsCollection = FirebaseFirestore.instance
-        .collection('posts')
-        .doc(widget.id)
-        .collection('comments');
-    final querySnapshot = await commentsCollection.get();
-    final fetchedComments = querySnapshot.docs
-        .map((doc) => doc['comment'])
-        .cast<String>()
-        .toList(); // Assuming each comment has a 'text' field
-
-    setState(() {
-      comments = fetchedComments;
-    });
-  }
-
-  String get id => widget.id;
-  String get userId => widget.userId;
-  String get caption => widget.caption;
-  Object get run => widget.run;
-
-  @override
-  Widget build(BuildContext context) {
     return Card(
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text(widget.userId),
-            subtitle: Text(widget.caption),
+            title: name.when(
+                data: (String name) => Text('$name',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                loading: () => const Text('Loading...'),
+                error: (error, _) => const Text('Error!')),
+            subtitle: Text(caption),
           ),
           Image.network(
               'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixlr.com%2Fimage-generator%2F&psig=AOvVaw3La1hOtbr1bK0DXQmiuNbF&ust=1718610129395000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOjm3uTP34YDFQAAAAAdAAAAABAE'),
@@ -73,32 +45,45 @@ class _RunningPostState extends State<RunningPost> {
               IconButton(
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {
-                  setState(() {
-                    likes++;
-                    // TODO like functionality
-                  });
+                  Repository.addLikeToPost(id, userId);
                 },
               ),
-              Text('$likes likes'),
+              likes.when(
+                data: (int count) =>
+                    Text('$count likes'), // Display the actual number
+                loading: () =>
+                    const CircularProgressIndicator(), // Show a loading indicator
+                error: (e, stack) =>
+                    Text('Error: $e'), // Display an error message
+              ),
               IconButton(
                 icon: const Icon(Icons.comment),
                 onPressed: () {
-                  if (!widget.disableCommentButton) {
+                  if (!disableCommentButton) {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PostCommentFeed(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PostCommentFeed(
                             id: id,
                             userId: userId,
                             caption: caption,
                             run: run,
-                            likes: likes),
-                      ),
-                    );
+                          ),
+                        ));
                   }
                 },
               ),
-              Text('${comments.length} comments'),
+              // Assuming commentsProvider exists to fetch comments count
+              Consumer(
+                builder: (context, ref, _) {
+                  final commentsCount = ref.watch(commentsCountProvider(id));
+                  return commentsCount.when(
+                    data: (count) => Text('$count comments'),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (error, _) => const Text('Error!'),
+                  );
+                },
+              ),
             ],
           ),
         ],

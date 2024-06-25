@@ -35,6 +35,11 @@ class Repository {
     return database.addPost(collection, data);
   }
 
+  // Add like to post
+  static Future<void> addLikeToPost(String postId, String userId) {
+    return database.addLikeToPost(postId, userId);
+  }
+
   // Get runs
   static Future<QuerySnapshot> getRuns(String userId) {
     debugPrint("getting runs");

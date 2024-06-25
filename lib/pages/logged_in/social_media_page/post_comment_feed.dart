@@ -1,38 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post_comment.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/services/post_provider.dart';
 
-class PostCommentFeed extends StatefulWidget {
+final commentControllerProvider =
+    StateProvider.autoDispose<TextEditingController>((ref) {
+  return TextEditingController();
+});
+
+class PostCommentFeed extends ConsumerWidget {
   final String id;
   final String userId;
   final String caption;
-  final Object run; // TODO figure out how to settle run object / map object
-  final int likes;
+  final Object run; // This still needs to be settled as per the TODO
 
-  const PostCommentFeed(
-      {super.key,
-      required this.id,
-      required this.userId,
-      required this.caption,
-      required this.run,
-      required this.likes});
-
-  @override
-  State<PostCommentFeed> createState() => _PostCommentFeedState();
-}
-
-class _PostCommentFeedState extends State<PostCommentFeed> {
-  String get id => widget.id;
-  String get userId => widget.userId;
-  String get caption => widget.caption;
-  Object get run => widget.run;
-  int get likes => widget.likes;
-
-  final TextEditingController _commentController = TextEditingController();
+  const PostCommentFeed({
+    super.key,
+    required this.id,
+    required this.userId,
+    required this.caption,
+    required this.run,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _commentController = ref.watch(commentControllerProvider);
+
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
@@ -46,8 +41,8 @@ class _PostCommentFeedState extends State<PostCommentFeed> {
               userId: userId,
               caption: caption,
               run: run,
-              likes: likes,
-              disableCommentButton: true), // TODO make this a riverpod
+              disableCommentButton:
+                  true), // Consider using Riverpod for state management here as well
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {
@@ -95,18 +90,17 @@ class _PostCommentFeedState extends State<PostCommentFeed> {
                   icon: const Icon(Icons.send),
                   onPressed: () {
                     FocusScope.of(context).unfocus();
-                    setState(() {
-                      FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(id)
-                          .collection('comments')
-                          .add({
-                        'userId':
-                            'placeholder, change in post_comment_feed.dart',
-                        'comment': _commentController.text,
-                        'likes': 0,
-                      });
+                    FirebaseFirestore.instance
+                        .collection('posts')
+                        .doc(id)
+                        .collection('comments')
+                        .add({
+                      'userId': 'placeholder, change in post_comment_feed.dart',
+                      'comment': _commentController.text,
+                      'likes': 0,
                     });
+                    // Clear the text field after sending the comment
+                    _commentController.clear();
                   },
                 ),
               ],

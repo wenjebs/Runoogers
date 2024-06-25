@@ -30,7 +30,6 @@ class SocialMediaPage extends ConsumerWidget {
                   userId: doc['userId'],
                   caption: doc['caption'],
                   run: doc['run'],
-                  likes: doc['likes'],
                 );
               }).toList();
               return ListView.builder(

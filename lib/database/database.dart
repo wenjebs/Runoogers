@@ -29,6 +29,12 @@ class Database {
     await firestore.collection(collection).doc(userId).set(data);
   }
 
+  // Fetch names
+  Future<String> fetchName(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    return doc['name'];
+  }
+
   // Add run
   Future<void> addRun(String collection, Run run) async {
     final userId = auth.userId;
@@ -71,6 +77,32 @@ class Database {
     });
   }
 
+  // Add like to post
+  Future<void> addLikeToPost(String postId, String userId) async {
+    final DocumentReference postRef = firestore.collection('posts').doc(postId);
+    final DocumentReference likeRef = postRef.collection('likes').doc(userId);
+
+    print(postId);
+    print(userId);
+
+    return firestore.runTransaction((transaction) async {
+      final likeSnapshot = await transaction.get(likeRef);
+
+      if (likeSnapshot.exists) {
+        // If like exists, unlike the post
+        transaction.delete(likeRef);
+      } else {
+        // If like does not exist, like the post
+        transaction.set(likeRef, {
+          'liked': true,
+          'userId': userId,
+          // 'timestamp':
+          //     FieldValue.serverTimestamp(), // Optional: Add a timestamp
+        });
+      }
+    });
+  }
+
   // Get runs
   Future<QuerySnapshot> getRuns(String userId, String collection) {
     return firestore
@@ -78,11 +110,5 @@ class Database {
         .doc(userId)
         .collection(collection)
         .get();
-  }
-
-  // Fetch names
-  Future<String> fetchName(String userId) async {
-    final doc = await firestore.collection('users').doc(userId).get();
-    return doc['name'];
   }
 }
