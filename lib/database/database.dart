@@ -57,4 +57,11 @@ class Database {
         .collection(collection)
         .get();
   }
+
+  // Get name from user ID
+  Future<String> getName(String userId) async {
+    final doc = await firestore.collection("users").doc(userId).get();
+    final data = doc.data() as Map<String, dynamic>;
+    return data["name"];
+  }
 }
