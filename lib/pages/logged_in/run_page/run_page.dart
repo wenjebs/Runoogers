@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +77,11 @@ class _RunPageState extends State<RunPage> {
             style: TextStyle(color: Colors.black, fontSize: 16)),
       ),
       body: currPos == null
-          ? const LoadingMap()
+          ? LocationService.locationServiceEnabled
+              ? LocationService.connectivity.contains(ConnectivityResult.none)
+                  ? const Text("NO internet!") // TODO make nicer
+                  : const LoadingMap()
+              : const Text("Location services are disabled")
           : SafeArea(
               child: Builder(builder: (context) {
                 return GoogleMap(
