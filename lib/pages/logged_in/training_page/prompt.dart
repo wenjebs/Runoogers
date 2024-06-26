@@ -1,9 +1,9 @@
 class Prompt {
-  int timesPerWeek;
+  int timesPerWeek; // TODO SAVE THIS FILE in FIREABSE
   double targetDistance;
   double targetTime;
   int weeksToTrain;
-  late final String prompt; // Mark prompt as late final
+  late final String prompt;
 
   Prompt({
     required this.timesPerWeek,
@@ -11,7 +11,6 @@ class Prompt {
     required this.targetTime,
     required this.weeksToTrain,
   }) {
-    // Initialize prompt in the constructor body
     prompt = """
 Design a JSON response structure for a running plan that includes the following details for each week of the plan: the week number, total weekly distance in kilometers, the number of running days, and a breakdown of each day's run including the day of the week, distance, and whether it's a rest day or a specific training focus (e.g., speed work, long run). Ensure that the JSON format remains consistent for every generated running plan.
 Dont include the string json at the start and dont include the ``` at the start and end of the code block
@@ -29,14 +28,14 @@ Example of the expected JSON structure:
           {
             "day_of_week": "Monday",
             "distance_km": 5,
-            "type": "easy_run"
+            "type": "Easy run"
           },
           {
             "day_of_week": "Tuesday",
             "distance_km": 6,
-            "type": "speed_work"
+            "type": "Speed work"
           },
-          {"day_of_week": "Wednesday", "distance_km": 0, "type": "rest_day"},
+          {"day_of_week": "Wednesday", "distance_km": 0, "type": "Rest day"},
           // ... continue with the rest of the week
         ]
       },
