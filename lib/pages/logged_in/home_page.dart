@@ -9,7 +9,8 @@ import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats
 import 'package:runningapp/pages/logged_in/routes_page/routes_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
-import 'package:runningapp/pages/logged_in/social_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const UserPage(),
     const RunPage(),
-    const SocialPage(),
+    const SocialMediaPage(),
     const ProfilePage(),
     const StoryPage(),
     const TrainingPage(),
@@ -92,12 +93,28 @@ class _HomePageState extends State<HomePage> {
                               onPressed: Authenticator().logOut,
                               icon: const Icon(Icons.logout)),
                         ]
-                      : [],
+                      : _selectedIndex == 2 // Check if selectedIndex is 2
+                          ? [
+                              IconButton(
+                                  onPressed: () {
+                                    // Navigate to AddFriendPage
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddFriendsPage()),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                      Icons.person_add)), // Add Friend Icon
+                            ]
+                          : [],
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
                   backgroundColor: Colors.red,
                 ),
+          backgroundColor: Colors.red,
           body: _pages[_selectedIndex],
           bottomNavigationBar: isRunning
               ? const SizedBox()
