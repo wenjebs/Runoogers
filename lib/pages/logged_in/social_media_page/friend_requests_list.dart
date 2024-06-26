@@ -1,9 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/components/friend_request.dart';
 
-class FriendRequestPage extends StatelessWidget {
+class FriendRequestPage extends StatefulWidget {
   const FriendRequestPage({super.key});
+
+  @override
+  State<FriendRequestPage> createState() => _FriendRequestPageState();
+}
+
+class _FriendRequestPageState extends State<FriendRequestPage> {
+  List<String> friendsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    friendsList = [];
+    Repository.getFriendList().then((value) {
+      friendsList = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +64,13 @@ class FriendRequestPage extends StatelessWidget {
                         title: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
-                      return ListTile(
-                        leading: Icon(Icons.person),
-                        title: Text(snapshot.data!),
+                      bool isFriend = friendsList.contains(
+                          userId); // Check if userId is in the friends list
+                      return FriendRequest(
+                        name: snapshot.data!,
+                        userId: userId,
+                        added:
+                            isFriend, // Set added based on whether userId is in friends list
                       );
                     } else {
                       return ListTile(

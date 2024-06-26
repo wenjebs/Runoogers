@@ -73,4 +73,8 @@ class Repository {
   static Future<void> rejectFriendRequest(String userId) {
     return database.rejectFriendRequest(userId);
   }
+
+  static Future<List<String>> getFriendList() {
+    return database.getFriendList();
+  }
 }

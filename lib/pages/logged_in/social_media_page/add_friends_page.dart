@@ -15,6 +15,8 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   final user = FirebaseAuth.instance.currentUser!;
   final TextEditingController _searchController = TextEditingController();
 
+  List<String> friendsList = [];
+
   List<Map<String, dynamic>> _searchResults =
       []; // Step 1: Store search results
 
@@ -23,12 +25,22 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     FirebaseFirestore.instance
         .collection('users')
         .where('name', isEqualTo: query)
+        .where('uid', isNotEqualTo: user.uid)
         .get()
         .then((snapshot) {
       setState(() {
         // Store the search results in _searchResults
         _searchResults = snapshot.docs.map((doc) => doc.data()).toList();
       });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    friendsList = [];
+    Repository.getFriendList().then((value) {
+      friendsList = value;
     });
   }
 
@@ -68,21 +80,26 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
             ),
             Expanded(
               // Use Expanded to fill the remaining space
-              child: ListView.builder(
-                itemCount: _searchResults.length,
-                itemBuilder: (context, index) {
-                  final user = _searchResults[index];
-                  return ListTile(
-                    title: Text(user['name']),
-                    trailing: IconButton(
-                      icon: Icon(Icons.person_add),
-                      onPressed: () =>
-                          Repository.sendFriendRequest(user['uid']),
-                    ), // Assuming 'name' is a field in your documents
-                    // Add other ListTile properties if needed
-                  );
-                },
-              ),
+              child: _searchResults.isEmpty
+                  ? Center(
+                      child: Text("No users found"),
+                    )
+                  : ListView.builder(
+                      itemCount: _searchResults.length,
+                      itemBuilder: (context, index) {
+                        final user = _searchResults[index];
+                        return ListTile(
+                          title: Text(user['name']),
+                          trailing: friendsList.contains(user['uid'])
+                              ? Text("Added")
+                              : IconButton(
+                                  icon: Icon(Icons.person_add),
+                                  onPressed: () =>
+                                      Repository.sendFriendRequest(user['uid']),
+                                ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

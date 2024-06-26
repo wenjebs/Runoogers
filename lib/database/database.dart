@@ -77,6 +77,20 @@ class Database {
     });
   }
 
+  // Get friend list
+  Future<List<String>> getFriendList() async {
+    final userId = auth.userId;
+    final userRef = firestore.collection('users').doc(userId);
+    final doc = await userRef.get();
+    final friends = doc.data()?['friends'];
+
+    if (friends is List) {
+      return List<String>.from(friends);
+    } else {
+      return [];
+    }
+  }
+
   // Add like to post
   Future<void> addLikeToPost(String postId, String userId) async {
     final DocumentReference postRef = firestore.collection('posts').doc(postId);
@@ -181,6 +195,7 @@ class Database {
 
       // Add the friend's user ID to the friends array field of the current user
       transaction.update(currentUserRef, {
+        'friendRequests': FieldValue.arrayRemove([userId]),
         'friends': FieldValue.arrayUnion([userId]),
       });
     });
@@ -194,9 +209,18 @@ class Database {
     }
 
     final userRef = firestore.collection('users').doc(userId);
+    final currentUserRef = firestore.collection('users').doc(currentUserId);
 
-    await userRef.update({
-      'friendRequests': FieldValue.arrayRemove([currentUserId])
+    await firestore.runTransaction((transaction) async {
+      // Remove the current user's ID from the friendRequests field of the user who sent the request
+      transaction.update(userRef, {
+        'friendRequests': FieldValue.arrayRemove([currentUserId]),
+      });
+
+      // Remove the friend's user ID from the friendRequests field of the current user
+      transaction.update(currentUserRef, {
+        'friendRequests': FieldValue.arrayRemove([userId]),
+      });
     });
   }
 
