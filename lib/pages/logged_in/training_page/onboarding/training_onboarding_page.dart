@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:runningapp/pages/logged_in/home_page.dart';
-import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 
 final trainingOnboardingProvider =
     StateNotifierProvider<TrainingOnboardingNotifier, TrainingOnboardingState>(

@@ -29,55 +29,86 @@ class _TrainingPageState extends State<TrainingPage> {
               child: const Text('Generate'),
             ),
             generated
-                ? Consumer(
-                    builder: (context, ref, child) {
-                      final AsyncValue<Map<String, dynamic>> jsonPlan =
-                          ref.watch(planProvider);
-                      debugPrint(jsonPlan.value.toString());
+                ? Consumer(builder: (context, ref, child) {
+                    final AsyncValue<Map<String, dynamic>> jsonPlan =
+                        ref.watch(planProvider);
+                    debugPrint(jsonPlan.value.toString());
 
-                      if (jsonPlan is AsyncLoading) {
-                        return Lottie.asset('lib/assets/lottie/ai.json');
-                      } else if (jsonPlan is AsyncError) {
-                        Text(jsonPlan.error.toString());
-                      } else if (jsonPlan is AsyncData) {
-                        List<dynamic> runningPlan =
-                            jsonPlan.value!['running_plan']['weeks'];
-                        return Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: runningPlan.map<Widget>((week) {
-                                return Column(
-                                  children: [
-                                    Text('Week ${week['week_number']}'),
-                                    Text(
-                                        'Total distance: ${week['total_distance_km']}'),
-                                    Text(
-                                        'Running days: ${week['running_days']}'),
-                                    Column(
-                                      children: week['daily_schedule']
-                                          .map<Widget>((day) {
-                                        return Column(
-                                          children: [
-                                            Text(
-                                                'Day of the week: ${day['day_of_week']}'),
-                                            Text(
-                                                'Distance: ${day['distance_km']}'),
-                                            Text('Type: ${day['type']}'),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ),
-                                    const Divider()
-                                  ],
-                                );
-                              }).toList(),
-                            ),
+                    if (jsonPlan is AsyncLoading) {
+                      return Lottie.asset('lib/assets/lottie/ai.json');
+                    } else if (jsonPlan is AsyncError) {
+                      return Text(jsonPlan.error.toString(),
+                          style: TextStyle(color: Colors.red, fontSize: 16));
+                    } else if (jsonPlan is AsyncData) {
+                      List<dynamic> runningPlan =
+                          jsonPlan.value!['running_plan']['weeks'];
+                      return Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: runningPlan.map<Widget>((week) {
+                              return Card(
+                                elevation: 4,
+                                margin: EdgeInsets.all(8),
+                                child: Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Week ${week['week_number']}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 8),
+                                      Text(
+                                          'Total distance: ${week['total_distance_km']} km',
+                                          style: TextStyle(fontSize: 16)),
+                                      SizedBox(height: 4),
+                                      Text(
+                                          'Running days: ${week['running_days']}',
+                                          style: TextStyle(fontSize: 16)),
+                                      SizedBox(height: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: week['daily_schedule']
+                                            .map<Widget>((day) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(bottom: 8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    'Day of the week: ${day['day_of_week']}',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                Text(
+                                                    'Distance: ${day['distance_km']} km',
+                                                    style: TextStyle(
+                                                        fontSize: 16)),
+                                                Text('Type: ${day['type']}',
+                                                    style: TextStyle(
+                                                        fontSize: 16)),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }
-                      return const Text("Gay");
-                    },
-                  )
+                        ),
+                      );
+                    } else {
+                      return SizedBox(); // Fallback for unexpected state
+                    }
+                  })
                 : const Text("Not generated"),
             MaterialButton(
               onPressed: () {
