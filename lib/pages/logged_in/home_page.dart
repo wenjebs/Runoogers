@@ -6,6 +6,7 @@ import 'package:runningapp/components/side_drawer.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
+import 'package:runningapp/pages/logged_in/routes_page/routes_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     const RunStatsPage(),
     const LeaderboardsPage(),
     const SettingsPage(),
+    const RoutesPage(),
   ];
 
   String getTitle(int index) {
@@ -59,6 +61,8 @@ class _HomePageState extends State<HomePage> {
         return "Leaderboards";
       case 8:
         return "Settings";
+      case 9:
+        return "Routes";
       default:
         return "Home";
     }
@@ -74,6 +78,7 @@ class _HomePageState extends State<HomePage> {
               ? const SizedBox()
               : SideDrawer(
                   onTap: (index) {
+                    debugPrint("Index: $index");
                     setState(() {
                       _selectedIndex = index;
                     });

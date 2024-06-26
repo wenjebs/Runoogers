@@ -62,11 +62,10 @@ class RunDetailsAndStop extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(4),
+                    const Padding(
+                      padding: EdgeInsets.all(4),
                       child: Text(
                         'TIME',
-                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
                     Padding(
@@ -104,9 +103,8 @@ class RunDetailsAndStop extends ConsumerWidget {
                       indent: 40,
                       endIndent: 40,
                     ),
-                    Text(
+                    const Text(
                       'PACE',
-                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
@@ -140,9 +138,8 @@ class RunDetailsAndStop extends ConsumerWidget {
                       indent: 40,
                       endIndent: 40,
                     ),
-                    Text(
+                    const Text(
                       'DISTANCE',
-                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(12),
