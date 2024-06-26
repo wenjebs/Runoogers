@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/components/side_drawer.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
@@ -12,6 +13,7 @@ import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
+import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
 import 'package:runningapp/providers.dart';
@@ -27,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   int _selectedIndex = 0;
+  bool trainingOnboarded = false;
 
   final List<Widget> _pages = [
     const UserPage(),
@@ -68,6 +71,42 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  List<Widget> _getAppBarActions(int selectedIndex, BuildContext context) {
+    switch (selectedIndex) {
+      case 2:
+        return [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddFriendsPage()),
+              );
+            },
+            icon: const Icon(Icons.person_add),
+          ),
+        ];
+      case 3:
+        return [
+          IconButton(
+            onPressed: Authenticator().logOut,
+            icon: const Icon(Icons.logout),
+          ),
+        ];
+      default:
+        return [];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Repository.getTrainingOnboarded().then((value) {
+      setState(() {
+        trainingOnboarded = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -87,35 +126,16 @@ class _HomePageState extends State<HomePage> {
           appBar: isRunning
               ? null
               : AppBar(
-                  actions: _selectedIndex == 3
-                      ? [
-                          IconButton(
-                              onPressed: Authenticator().logOut,
-                              icon: const Icon(Icons.logout)),
-                        ]
-                      : _selectedIndex == 2 // Check if selectedIndex is 2
-                          ? [
-                              IconButton(
-                                  onPressed: () {
-                                    // Navigate to AddFriendPage
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddFriendsPage()),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                      Icons.person_add)), // Add Friend Icon
-                            ]
-                          : [],
+                  actions: _getAppBarActions(_selectedIndex, context),
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
                   backgroundColor: Colors.red,
                 ),
           backgroundColor: Colors.red,
-          body: _pages[_selectedIndex],
+          body: _selectedIndex == 5 && !trainingOnboarded
+              ? const TrainingOnboardingPage()
+              : _pages[_selectedIndex],
           bottomNavigationBar: isRunning
               ? const SizedBox()
               : GNav(

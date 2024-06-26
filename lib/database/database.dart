@@ -232,4 +232,16 @@ class Database {
         .collection(collection)
         .get();
   }
+
+  // Get training onboarded status
+  Future<bool> getTrainingOnboarded() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final doc = await userRef.get();
+    return doc.data()?['trainingOnboarded'] ?? false;
+  }
 }

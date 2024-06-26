@@ -7,30 +7,31 @@ class FriendRequest extends StatefulWidget {
   final bool added;
 
   const FriendRequest({
-    Key? key,
+    super.key,
     required this.name,
     required this.userId,
     required this.added,
-  }) : super(key: key);
+  });
 
   @override
-  _FriendRequestState createState() => _FriendRequestState();
+  FriendRequestState createState() => FriendRequestState();
 }
 
-class _FriendRequestState extends State<FriendRequest> {
+class FriendRequestState extends State<FriendRequest> {
   bool _isVisible = true;
 
   @override
   Widget build(BuildContext context) {
-    if (!_isVisible)
-      return SizedBox.shrink(); // If not visible, return an empty widget
+    if (!_isVisible) {
+      return const SizedBox.shrink();
+    }
 
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               backgroundImage:
                   NetworkImage('https://picsum.photos/id/237/200/300'),
             ),

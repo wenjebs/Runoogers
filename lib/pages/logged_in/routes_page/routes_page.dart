@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class RoutesPage extends ConsumerStatefulWidget {
@@ -34,7 +33,7 @@ class _RoutesPageState extends ConsumerState<RoutesPage> {
             Expanded(
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
+                initialCameraPosition: const CameraPosition(
                     target: LatLng(1.3843113892761545, 103.74289461016552),
                     zoom: 16),
                 polylines: {
@@ -52,7 +51,7 @@ class _RoutesPageState extends ConsumerState<RoutesPage> {
                   seed = Random().nextInt(90);
                 });
               },
-              child: Text("Generate Route"),
+              child: const Text("Generate Route"),
             ),
             route.value == null
                 ? const CircularProgressIndicator()

@@ -55,7 +55,8 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FriendRequestPage()),
+                MaterialPageRoute(
+                    builder: (context) => const FriendRequestPage()),
               );
             },
           ),
@@ -81,7 +82,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
             Expanded(
               // Use Expanded to fill the remaining space
               child: _searchResults.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: Text("No users found"),
                     )
                   : ListView.builder(
@@ -91,9 +92,9 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                         return ListTile(
                           title: Text(user['name']),
                           trailing: friendsList.contains(user['uid'])
-                              ? Text("Added")
+                              ? const Text("Added")
                               : IconButton(
-                                  icon: Icon(Icons.person_add),
+                                  icon: const Icon(Icons.person_add),
                                   onPressed: () =>
                                       Repository.sendFriendRequest(user['uid']),
                                 ),

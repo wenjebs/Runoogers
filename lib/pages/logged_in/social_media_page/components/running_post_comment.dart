@@ -52,7 +52,7 @@ class _RunningPostCommentState extends State<RunningPostComment> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('likes'),
+              const Text('likes'),
               IconButton(
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {

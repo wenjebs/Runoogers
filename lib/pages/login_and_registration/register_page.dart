@@ -40,6 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
           'posts': [],
           'friends': [],
           'onboarded': false,
+          'trainingOnboarded': false,
         });
       } else {
         showErrorMessage("passwords dont match");
