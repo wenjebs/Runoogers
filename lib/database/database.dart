@@ -103,9 +103,11 @@ class Database {
   // Add like to comment
   Future<void> addLikeToComment(
       String postId, String commentId, String userId) {
-    final DocumentReference postRef = firestore.collection('posts').doc(postId);
-    final DocumentReference commentRef =
-        postRef.collection('comments').doc(commentId);
+    final DocumentReference commentRef = firestore
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(commentId);
     final DocumentReference likeRef =
         commentRef.collection('likes').doc(userId);
 
@@ -124,6 +126,77 @@ class Database {
           //     FieldValue.serverTimestamp(), // Optional: Add a timestamp
         });
       }
+    });
+  }
+
+  // Send friend request
+  Future<void> sendFriendRequest(String userId) async {
+    final currentUserId = auth.userId;
+    if (currentUserId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+
+    await userRef.set({
+      'friendRequests': FieldValue.arrayUnion([currentUserId])
+    }, SetOptions(merge: true));
+  }
+
+  // Get friend requests
+  Future<List<String>> getFriendRequests() async {
+    final currentUserId = auth.userId;
+    if (currentUserId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(currentUserId);
+    final doc = await userRef.get();
+    final friendRequests = doc.data()?['friendRequests'];
+
+    if (friendRequests is List) {
+      return List<String>.from(friendRequests);
+    } else {
+      return [];
+    }
+  }
+
+  // Accept friend request
+  Future<void> acceptFriendRequest(String userId) async {
+    final currentUserId = auth.userId;
+    if (currentUserId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final currentUserRef = firestore.collection('users').doc(currentUserId);
+
+    await firestore.runTransaction((transaction) async {
+      // Remove the current user's ID from the friendRequests field of the user who sent the request
+      transaction.update(userRef, {
+        'friendRequests': FieldValue.arrayRemove([currentUserId]),
+        'friends':
+            FieldValue.arrayUnion([currentUserId]), // Also add to friends list
+      });
+
+      // Add the friend's user ID to the friends array field of the current user
+      transaction.update(currentUserRef, {
+        'friends': FieldValue.arrayUnion([userId]),
+      });
+    });
+  }
+
+  // Reject friend request
+  Future<void> rejectFriendRequest(String userId) async {
+    final currentUserId = auth.userId;
+    if (currentUserId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+
+    await userRef.update({
+      'friendRequests': FieldValue.arrayRemove([currentUserId])
     });
   }
 

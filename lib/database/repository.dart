@@ -56,4 +56,21 @@ class Repository {
   static Future<String> fetchName(String userId) {
     return database.fetchName(userId);
   }
+
+  // Get friend requests
+  static Future<List<String>> getFriendRequests() {
+    return database.getFriendRequests();
+  }
+
+  static Future<void> sendFriendRequest(String userId) {
+    return database.sendFriendRequest(userId);
+  }
+
+  static Future<void> acceptFriendRequest(String userId) {
+    return database.acceptFriendRequest(userId);
+  }
+
+  static Future<void> rejectFriendRequest(String userId) {
+    return database.rejectFriendRequest(userId);
+  }
 }

@@ -52,15 +52,13 @@ class _RunningPostCommentState extends State<RunningPostComment> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                  // likes here
-                  ),
+              Text('likes'),
               IconButton(
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {
                   setState(() {
                     Repository.addLikeToComment(
-                        postId, widget.id, widget.userId);
+                        widget.postId, widget.commentId, widget.userId);
                   });
                 },
               ),

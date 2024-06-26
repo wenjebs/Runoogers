@@ -27,6 +27,28 @@ final commentsCountProvider = StreamProvider.family<int, String>((ref, postId) {
       .snapshots()
       .map((snapshot) => snapshot.docs.length);
 });
+// TODO when a like is added, increment "likes" count in the post document
+final commentsLikeProvider =
+    StreamProvider.family<int, Map<String, String>>((ref, ids) {
+  final postId = ids['postId']!;
+  final commentId = ids['commentId']!;
+
+  print('Fetching likes for post: $postId, comment: $commentId');
+
+  return FirebaseFirestore.instance
+      .collection('posts')
+      .doc(postId)
+      .collection('comments')
+      .doc(commentId)
+      .collection('likes')
+      .snapshots()
+      .map((snapshot) {
+    print('Likes count: ${snapshot.docs.length}');
+    return snapshot.docs.length;
+  }).handleError((error) {
+    print('Error fetching likes');
+  });
+});
 
 final commentControllerProvider =
     StateProvider.autoDispose<TextEditingController>((ref) {
