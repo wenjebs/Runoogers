@@ -25,15 +25,15 @@ class PausedPage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'Distance: ${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 Text(
                   'Time: ${StopWatchTimer.getDisplayTime(_stopWatchTimer.rawTime.value, hours: false)}',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 Text(
                   'Pace: ${((_stopWatchTimer.rawTime.value / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ],
             ),

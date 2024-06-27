@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/global_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -24,6 +25,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialise gemini api
+  Gemini.init(apiKey: dotenv.env["GEMINI_API_KEY"]!);
 
   runApp(
     const ProviderScope(
