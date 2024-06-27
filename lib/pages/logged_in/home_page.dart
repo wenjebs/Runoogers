@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     const RunPage(),
     const SocialMediaPage(),
     const ProfilePage(),
-    const StoryPage(),
+    StoryPage(),
     const TrainingPage(),
     const RunStatsPage(),
     const LeaderboardsPage(),
@@ -129,7 +129,29 @@ class _HomePageState extends State<HomePage> {
           appBar: isRunning
               ? null
               : AppBar(
-                  actions: _getAppBarActions(_selectedIndex, context),
+                  centerTitle: true,
+                  actions: _selectedIndex == 3
+                      ? [
+                          IconButton(
+                              onPressed: Authenticator().logOut,
+                              icon: const Icon(Icons.logout)),
+                        ]
+                      : _selectedIndex == 2 // Check if selectedIndex is 2
+                          ? [
+                              IconButton(
+                                  onPressed: () {
+                                    // Navigate to AddFriendPage
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddFriendsPage()),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                      Icons.person_add)), // Add Friend Icon
+                            ]
+                          : [],
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
