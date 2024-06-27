@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     const RunPage(),
     const SocialMediaPage(),
     const ProfilePage(),
-    const StoryPage(),
+    StoryPage(),
     const TrainingPage(),
     const RunStatsPage(),
     const LeaderboardsPage(),
@@ -87,6 +87,7 @@ class _HomePageState extends State<HomePage> {
           appBar: isRunning
               ? null
               : AppBar(
+                  centerTitle: true,
                   actions: _selectedIndex == 3
                       ? [
                           IconButton(
