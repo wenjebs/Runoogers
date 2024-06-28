@@ -14,7 +14,8 @@ class _WebTestState extends State<WebTest> {
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
     // Use an asynchronous operation with mounted check
     _loadHtmlFromAssets();
   }

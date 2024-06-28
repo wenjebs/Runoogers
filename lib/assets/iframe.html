@@ -11,9 +11,9 @@
         html,
         body,
         .frame {
-            width: 1080px;
-            height: 800px;
-            margin: 0;
+            width: 100vw;
+            height: 80vh;
+            margin: 0 auto;
             font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
                 Droid Sans, Helvetica Neue, sans-serif;
             padding: 20px;
@@ -26,6 +26,15 @@
             padding: 3px;
             border-radius: 5px;
             color: white;
+        }
+
+        @media (max-width: 600px) {
+            .frame {
+                padding: 10px; /* Reduce padding on smaller screens */
+            }
+            body {
+                font-size: 12px; /* Adjust font size for smaller screens */
+            }
         }
     </style>
 </head>
