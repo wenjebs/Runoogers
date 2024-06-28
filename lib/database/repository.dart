@@ -103,4 +103,13 @@ class Repository {
   static Future<void> incrementRuns() {
     return database.incrementRuns();
   }
+
+  static Future<List<Map<String, dynamic>>> fetchUserAchievements() {
+    return database.fetchUserAchievements();
+  }
+
+  static Future<List<String>> updateUserAchievements(
+      double distance, int time) {
+    return database.updateUserAchievements(distance, time);
+  }
 }

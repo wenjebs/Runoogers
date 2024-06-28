@@ -35,6 +35,10 @@ class Database {
     return doc['name'];
   }
 
+  ///////////////////////////////////////
+  /// RUN METHODS
+  /// //////////////////////////////////
+
   // Add run
   Future<void> addRun(String collection, Run run) async {
     final userId = auth.userId;
@@ -54,6 +58,19 @@ class Database {
     Run newRun = run.copyWith(id: id);
     await ref.set(newRun);
   }
+
+  // Get runs
+  Future<QuerySnapshot> getRuns(String userId, String collection) {
+    return firestore
+        .collection("users")
+        .doc(userId)
+        .collection(collection)
+        .get();
+  }
+
+  //////////////////////////////////////////
+  /// SOCIAL MEDIA METHODS
+  /// //////////////////////////////////////
 
   // Add post
   Future<void> addPost(String collection, Map<String, dynamic> data) async {
@@ -224,14 +241,9 @@ class Database {
     });
   }
 
-  // Get runs
-  Future<QuerySnapshot> getRuns(String userId, String collection) {
-    return firestore
-        .collection("users")
-        .doc(userId)
-        .collection(collection)
-        .get();
-  }
+  ///////////////////////////////////////
+  /// TRAINING METHODS
+  ///////////////////////////////////////
 
   // Get training onboarded status
   Future<bool> getTrainingOnboarded() async {
@@ -268,6 +280,10 @@ class Database {
     }
   }
 
+  ////////////////////////////////////////
+  /// ACHIEVEMENT / STATS METHODS
+  ////////////////////////////////////////
+
   Future<void> incrementTotalDistanceRan(double distance) {
     final userId = auth.userId;
     if (userId == null) {
@@ -275,6 +291,7 @@ class Database {
     }
 
     final userRef = firestore.collection('users').doc(userId);
+
     return firestore.runTransaction((transaction) async {
       final doc = await transaction.get(userRef);
       final currentDistance = doc.data()?['totalDistanceRan'] ?? 0;
@@ -327,5 +344,85 @@ class Database {
     return userRef.get().then((doc) {
       return doc.data()?['totalRuns'] ?? 0;
     });
+  }
+
+  Future<List<Map<String, dynamic>>> fetchUserAchievements() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userAchievementsRef =
+        firestore.collection('users').doc(userId).collection('achievements');
+    final querySnapshot = await userAchievementsRef.get();
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<List<String>> updateUserAchievements(double distance, int time) async {
+    final userId = auth.userId;
+    List<String> unlocked = [];
+
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+
+    if (distance > 5) {
+      // 5km achievement
+      final achievementRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('achievements')
+          .doc('5km');
+
+      await firestore.runTransaction((transaction) async {
+        final doc = await transaction.get(achievementRef);
+        final userDoc = await transaction.get(userRef);
+
+        if (!doc.exists && userDoc.exists) {
+          transaction.set(achievementRef, {
+            'name': 'Seasoned Runner',
+            'description': 'Run your first 5km run!',
+            'points': 500,
+            'picture':
+                'https://img.freepik.com/free-vector/award-medal-realistic-composition-with-isolated-image-medal-with-laurel-wreath-blank-background-vector-illustration_1284-66109.jpg?size=626&ext=jpg&ga=GA1.1.1141335507.1719273600&semt=ais_user',
+          });
+
+          final userPoints = userDoc.data()!['points'];
+          transaction.update(userRef, {'points': userPoints + 500});
+
+          unlocked.add('Seasoned Runner');
+        }
+      });
+    }
+
+    if ((time / 60000) / distance < 5) {
+      // 1km under 5 minutes achievement
+      final achievementRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('achievements')
+          .doc('1kmUnder5Minutes');
+
+      await firestore.runTransaction((transaction) async {
+        final doc = await transaction.get(achievementRef);
+        final userDoc = await transaction.get(userRef);
+        if (!doc.exists && userDoc.exists) {
+          transaction.set(achievementRef, {
+            'name': 'Speedy Gonzales',
+            'description': 'Run 1km under 5 minutes!',
+            'points': 300,
+            'picture': 'https://m.media-amazon.com/images/I/71wRDvtAJLL.jpg',
+          });
+
+          final userPoints = userDoc.data()!['points'];
+          transaction.update(userRef, {'points': userPoints + 300});
+          unlocked.add('Speedy Gonzales');
+        }
+      });
+    }
+
+    return unlocked;
   }
 }

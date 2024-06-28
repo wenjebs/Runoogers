@@ -284,6 +284,40 @@ class RunDetailsAndStop extends ConsumerWidget {
                               Repository.incrementTotalDistanceRan(distance);
                               Repository.incrementTotalTimeRan(time);
 
+                              // update and display achievements
+                              List<String> newAchievements =
+                                  await Repository.updateUserAchievements(
+                                      distance, time);
+
+                              if (newAchievements.isNotEmpty) {
+                                // Show dialog with the list of new achievements
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                          "New achievements earned:"),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: newAchievements
+                                              .map((achievement) =>
+                                                  Text(achievement))
+                                              .toList(),
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Yay!'),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // Close the dialog
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
                               // stop location tracking and reset dist
                               LocationService.reset();
 

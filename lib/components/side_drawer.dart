@@ -13,6 +13,7 @@ class SideDrawer extends ConsumerWidget {
     final userInfo = ref.watch(userInformationProvider).asData?.value;
 
     final name = userInfo?['name'] as String?;
+    final points = userInfo?['points'] as int?;
 
     return Drawer(
       child: ListView(
@@ -20,7 +21,7 @@ class SideDrawer extends ConsumerWidget {
           UserAccountsDrawerHeader(
             accountName:
                 name != null ? Text(name) : const CircularProgressIndicator(),
-            accountEmail: const Text('69 pts'),
+            accountEmail: Text('$points pts'),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.network(
