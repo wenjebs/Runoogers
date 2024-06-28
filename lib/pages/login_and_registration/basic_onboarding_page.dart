@@ -12,19 +12,31 @@ final onboardingProvider =
 class OnboardingState {
   final String name;
   final String age;
+  final String username;
 
-  OnboardingState({this.name = '', this.age = ''});
+  OnboardingState({
+    this.name = '',
+    this.age = '',
+    this.username = '',
+  });
 }
 
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
   OnboardingNotifier() : super(OnboardingState());
 
   void updateName(String name) {
-    state = OnboardingState(name: name, age: state.age);
+    state =
+        OnboardingState(name: name, age: state.age, username: state.username);
   }
 
   void updateAge(String age) {
-    state = OnboardingState(name: state.name, age: age);
+    state =
+        OnboardingState(name: state.name, age: age, username: state.username);
+  }
+
+  void updateUsername(String username) {
+    state =
+        OnboardingState(name: state.name, age: state.age, username: username);
   }
 
   Future<void> saveToFirestore() async {
@@ -32,6 +44,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
     await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
       'name': state.name,
       'age': state.age,
+      'username': state.username,
     }, SetOptions(merge: true));
   }
 }
@@ -66,6 +79,40 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn,
             ),
+          ),
+          OnboardingStep(
+            title: "Choose a username",
+            child: TextField(
+              decoration:
+                  const InputDecoration(hintText: "Enter your username"),
+              onChanged: (value) =>
+                  ref.read(onboardingProvider.notifier).updateUsername(value),
+            ),
+            onNext: () async {
+              final username = ref.read(onboardingProvider).username;
+
+              // Check if the username is unique in Firestore
+              final usernameExists = await FirebaseFirestore.instance
+                  .collection('users')
+                  .where('username', isEqualTo: username)
+                  .get()
+                  .then((snapshot) => snapshot.docs.isNotEmpty);
+
+              if (!usernameExists) {
+                // Username is unique, allow the user to proceed
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+              } else {
+                // Show an error message if the username is taken
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text(
+                          'Username is already taken, please choose another one.')),
+                );
+              }
+            },
           ),
           OnboardingStep(
             title: "What's your age?",

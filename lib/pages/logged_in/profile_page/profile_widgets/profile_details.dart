@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ProfileDetails extends StatelessWidget {
-  const ProfileDetails({super.key});
+  final String name;
+  const ProfileDetails({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +18,14 @@ class ProfileDetails extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
                 child: Text(
-                  'James Jameson', // TODO FROM DATABASE
+                  name,
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
               ),
               const Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(24, 4, 0, 16),
                 child: Text(
-                  'I love running bro',
+                  'TODO username here', // TODO fetch username from db
                 ),
               )
             ],

@@ -26,3 +26,11 @@ final friendsProvider = StreamProvider.autoDispose<List<String>>((ref) async* {
     return result;
   });
 });
+
+final userInformationProvider =
+    StreamProvider.autoDispose<Map<String, dynamic>?>((ref) async* {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) throw Exception('User not logged in');
+  final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+  yield* userDoc.snapshots().map((snapshot) => snapshot.data());
+});
