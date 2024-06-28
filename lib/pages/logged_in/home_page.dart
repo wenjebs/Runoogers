@@ -20,7 +20,9 @@ import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int initialIndex;
+
+  const HomePage({super.key, this.initialIndex = 0});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,7 +30,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
   bool trainingOnboarded = false;
 
   final List<Widget> _pages = [
@@ -105,6 +107,7 @@ class _HomePageState extends State<HomePage> {
         trainingOnboarded = value;
       });
     });
+    _selectedIndex = widget.initialIndex;
   }
 
   @override
@@ -143,6 +146,7 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).focusColor,
                   activeColor: Theme.of(context).primaryColor,
                   gap: 6,
+                  selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
                   tabs: const [
                     GButton(icon: Icons.home, text: "Home"),
                     GButton(icon: Icons.adjust, text: "Run"),

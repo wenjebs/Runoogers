@@ -36,5 +36,11 @@ Future<Map<String, dynamic>> plan(PlanRef ref) async {
   // Encode it into a json
   final json = jsonDecode(text!.output!) as Map<String, dynamic>;
 
+  await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .collection('trainingPlans')
+      .add(json);
+
   return json;
 }

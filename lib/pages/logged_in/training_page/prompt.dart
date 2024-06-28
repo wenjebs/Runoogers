@@ -13,7 +13,8 @@ class Prompt {
   }) {
     prompt = """
 Design a JSON response structure for a running plan that includes the following details for each week of the plan: the week number, total weekly distance in kilometers, the number of running days, and a breakdown of each day's run including the day of the week, distance, and whether it's a rest day or a specific training focus (e.g., speed work, long run). Ensure that the JSON format remains consistent for every generated running plan.
-Dont include the string json at the start and dont include the ``` at the start and end of the code block
+Dont include the string json at the start and dont include the ``` at the start and end of the code block.
+Here are all the types of runs that can be included in the daily_schedule: Easy run, Speed work, Long run, Recovery run, Interval training, Rest day.
 Example of the expected JSON structure:
 
 

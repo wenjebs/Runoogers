@@ -81,4 +81,8 @@ class Repository {
   static Future<bool> getTrainingOnboarded() {
     return database.getTrainingOnboarded();
   }
+
+  static Future<List<dynamic>> getTrainingPlans() {
+    return database.getTrainingPlans();
+  }
 }
