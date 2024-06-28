@@ -65,38 +65,59 @@ class _TrainingPageState extends State<TrainingPage> {
                                           'Total distance: ${week['total_distance_km']} km',
                                           style: const TextStyle(fontSize: 18)),
                                       const SizedBox(height: 4),
-                                      Text(
-                                          'Running days: ${week['running_days']}',
-                                          style: const TextStyle(fontSize: 16)),
-                                      const SizedBox(height: 8),
+                                      // Text(
+                                      //     'Running days: ${week['running_days']}',
+                                      //     style: const TextStyle(fontSize: 16)),
+                                      // const SizedBox(height: 8),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: week['daily_schedule']
                                             .map<Widget>((day) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
+                                          IconData icon =
+                                              Icons.run_circle; // Default icon
+                                          switch (day['type']) {
+                                            case 'Easy run':
+                                              icon = Icons.directions_run;
+                                              break;
+                                            case 'Speed work':
+                                              icon = Icons.timer;
+                                              break;
+                                            case 'Long run':
+                                              icon = Icons.route;
+                                              break;
+                                            case 'Rest day':
+                                              icon = Icons.hotel;
+                                              break;
+                                          }
+                                          return Card(
+                                            margin: const EdgeInsets.only(
                                                 bottom: 8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text('${day['day_of_week']}',
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500)),
-                                                Text('${day['distance_km']} km',
-                                                    style: const TextStyle(
-                                                        fontSize: 16)),
-                                                Text('${day['type']}',
-                                                    style: const TextStyle(
-                                                        fontSize: 16)),
-                                              ],
+                                            child: ListTile(
+                                              leading: Icon(icon),
+                                              title: Text(
+                                                  '${day['day_of_week']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      '${day['distance_km']} km',
+                                                      style: const TextStyle(
+                                                          fontSize: 16)),
+                                                  Text('${day['type']}',
+                                                      style: const TextStyle(
+                                                          fontSize: 16)),
+                                                ],
+                                              ),
                                             ),
                                           );
                                         }).toList(),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),
