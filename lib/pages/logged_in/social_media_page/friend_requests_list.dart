@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/friend_request.dart';
@@ -24,17 +23,9 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      // Handle the case where there is no user logged in
-      return Scaffold(
-        body: Center(child: Text("Please log in to see friend requests.")),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Friend Requests'),
+        title: const Text('Friend Requests'),
       ),
       body: FutureBuilder<List<String>>(
         future: Repository.getFriendRequests(),
@@ -54,13 +45,13 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
                   future: Repository.fetchName(userId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return ListTile(
+                      return const ListTile(
                         leading: CircularProgressIndicator(),
                         title: Text('Loading...'),
                       );
                     } else if (snapshot.hasError) {
                       return ListTile(
-                        leading: Icon(Icons.error),
+                        leading: const Icon(Icons.error),
                         title: Text('Error: ${snapshot.error}'),
                       );
                     } else if (snapshot.hasData) {
@@ -73,7 +64,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
                             isFriend, // Set added based on whether userId is in friends list
                       );
                     } else {
-                      return ListTile(
+                      return const ListTile(
                         leading: Icon(Icons.error_outline),
                         title: Text('Unknown error'),
                       );
@@ -83,7 +74,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
               },
             );
           } else {
-            return Center(child: Text("No friend requests."));
+            return const Center(child: Text("No friend requests."));
           }
         },
       ),

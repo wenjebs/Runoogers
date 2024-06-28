@@ -33,8 +33,6 @@ final commentsLikeProvider =
   final postId = ids['postId']!;
   final commentId = ids['commentId']!;
 
-  print('Fetching likes for post: $postId, comment: $commentId');
-
   return FirebaseFirestore.instance
       .collection('posts')
       .doc(postId)
@@ -43,10 +41,10 @@ final commentsLikeProvider =
       .collection('likes')
       .snapshots()
       .map((snapshot) {
-    print('Likes count: ${snapshot.docs.length}');
     return snapshot.docs.length;
   }).handleError((error) {
-    print('Error fetching likes');
+    debugPrint('Error: $error');
+    return 0;
   });
 });
 

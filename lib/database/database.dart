@@ -232,4 +232,39 @@ class Database {
         .collection(collection)
         .get();
   }
+
+  // Get training onboarded status
+  Future<bool> getTrainingOnboarded() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final doc = await userRef.get();
+    return doc.data()?['trainingOnboarded'] ?? false;
+  }
+
+  // Get training plan
+  Future<List<dynamic>> getTrainingPlans() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final querySnapshot =
+        await userRef.collection('trainingPlans').limit(1).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final doc = querySnapshot.docs.first;
+      Map<String, dynamic> data = doc.data();
+      // Assuming the document has a field 'trainingPlan' which is a list
+      List<dynamic> trainingPlan = data['trainingPlan'];
+      return trainingPlan;
+    } else {
+      // Handle the case where the collection does not exist or has no documents
+      return [];
+    }
+  }
 }

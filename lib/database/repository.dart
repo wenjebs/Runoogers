@@ -77,4 +77,12 @@ class Repository {
   static Future<List<String>> getFriendList() {
     return database.getFriendList();
   }
+
+  static Future<bool> getTrainingOnboarded() {
+    return database.getTrainingOnboarded();
+  }
+
+  static Future<List<dynamic>> getTrainingPlans() {
+    return database.getTrainingPlans();
+  }
 }

@@ -6,10 +6,10 @@ class PostCreationPage extends StatefulWidget {
   const PostCreationPage({super.key});
 
   @override
-  _PostCreationPageState createState() => _PostCreationPageState();
+  PostCreationPageState createState() => PostCreationPageState();
 }
 
-class _PostCreationPageState extends State<PostCreationPage> {
+class PostCreationPageState extends State<PostCreationPage> {
   final _formKey = GlobalKey<FormState>();
   String _caption = '';
 
