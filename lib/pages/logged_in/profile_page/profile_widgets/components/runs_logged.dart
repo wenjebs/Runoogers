@@ -56,10 +56,7 @@ class RunsSection extends ConsumerWidget {
                                 const Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Column(
-                                    children: [
-                                      Text("Pace"),
-                                      Text("hehe")
-                                    ],
+                                    children: [Text("Pace"), Text("hehe")],
                                   ),
                                 ),
                               ],

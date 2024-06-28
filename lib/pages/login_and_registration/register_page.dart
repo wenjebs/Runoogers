@@ -37,6 +37,10 @@ class _RegisterPageState extends State<RegisterPage> {
         Repository.addUser('users', {
           'email': emailController.text,
           'uid': FirebaseAuth.instance.currentUser!.uid,
+          'posts': [],
+          'friends': [],
+          'onboarded': false,
+          'trainingOnboarded': false,
         });
       } else {
         showErrorMessage("passwords dont match");

@@ -30,9 +30,59 @@ class Repository {
     return database.addRun(collection, run);
   }
 
+  // Add post
+  static Future<void> addPost(String collection, Map<String, dynamic> data) {
+    return database.addPost(collection, data);
+  }
+
+  // Add like to post
+  static Future<void> addLikeToPost(String postId, String userId) {
+    return database.addLikeToPost(postId, userId);
+  }
+
+  // Add like to comment in post
+  static Future<void> addLikeToComment(
+      String postId, String commentId, String userId) {
+    return database.addLikeToComment(postId, commentId, userId);
+  }
+
   // Get runs
   static Future<QuerySnapshot> getRuns(String userId) {
     debugPrint("getting runs");
     return database.getRuns(userId, "runs");
+  }
+
+  // Fetch names from user ID
+  static Future<String> fetchName(String userId) {
+    return database.fetchName(userId);
+  }
+
+  // Get friend requests
+  static Future<List<String>> getFriendRequests() {
+    return database.getFriendRequests();
+  }
+
+  static Future<void> sendFriendRequest(String userId) {
+    return database.sendFriendRequest(userId);
+  }
+
+  static Future<void> acceptFriendRequest(String userId) {
+    return database.acceptFriendRequest(userId);
+  }
+
+  static Future<void> rejectFriendRequest(String userId) {
+    return database.rejectFriendRequest(userId);
+  }
+
+  static Future<List<String>> getFriendList() {
+    return database.getFriendList();
+  }
+
+  static Future<bool> getTrainingOnboarded() {
+    return database.getTrainingOnboarded();
+  }
+
+  static Future<List<dynamic>> getTrainingPlans() {
+    return database.getTrainingPlans();
   }
 }
