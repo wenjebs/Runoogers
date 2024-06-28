@@ -64,7 +64,7 @@ class ProfileHero extends StatelessWidget {
           // ),
 
           //  READYPLAYERME
-          const O3D(
+          const O3D.network(
             src: 'https://models.readyplayer.me/667ea6b3decc99af8e97c067.glb',
           ),
         ],
