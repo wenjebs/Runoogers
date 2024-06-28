@@ -53,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // if (mounted) {
       Navigator.pop(context);
       // }
-      showErrorMessage(e.code);
+      showErrorMessage(e.message!);
     }
   }
 
@@ -117,28 +117,46 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 25),
 
                     // email textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: emailController,
                       hintText: 'Email',
                       obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 10),
 
                     // password textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: passwordController,
                       hintText: 'Password',
                       obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 10),
 
                     // confirm password textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: confirmPasswordController,
                       hintText: 'Confirm Password',
                       obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 25),
