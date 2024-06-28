@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/achievements.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
@@ -18,6 +16,7 @@ class ProfilePage extends ConsumerWidget {
     final userInfo = ref.watch(userInformationProvider).asData?.value;
 
     final name = userInfo?['name'] as String?;
+    final username = userInfo?['username'] as String?;
 
     return Scaffold(
       body: Center(
@@ -35,8 +34,8 @@ class ProfilePage extends ConsumerWidget {
           // Profile details
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: name != null
-                ? ProfileDetails(name: name)
+            child: name != null && username != null
+                ? ProfileDetails(name: name, username: username)
                 : const CircularProgressIndicator(),
           ),
 
