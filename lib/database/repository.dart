@@ -85,4 +85,13 @@ class Repository {
   static Future<List<dynamic>> getTrainingPlans() {
     return database.getTrainingPlans();
   }
+
+  // UPDATE USER STATS
+  static Future<void> incrementTotalDistanceRan(double distance) {
+    return database.incrementTotalDistanceRan(distance);
+  }
+
+  static Future<void> incrementTotalTimeRan(int time) {
+    return database.incrementTotalTimeRan(time);
+  }
 }
