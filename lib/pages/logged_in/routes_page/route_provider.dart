@@ -3,13 +3,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:open_route_service/open_route_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:runningapp/main.dart';
 
 part 'route_provider.g.dart';
 
 @riverpod
 Future<Set<Object>> route(RouteRef ref, int seed, int distance) async {
-  final OpenRouteService client =
-      OpenRouteService(apiKey: dotenv.env['ORS_API_KEY']!);
+  final OpenRouteService client = OpenRouteService(apiKey: orsApiKey);
 
   final List<ORSCoordinate> test = [
     const ORSCoordinate(

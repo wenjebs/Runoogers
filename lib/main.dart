@@ -8,6 +8,9 @@ import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'firebase_options.dart';
 
+const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+const String mapsApiKey = String.fromEnvironment('MAPS_API_KEY');
+const String orsApiKey = String.fromEnvironment('ORS_API_KEY');
 void main() async {
   // ensure widgetbinding is initialized
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +30,7 @@ void main() async {
   );
 
   // Initialise gemini api
-  Gemini.init(apiKey: dotenv.env["GEMINI_API_KEY"]!);
+  Gemini.init(apiKey: geminiApiKey);
 
   runApp(
     const ProviderScope(

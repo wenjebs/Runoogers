@@ -65,7 +65,11 @@ jobs:
           channel: "stable"
       - run: flutter pub get
       - run: flutter clean
-      - run: flutter build apk --debug
+      - run: flutter build apk --debug --dart-define=GEMINI_API_KEY=${{ env.GEMINI_API_KEY }} --dart-define=MAPS_API_KEY=${{ env.MAPS_API_KEY }} --dart-define=ORS_API_KEY=${{ env.ORS_API_KEY }}
+        env:
+          GEMINI_API_KEY: "${{ secrets.GEMINI_API_KEY }}"
+          MAPS_API_KEY: "${{ secrets.MAPS_API_KEY }}"
+          ORS_API_KEY: "${{ secrets.ORS_API_KEY }}"
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/debug/*"
