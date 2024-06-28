@@ -200,7 +200,10 @@ class _TrainingOnboardingPageState
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                    builder: (context) => const HomePage(
+                          initialIndex: 5,
+                        )),
               );
             },
           ),
