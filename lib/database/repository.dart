@@ -99,7 +99,7 @@ class Repository {
     return database.fetchUserAchievements();
   }
 
-  static Future<void> updateUserAchievements(double distance, int time) {
+  static Future<Set<String>> updateUserAchievements(double distance, int time) {
     return database.updateUserAchievements(distance, time);
   }
 }

@@ -330,8 +330,10 @@ class Database {
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  Future<void> updateUserAchievements(double distance, int time) async {
+  Future<Set<String>> updateUserAchievements(double distance, int time) async {
     final userId = auth.userId;
+    List<String> unlocked = [];
+
     if (userId == null) {
       throw Exception("User not logged in");
     }
@@ -361,6 +363,8 @@ class Database {
 
           final userPoints = userDoc.data()!['points'];
           transaction.update(userRef, {'points': userPoints + 500});
+
+          unlocked.add('Seasoned Runner');
         }
       });
     }
@@ -386,8 +390,11 @@ class Database {
 
           final userPoints = userDoc.data()!['points'];
           transaction.update(userRef, {'points': userPoints + 300});
+          unlocked.add('Speedy Gonzales');
         }
       });
     }
+
+    return unlocked.toSet();
   }
 }
