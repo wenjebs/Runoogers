@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class LocationService {
   // Constants
@@ -16,15 +18,21 @@ class LocationService {
   static Position? _currentPosition;
   static double distance = 0;
 
+  // internet status
+  static List<ConnectivityResult> connectivityResult = [];
+
+  // location service status
+  static bool serviceEnabled = false;
   // getters
   StreamSubscription? get positionSubscription => _positionSubscription;
   Position? get currentPosition => _currentPosition;
   static double get distanceTravelled => distance;
+  static List<ConnectivityResult> get connectivity => connectivityResult;
+  static bool get locationServiceEnabled => serviceEnabled;
 
   void checkPermission() async {
     debugPrint("Checking permission");
     // TODO this function could be better but im laze
-    bool serviceEnabled;
     // LocationPermission permission;
 
     // Check if location services are enabled
@@ -50,6 +58,7 @@ class LocationService {
       // Background location permission is denied, show an error message or prompt the user to grant permission
       Geolocator.requestPermission();
     }
+
     debugPrint("Checking done");
   }
 
