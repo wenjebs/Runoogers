@@ -267,4 +267,37 @@ class Database {
       return [];
     }
   }
+
+  Future<void> incrementTotalDistanceRan(double distance) {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(userRef);
+      final currentDistance = doc.data()?['totalDistanceRan'] ?? 0;
+      transaction.update(userRef, {
+        'totalDistanceRan': currentDistance + distance,
+      });
+    });
+  }
+
+  Future<void> incrementTotalTimeRan(int time) {
+    // in ms
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(userRef);
+      final currentTime = doc.data()?['totalTime'] ?? 0;
+      transaction.update(userRef, {
+        'totalTime': currentTime + time,
+      });
+    });
+  }
 }

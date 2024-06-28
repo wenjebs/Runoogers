@@ -230,6 +230,11 @@ class RunDetailsAndStop extends ConsumerWidget {
                                       MapLineDrawer.polylineCoordinates,
                                 ),
                               );
+
+                              //update stats
+                              Repository.incrementTotalDistanceRan(distance);
+                              Repository.incrementTotalTimeRan(time);
+
                               // stop location tracking and reset dist
                               LocationService.reset();
 
