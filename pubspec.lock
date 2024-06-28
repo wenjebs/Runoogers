@@ -777,7 +777,7 @@ packages:
     source: hosted
     version: "4.2.0"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
@@ -785,7 +785,7 @@ packages:
     source: hosted
     version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "761a297c042deedc1ffbb156d6e2af13886bb305c2a343a4d972504cd67dd938"
@@ -1454,7 +1454,7 @@ packages:
     source: hosted
     version: "3.0.0"
   webview_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter
       sha256: "6869c8786d179f929144b4a1f86e09ac0eddfe475984951ea6c634774c16b522"

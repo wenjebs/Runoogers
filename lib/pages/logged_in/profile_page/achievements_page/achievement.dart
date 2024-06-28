@@ -20,7 +20,6 @@ class Achievement extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Row(
         children: [
-          const SizedBox(width: 16),
           Column(
             children: [
               CircleAvatar(
@@ -28,7 +27,7 @@ class Achievement extends StatelessWidget {
                 radius: 36,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0),
+                padding: const EdgeInsets.only(top: 2.0),
                 child:
                     Text('$points pts', style: const TextStyle(fontSize: 16)),
               ),

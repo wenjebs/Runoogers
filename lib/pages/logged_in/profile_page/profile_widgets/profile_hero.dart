@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:o3d/o3d.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/3d_avatar.dart';
 
 class ProfileHero extends StatelessWidget {
   const ProfileHero({super.key});
@@ -62,11 +62,7 @@ class ProfileHero extends StatelessWidget {
           //     ),
           //   ),
           // ),
-
-          //  READYPLAYERME
-          const O3D.network(
-            src: 'https://models.readyplayer.me/667ea6b3decc99af8e97c067.glb',
-          ),
+          const RPMAvatar(),
         ],
       ),
     );
