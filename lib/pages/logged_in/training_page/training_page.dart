@@ -27,57 +27,89 @@ class _TrainingPageState extends State<TrainingPage> {
   void initState() {
     super.initState();
     _fetchTrainingPlans();
+    // debugPrint(runningPlan.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MaterialButton(
-              onPressed: () {
-                setState(() {
-                  generated = true;
-                });
-              },
-              color: Theme.of(context).colorScheme.primary,
-              child: const Text('Generate'),
-            ),
-            generated
-                ? Consumer(builder: (context, ref, child) {
-                    final AsyncValue<Map<String, dynamic>> jsonPlan =
-                        ref.watch(planProvider);
-                    debugPrint(jsonPlan.value.toString());
-
-                    if (jsonPlan is AsyncLoading) {
-                      return Lottie.asset('lib/assets/lottie/ai.json');
-                    } else if (jsonPlan is AsyncError) {
-                      return Text(jsonPlan.error.toString(),
-                          style:
-                              const TextStyle(color: Colors.red, fontSize: 16));
-                    } else if (jsonPlan is AsyncData) {
-                      List<dynamic> runningPlan =
-                          jsonPlan.value!['running_plan']['weeks'];
-                      return TrainingSchedule(runningPlan: runningPlan);
-                    } else {
-                      return const SizedBox(); // Fallback for unexpected state
-                    }
-                  })
-                : const Text("Not generated"),
-            MaterialButton(
-              onPressed: () {
-                setState(() {
-                  generated = false;
-                });
-              },
-              color: Theme.of(context).colorScheme.primary,
-              child: const Text('Reset'),
-            ),
-          ],
+    if (runningPlan.isNotEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    generated = true;
+                  });
+                },
+                color: Theme.of(context).colorScheme.primary,
+                child: const Text('Regenerate'),
+              ),
+              TrainingSchedule(runningPlan: runningPlan),
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    generated = false;
+                  });
+                },
+                color: Theme.of(context).colorScheme.primary,
+                child: const Text('Reset'),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    generated = true;
+                  });
+                },
+                color: Theme.of(context).colorScheme.primary,
+                child: const Text('Generate'),
+              ),
+              generated
+                  ? Consumer(builder: (context, ref, child) {
+                      final AsyncValue<Map<String, dynamic>> jsonPlan =
+                          ref.watch(planProvider);
+                      // debugPrint(jsonPlan.value.toString());
+
+                      if (jsonPlan is AsyncLoading) {
+                        return Lottie.asset('lib/assets/lottie/ai.json');
+                      } else if (jsonPlan is AsyncError) {
+                        return Text(jsonPlan.error.toString(),
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 16));
+                      } else if (jsonPlan is AsyncData) {
+                        List<dynamic> runningPlan =
+                            jsonPlan.value!['running_plan']['weeks'];
+                        return TrainingSchedule(runningPlan: runningPlan);
+                      } else {
+                        return const SizedBox(); // Fallback for unexpected state
+                      }
+                    })
+                  : const Text("Not generated"),
+              MaterialButton(
+                onPressed: () {
+                  setState(() {
+                    generated = false;
+                  });
+                },
+                color: Theme.of(context).colorScheme.primary,
+                child: const Text('Reset'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

@@ -260,7 +260,7 @@ class Database {
       final doc = querySnapshot.docs.first;
       Map<String, dynamic> data = doc.data();
       // Assuming the document has a field 'trainingPlan' which is a list
-      List<dynamic> trainingPlan = data['trainingPlan'];
+      List<dynamic> trainingPlan = data['running_plan']['weeks'];
       return trainingPlan;
     } else {
       // Handle the case where the collection does not exist or has no documents
