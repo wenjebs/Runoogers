@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/achievements.dart';
+import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
@@ -46,7 +46,7 @@ class ProfilePage extends ConsumerWidget {
           // ignore: avoid_types_as_parameter_names
           Consumer(builder: (context, ref, child) {
             return ref.watch(selectedIndexProvider) == 0
-                ? const AchievementsSection()
+                ? const AchievementsFeed()
                 : const RunsSection();
           })
         ]),

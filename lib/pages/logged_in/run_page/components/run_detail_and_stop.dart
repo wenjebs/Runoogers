@@ -234,6 +234,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                               //update stats
                               Repository.incrementTotalDistanceRan(distance);
                               Repository.incrementTotalTimeRan(time);
+                              Repository.updateUserAchievements(distance, time);
 
                               // stop location tracking and reset dist
                               LocationService.reset();
