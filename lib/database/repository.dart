@@ -86,6 +86,11 @@ class Repository {
     return database.getTrainingPlans();
   }
 
+  // GET USER STATS
+  static Future<int> getRunsDone() {
+    return database.getRunsDone();
+  }
+
   // UPDATE USER STATS
   static Future<void> incrementTotalDistanceRan(double distance) {
     return database.incrementTotalDistanceRan(distance);
@@ -93,6 +98,10 @@ class Repository {
 
   static Future<void> incrementTotalTimeRan(int time) {
     return database.incrementTotalTimeRan(time);
+  }
+
+  static Future<void> incrementRuns() {
+    return database.incrementRuns();
   }
 
   static Future<List<Map<String, dynamic>>> fetchUserAchievements() {

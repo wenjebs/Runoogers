@@ -53,6 +53,7 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
+    init();
     locationService.checkPermission();
     locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
@@ -66,6 +67,13 @@ class _RunPageState extends State<RunPage> {
           }
       },
     );
+  }
+
+  init() async {
+    currPos = await Geolocator.getCurrentPosition();
+    setState(() {
+      currPos = currPos;
+    });
   }
 
   @override
@@ -139,6 +147,7 @@ class _RunPageState extends State<RunPage> {
                         paddingValue: paddingValue,
                         stopWatchTimer: _stopWatchTimer,
                         context: context,
+                        mapContainer: googleMapsContainer,
                       ),
                     )
                   : FloatingActionButton.extended(
