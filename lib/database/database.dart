@@ -336,17 +336,21 @@ class Database {
       throw Exception("User not logged in");
     }
 
-    final achievementRef = firestore
-        .collection('users')
-        .doc(userId)
-        .collection('achievements')
-        .doc('5km');
+    final userRef = firestore.collection('users').doc(userId);
 
-    if (distance >= 5) {
-      // Add achievement for running 5km
-      firestore.runTransaction((transaction) async {
+    if (distance > 5) {
+      // 5km achievement
+      final achievementRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('achievements')
+          .doc('5km');
+
+      await firestore.runTransaction((transaction) async {
         final doc = await transaction.get(achievementRef);
-        if (!doc.exists) {
+        final userDoc = await transaction.get(userRef);
+
+        if (!doc.exists && userDoc.exists) {
           transaction.set(achievementRef, {
             'name': 'Seasoned Runner',
             'description': 'Run your first 5km run!',
@@ -354,20 +358,34 @@ class Database {
             'picture':
                 'https://img.freepik.com/free-vector/award-medal-realistic-composition-with-isolated-image-medal-with-laurel-wreath-blank-background-vector-illustration_1284-66109.jpg?size=626&ext=jpg&ga=GA1.1.1141335507.1719273600&semt=ais_user',
           });
+
+          final userPoints = userDoc.data()!['points'];
+          transaction.update(userRef, {'points': userPoints + 500});
         }
       });
     }
 
-    if (distance / (time / 1000) < 5) {
-      firestore.runTransaction((transaction) async {
+    if ((time / 60000) / distance < 5) {
+      // 1km under 5 minutes achievement
+      final achievementRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('achievements')
+          .doc('1kmUnder5Minutes');
+
+      await firestore.runTransaction((transaction) async {
         final doc = await transaction.get(achievementRef);
-        if (!doc.exists) {
+        final userDoc = await transaction.get(userRef);
+        if (!doc.exists && userDoc.exists) {
           transaction.set(achievementRef, {
             'name': 'Speedy Gonzales',
             'description': 'Run 1km under 5 minutes!',
             'points': 300,
             'picture': 'https://m.media-amazon.com/images/I/71wRDvtAJLL.jpg',
           });
+
+          final userPoints = userDoc.data()!['points'];
+          transaction.update(userRef, {'points': userPoints + 300});
         }
       });
     }

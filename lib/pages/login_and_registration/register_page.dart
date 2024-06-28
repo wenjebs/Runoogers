@@ -41,7 +41,14 @@ class _RegisterPageState extends State<RegisterPage> {
           'friends': [],
           'onboarded': false,
           'trainingOnboarded': false,
-          'runstats': {'totalDistance': 0, 'totalTime': 0, 'totalRuns': 0},
+          'runstats': {
+            'totalDistance': 0,
+            'totalTime': 0,
+            'totalRuns': 0,
+            'fastestTime': 0,
+            'longestDistance': 0,
+          },
+          'points': 0,
         });
       } else {
         showErrorMessage("passwords dont match");
