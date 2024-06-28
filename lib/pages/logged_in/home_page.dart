@@ -3,21 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/components/side_drawer.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
-import 'package:runningapp/pages/logged_in/social_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
+import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/user_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int initialIndex;
+
+  const HomePage({super.key, this.initialIndex = 0});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,12 +30,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
+  bool trainingOnboarded = false;
 
   final List<Widget> _pages = [
     const UserPage(),
     const RunPage(),
-    const SocialPage(),
+    const SocialMediaPage(),
     const ProfilePage(),
     const StoryPage(),
     const TrainingPage(),
@@ -67,6 +73,43 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  List<Widget> _getAppBarActions(int selectedIndex, BuildContext context) {
+    switch (selectedIndex) {
+      case 2:
+        return [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddFriendsPage()),
+              );
+            },
+            icon: const Icon(Icons.person_add),
+          ),
+        ];
+      case 3:
+        return [
+          IconButton(
+            onPressed: Authenticator().logOut,
+            icon: const Icon(Icons.logout),
+          ),
+        ];
+      default:
+        return [];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Repository.getTrainingOnboarded().then((value) {
+      setState(() {
+        trainingOnboarded = value;
+      });
+    });
+    _selectedIndex = widget.initialIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -86,19 +129,16 @@ class _HomePageState extends State<HomePage> {
           appBar: isRunning
               ? null
               : AppBar(
-                  actions: _selectedIndex == 3
-                      ? [
-                          IconButton(
-                              onPressed: Authenticator().logOut,
-                              icon: const Icon(Icons.logout)),
-                        ]
-                      : [],
+                  actions: _getAppBarActions(_selectedIndex, context),
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
                   backgroundColor: Colors.red,
                 ),
-          body: _pages[_selectedIndex],
+          backgroundColor: Colors.red,
+          body: _selectedIndex == 5 && !trainingOnboarded
+              ? const TrainingOnboardingPage()
+              : _pages[_selectedIndex],
           bottomNavigationBar: isRunning
               ? const SizedBox()
               : GNav(
@@ -106,6 +146,7 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).focusColor,
                   activeColor: Theme.of(context).primaryColor,
                   gap: 6,
+                  selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
                   tabs: const [
                     GButton(icon: Icons.home, text: "Home"),
                     GButton(icon: Icons.adjust, text: "Run"),

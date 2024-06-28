@@ -158,6 +158,13 @@ class _RunPageState extends State<RunPage> {
                           GoogleMapsContainer.controller,
                           true,
                         );
+                        locationService.listenToLocationChanges(
+                          (Position newPos) => setState(() {
+                            currPos = newPos;
+                          }),
+                          GoogleMapsContainer.controller,
+                          true,
+                        );
                       },
                       label: const Text("Start Run"),
                     );

@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'route_provider.g.dart';
 
 @riverpod
-Future<Set<Object>> route(RouteRef ref, int seed) async {
+Future<Set<Object>> route(RouteRef ref, int seed, int distance) async {
   final OpenRouteService client =
       OpenRouteService(apiKey: dotenv.env['ORS_API_KEY']!);
 
@@ -20,14 +20,14 @@ Future<Set<Object>> route(RouteRef ref, int seed) async {
 
   final List<ORSCoordinate> testRoute =
       await client.directionsMultiRouteCoordsPost(coordinates: test, options: {
-    "round_trip": {"length": 5000, "points": 5, "seed": seed}
+    "round_trip": {"length": distance * 1000, "points": 5, "seed": seed}
   });
 
   final List<DirectionRouteData> abc = await client
       .directionsMultiRouteDataPost(coordinates: test, alternativeRoutes: {
     "target_count": 0
   }, options: {
-    "round_trip": {"length": 5000, "points": 5, "seed": seed}
+    "round_trip": {"length": distance * 1000, "points": 5, "seed": seed}
   });
 
   Set<Marker> markers = <Marker>{};
