@@ -285,7 +285,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                               Repository.incrementTotalTimeRan(time);
 
                               // update and display achievements
-                              Set<String> newAchievements =
+                              List<String> newAchievements =
                                   await Repository.updateUserAchievements(
                                       distance, time);
 

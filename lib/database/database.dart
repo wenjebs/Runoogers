@@ -358,7 +358,7 @@ class Database {
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  Future<Set<String>> updateUserAchievements(double distance, int time) async {
+  Future<List<String>> updateUserAchievements(double distance, int time) async {
     final userId = auth.userId;
     List<String> unlocked = [];
 
@@ -423,6 +423,6 @@ class Database {
       });
     }
 
-    return unlocked.toSet();
+    return unlocked;
   }
 }
