@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/providers.dart';
@@ -10,15 +16,18 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerWidget {
-  const RunDetailsAndStop({
+  RunDetailsAndStop({
     super.key,
     required this.paddingValue,
     required StopWatchTimer stopWatchTimer,
     required this.context,
+    required this.mapContainer,
   }) : _stopWatchTimer = stopWatchTimer;
 
+  final imagesRef = FirebaseStorage.instance.ref().child('images');
   final double paddingValue;
   final StopWatchTimer _stopWatchTimer;
+  final GoogleMapsContainer mapContainer;
   final BuildContext context;
 
   @override
@@ -169,7 +178,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               // stop timer
                               _stopWatchTimer.onStopTimer();
 
@@ -214,6 +223,45 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   );
                                 },
                               );
+                              // get runs done
+                              final String username =
+                                  await Repository.fetchName(
+                                      FirebaseAuth.instance.currentUser!.uid);
+                              final int runsDone =
+                                  await Repository.getRunsDone();
+
+                              //take screenshot of current run and upload to fb
+                              final screenshot =
+                                  await mapContainer.takeSnapshot();
+                              if (screenshot != null) {
+                                final Directory tempDir =
+                                    await getTemporaryDirectory();
+                                final path = tempDir.path;
+                                final imageFile =
+                                    File('$path/$username$runsDone.png');
+                                // Write the screenshot data to the file
+                                await imageFile.writeAsBytes(screenshot);
+                                // Ensure the file has been created and contains data
+                                if (await imageFile.exists()) {
+                                  try {
+                                    // Reference to your Firebase Storage location
+                                    var imagesRef = FirebaseStorage.instance
+                                        .ref()
+                                        .child('images/$username$runsDone.png');
+
+                                    // Upload the file
+                                    await imagesRef.putFile(imageFile);
+                                    debugPrint(
+                                        'Screenshot uploaded successfully');
+                                  } catch (e) {
+                                    debugPrint(
+                                        'Error uploading screenshot: $e');
+                                  }
+                                } else {
+                                  debugPrint(
+                                      'Failed to save screenshot to file.');
+                                }
+                              }
 
                               // add run to database
                               Repository.addRun(
@@ -232,6 +280,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                               );
 
                               //update stats
+                              Repository.incrementRuns();
                               Repository.incrementTotalDistanceRan(distance);
                               Repository.incrementTotalTimeRan(time);
 

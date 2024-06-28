@@ -300,4 +300,32 @@ class Database {
       });
     });
   }
+
+  Future<void> incrementRuns() {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(userRef);
+      final currentRuns = doc.data()?['totalRuns'] ?? 0;
+      transaction.update(userRef, {
+        'totalRuns': currentRuns + 1,
+      });
+    });
+  }
+
+  Future<int> getRunsDone() {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return userRef.get().then((doc) {
+      return doc.data()?['totalRuns'] ?? 0;
+    });
+  }
 }
