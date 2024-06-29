@@ -116,4 +116,12 @@ class Repository {
   static Future<void> addPoints(int points) {
     return database.addPoints(points);
   }
+
+  static Future<List<Map<String, dynamic>>> fetchTopUsersGlobal() {
+    return database.fetchTopUsersGlobal();
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchTopUsersFriends() {
+    return database.fetchTopUsersFriends();
+  }
 }
