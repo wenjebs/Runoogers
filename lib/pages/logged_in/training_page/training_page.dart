@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/plan_generator.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_schedule.dart';
 
@@ -49,10 +52,32 @@ class _TrainingPageState extends State<TrainingPage> {
               ),
               TrainingSchedule(runningPlan: runningPlan),
               MaterialButton(
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     generated = false;
                   });
+                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  // Reference to the user's trainingPlans subcollection
+                  var collectionRef = FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userId)
+                      .collection('trainingPlans');
+                  // Fetch all documents in the subcollection
+                  var snapshots = await collectionRef.get();
+                  // Delete each document
+                  var deleteFutures = snapshots.docs
+                      .map((doc) => doc.reference.delete())
+                      .toList();
+
+                  await Future.wait(deleteFutures);
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomePage(
+                              initialIndex: 5,
+                            )),
+                  );
                 },
                 color: Theme.of(context).colorScheme.primary,
                 child: const Text('Reset'),
