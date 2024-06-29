@@ -157,9 +157,9 @@ class _HomePageState extends State<HomePage> {
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.onSurface,
           body: _selectedIndex == 5 && !trainingOnboarded
               ? const TrainingOnboardingPage()
               : _pages[_selectedIndex],

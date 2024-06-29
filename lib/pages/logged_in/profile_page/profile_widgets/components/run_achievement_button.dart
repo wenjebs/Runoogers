@@ -13,6 +13,10 @@ class RunAchievementButton extends ConsumerWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         height: 52,
         decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.onSecondary,
+            width: 2,
+          ),
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(90),
         ),
