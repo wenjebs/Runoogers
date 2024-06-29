@@ -35,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
           password: passwordController.text,
         );
         Repository.addUser('users', {
+          // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
           'email': emailController.text,
           'uid': FirebaseAuth.instance.currentUser!.uid,
           'posts': [],

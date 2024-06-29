@@ -38,19 +38,19 @@ class GlobalThemeData {
     onSecondary: Color(0xFF322942),
     error: Colors.redAccent,
     onError: Colors.white,
-    surface: Color(0xFFFAFBFB),
+    surface: Color.fromARGB(255, 133, 133, 133),
     onSurface: Color(0xFF241E30),
     brightness: Brightness.light,
   );
   static const ColorScheme darkColorScheme = ColorScheme(
     primary: Color(0xFFFF8383),
     secondary: Color(0xFF4D1F7C),
-    surface: Color(0xFF1F1929),
+    surface: Colors.white,
     error: Colors.redAccent,
     onError: Colors.white,
     onPrimary: Colors.white,
     onSecondary: Colors.white,
-    onSurface: Colors.white,
+    onSurface: Color.fromARGB(255, 0, 0, 0),
     brightness: Brightness.dark,
   );
 }

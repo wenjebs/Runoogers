@@ -26,7 +26,7 @@ class ProfilePage extends ConsumerWidget {
             width: MediaQuery.of(context).size.width,
             height: 200,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             child: const ProfileHero(),
           ),

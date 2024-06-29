@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const UserPage(),
-    const RunPage(),
+    const RunPage(
+      storyRun: false,
+    ),
     const SocialMediaPage(),
     const ProfilePage(),
     const StoryPage(),
@@ -129,13 +131,35 @@ class _HomePageState extends State<HomePage> {
           appBar: isRunning
               ? null
               : AppBar(
-                  actions: _getAppBarActions(_selectedIndex, context),
+                  centerTitle: true,
+                  actions: _selectedIndex == 3
+                      ? [
+                          IconButton(
+                              onPressed: Authenticator().logOut,
+                              icon: const Icon(Icons.logout)),
+                        ]
+                      : _selectedIndex == 2 // Check if selectedIndex is 2
+                          ? [
+                              IconButton(
+                                  onPressed: () {
+                                    // Navigate to AddFriendPage
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AddFriendsPage()),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                      Icons.person_add)), // Add Friend Icon
+                            ]
+                          : [],
                   title: Text(
                     getTitle(_selectedIndex),
                   ),
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.onSurface,
           body: _selectedIndex == 5 && !trainingOnboarded
               ? const TrainingOnboardingPage()
               : _pages[_selectedIndex],
@@ -143,8 +167,8 @@ class _HomePageState extends State<HomePage> {
               ? const SizedBox()
               : GNav(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).focusColor,
-                  activeColor: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  activeColor: Theme.of(context).colorScheme.primary,
                   gap: 6,
                   selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
                   tabs: const [
