@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 
-class SideDrawer extends StatelessWidget {
+class SideDrawer extends ConsumerWidget {
   final Function(int) onTap;
 
   const SideDrawer({required this.onTap, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(userInformationProvider).asData?.value;
+
+    final name = userInfo?['name'] as String?;
+    final points = userInfo?['points'] as int?;
+
     return Drawer(
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountName: const Text('Jerrick Koh'),
-            accountEmail: const Text('69 pts'),
+            accountName:
+                name != null ? Text(name) : const CircularProgressIndicator(),
+            accountEmail: Text('$points pts'),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.network(

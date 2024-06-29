@@ -40,6 +40,15 @@ class _RegisterPageState extends State<RegisterPage> {
           'posts': [],
           'friends': [],
           'onboarded': false,
+          'trainingOnboarded': false,
+          'runstats': {
+            'totalDistance': 0,
+            'totalTime': 0,
+            'totalRuns': 0,
+            'fastestTime': 0,
+            'longestDistance': 0,
+          },
+          'points': 0,
         });
       } else {
         showErrorMessage("passwords dont match");
@@ -52,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // if (mounted) {
       Navigator.pop(context);
       // }
-      showErrorMessage(e.code);
+      showErrorMessage(e.message!);
     }
   }
 
@@ -81,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("lib/images/running.jpg"),
+            image: AssetImage("lib/assets/images/running.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -116,28 +125,46 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 25),
 
                     // email textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: emailController,
                       hintText: 'Email',
                       obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 10),
 
                     // password textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: passwordController,
                       hintText: 'Password',
                       obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 10),
 
                     // confirm password textfield
-                    MyTextField(
+                    AuthTextField(
                       controller: confirmPasswordController,
                       hintText: 'Confirm Password',
                       obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
                     ),
 
                     const SizedBox(height: 25),

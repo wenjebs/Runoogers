@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +53,7 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
+    init();
     locationService.checkPermission();
     locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
@@ -67,6 +69,13 @@ class _RunPageState extends State<RunPage> {
     );
   }
 
+  init() async {
+    currPos = await Geolocator.getCurrentPosition();
+    setState(() {
+      currPos = currPos;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +85,11 @@ class _RunPageState extends State<RunPage> {
             style: TextStyle(color: Colors.black, fontSize: 16)),
       ),
       body: currPos == null
-          ? const LoadingMap()
+          ? LocationService.locationServiceEnabled
+              ? LocationService.connectivity.contains(ConnectivityResult.none)
+                  ? const Text("NO internet!") // TODO make nicer
+                  : const LoadingMap()
+              : const Text("Location services are disabled")
           : SafeArea(
               child: Builder(builder: (context) {
                 return GoogleMap(
@@ -134,6 +147,7 @@ class _RunPageState extends State<RunPage> {
                         paddingValue: paddingValue,
                         stopWatchTimer: _stopWatchTimer,
                         context: context,
+                        mapContainer: googleMapsContainer,
                       ),
                     )
                   : FloatingActionButton.extended(

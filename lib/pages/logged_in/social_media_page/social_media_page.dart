@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/post_creation_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/normal_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 
 class SocialMediaPage extends ConsumerWidget {
@@ -29,7 +29,7 @@ class SocialMediaPage extends ConsumerWidget {
                   id: doc['id'],
                   userId: doc['userId'],
                   caption: doc['caption'],
-                  run: doc['run'],
+                  photoUrl: doc['photoUrl'],
                 );
               }).toList();
               return ListView.builder(

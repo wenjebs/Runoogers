@@ -2,16 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 
-class PostCreationPage extends StatefulWidget {
-  const PostCreationPage({super.key});
+class RunningPostCreationPage extends StatefulWidget {
+  final String photoUrl;
+
+  const RunningPostCreationPage({super.key, required this.photoUrl});
 
   @override
-  _PostCreationPageState createState() => _PostCreationPageState();
+  RunningPostCreationPageState createState() => RunningPostCreationPageState();
 }
 
-class _PostCreationPageState extends State<PostCreationPage> {
+class RunningPostCreationPageState extends State<RunningPostCreationPage> {
   final _formKey = GlobalKey<FormState>();
   String _caption = '';
+  String get photoUrl => widget.photoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,12 @@ class _PostCreationPageState extends State<PostCreationPage> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              Image.network(
+                photoUrl,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Caption'),
                 validator: (value) {
@@ -45,7 +54,7 @@ class _PostCreationPageState extends State<PostCreationPage> {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
-                      'run': {},
+                      'photoUrl': photoUrl,
                     });
                     Navigator.pop(context);
                   }

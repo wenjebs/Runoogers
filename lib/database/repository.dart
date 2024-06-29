@@ -77,4 +77,43 @@ class Repository {
   static Future<List<String>> getFriendList() {
     return database.getFriendList();
   }
+
+  static Future<bool> getTrainingOnboarded() {
+    return database.getTrainingOnboarded();
+  }
+
+  static Future<List<dynamic>> getTrainingPlans() {
+    return database.getTrainingPlans();
+  }
+
+  // GET USER STATS
+  static Future<int> getRunsDone() {
+    return database.getRunsDone();
+  }
+
+  // UPDATE USER STATS
+  static Future<void> incrementTotalDistanceRan(double distance) {
+    return database.incrementTotalDistanceRan(distance);
+  }
+
+  static Future<void> incrementTotalTimeRan(int time) {
+    return database.incrementTotalTimeRan(time);
+  }
+
+  static Future<void> incrementRuns() {
+    return database.incrementRuns();
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchUserAchievements() {
+    return database.fetchUserAchievements();
+  }
+
+  static Future<List<String>> updateUserAchievements(
+      double distance, int time) {
+    return database.updateUserAchievements(distance, time);
+  }
+
+  static Future<void> addPoints(int points) {
+    return database.addPoints(points);
+  }
 }

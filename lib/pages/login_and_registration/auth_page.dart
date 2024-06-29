@@ -28,10 +28,12 @@ class AuthPage extends StatelessWidget {
                   if (snapshot.hasData) {
                     final data = snapshot.data!.data() as Map<String, dynamic>;
                     final onboarded = data['onboarded'] as bool;
-                    return onboarded ? const HomePage() : OnboardingPage();
+                    return onboarded
+                        ? const HomePage()
+                        : const OnboardingPage();
                   }
                   // Loading or error state
-                  return HomePage();
+                  return const HomePage();
                 },
               );
             }
