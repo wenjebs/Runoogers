@@ -78,6 +78,18 @@ class Authenticator {
         Repository.addUser('users', {
           'email': user.email,
           'uid': user.uid,
+          'posts': [],
+          'friends': [],
+          'onboarded': false,
+          'trainingOnboarded': false,
+          'runstats': {
+            'totalDistance': 0,
+            'totalTime': 0,
+            'totalRuns': 0,
+            'fastestTime': 0,
+            'longestDistance': 0,
+          },
+          'points': 0,
         });
       }
       return AuthResult.success;
