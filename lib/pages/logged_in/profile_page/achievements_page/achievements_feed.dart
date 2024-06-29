@@ -29,15 +29,18 @@ class AchievementsFeedState extends State<AchievementsFeed> {
                     itemCount: achievements.length,
                     itemBuilder: (context, index) {
                       final achievement = achievements[index];
-                      return Achievement(
-                        picture: achievement[
-                            'picture'], // Adjust according to your data structure
-                        name: achievement[
-                            'name'], // Adjust according to your data structure
-                        description: achievement[
-                            'description'], // Adjust according to your data structure
-                        points: achievement[
-                            'points'], // Adjust according to your data structure
+                      return Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Achievement(
+                          picture: achievement[
+                              'picture'], // Adjust according to your data structure
+                          name: achievement[
+                              'name'], // Adjust according to your data structure
+                          description: achievement[
+                              'description'], // Adjust according to your data structure
+                          points: achievement[
+                              'points'], // Adjust according to your data structure
+                        ),
                       );
                     },
                   ),
