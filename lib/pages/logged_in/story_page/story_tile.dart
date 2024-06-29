@@ -14,7 +14,11 @@ class StoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => StoryDetailPage())),
+        context,
+        MaterialPageRoute(
+          builder: (context) => StoryDetailPage(),
+        ),
+      ),
       child: Column(
         children: [
           Container(

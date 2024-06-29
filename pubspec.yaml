@@ -65,6 +65,7 @@ dependencies:
   html: ^0.15.4
   http: ^1.2.1
   webview_flutter: ^4.8.0
+  just_audio: ^0.9.38
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +95,7 @@ flutter:
   assets:
     - lib/assets/iframe.html
     - lib/assets/images/
+    - lib/assets/audio/
     - lib/assets/lottie/ai.json
     - dotenv.env
 

@@ -35,10 +35,12 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const UserPage(),
-    const RunPage(),
+    const RunPage(
+      storyRun: false,
+    ),
     const SocialMediaPage(),
     const ProfilePage(),
-    StoryPage(),
+    const StoryPage(),
     const TrainingPage(),
     const RunStatsPage(),
     const LeaderboardsPage(),
