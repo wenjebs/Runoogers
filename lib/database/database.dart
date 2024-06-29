@@ -346,6 +346,24 @@ class Database {
     });
   }
 
+  Future<void> storeImageUrl(String imageUrl) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    var documentReference =
+        FirebaseFirestore.instance.collection('users').doc();
+    await documentReference.set({
+      'imageUrl': imageUrl,
+      // Add other run details here
+    });
+  }
+
+  ///////////////////////////////////////
+  /// GAMIFICATION / ACHIEVEMENT RELATED
+  ///////////////////////////////////////
+
   Future<List<Map<String, dynamic>>> fetchUserAchievements() async {
     final userId = auth.userId;
     if (userId == null) {
@@ -384,13 +402,13 @@ class Database {
           transaction.set(achievementRef, {
             'name': 'Seasoned Runner',
             'description': 'Run your first 5km run!',
-            'points': 500,
+            'points': 5000,
             'picture':
                 'https://img.freepik.com/free-vector/award-medal-realistic-composition-with-isolated-image-medal-with-laurel-wreath-blank-background-vector-illustration_1284-66109.jpg?size=626&ext=jpg&ga=GA1.1.1141335507.1719273600&semt=ais_user',
           });
 
           final userPoints = userDoc.data()!['points'];
-          transaction.update(userRef, {'points': userPoints + 500});
+          transaction.update(userRef, {'points': userPoints + 5000});
 
           unlocked.add('Seasoned Runner');
         }
@@ -412,17 +430,33 @@ class Database {
           transaction.set(achievementRef, {
             'name': 'Speedy Gonzales',
             'description': 'Run 1km under 5 minutes!',
-            'points': 300,
+            'points': 3000,
             'picture': 'https://m.media-amazon.com/images/I/71wRDvtAJLL.jpg',
           });
 
           final userPoints = userDoc.data()!['points'];
-          transaction.update(userRef, {'points': userPoints + 300});
+          transaction.update(userRef, {'points': userPoints + 3000});
           unlocked.add('Speedy Gonzales');
         }
       });
     }
 
     return unlocked;
+  }
+
+  Future<void> addPoints(int points) {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(userRef);
+      final currentPoints = doc.data()?['points'] ?? 0;
+      transaction.update(userRef, {
+        'points': currentPoints + points,
+      });
+    });
   }
 }

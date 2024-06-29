@@ -9,6 +9,8 @@ class Run {
   final String time;
   final String date;
   final List<LatLng> polylinePoints;
+  final String imageUrl;
+  final double pace;
 
   Run({
     required this.id,
@@ -18,6 +20,8 @@ class Run {
     required this.time,
     required this.date,
     required this.polylinePoints,
+    required this.imageUrl,
+    required this.pace,
   });
 
   set setId(String id) {
@@ -31,6 +35,8 @@ class Run {
   String get getTime => time;
   String get getDate => date;
   List<LatLng> get getPolylinePoints => polylinePoints;
+  String get getImageUrl => imageUrl;
+  double get getPace => pace;
 
   factory Run.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -41,6 +47,8 @@ class Run {
         .map((pointData) =>
             LatLng(pointData['latitude'], pointData['longitude']))
         .toList();
+    var pace = data['pace'];
+    double paceAsDouble = pace is int ? pace.toDouble() : pace;
 
     return Run(
       id: data['id'],
@@ -50,6 +58,8 @@ class Run {
       time: data['time'],
       date: data['date'],
       polylinePoints: pointsData,
+      imageUrl: data['imageUrl'],
+      pace: paceAsDouble,
     );
   }
 
@@ -64,6 +74,8 @@ class Run {
             .map((point) =>
                 {'latitude': point.latitude, 'longitude': point.longitude})
             .toList(),
+        'imageUrl': imageUrl,
+        'pace': pace,
       };
 
   Run copyWith({
@@ -73,6 +85,9 @@ class Run {
     String? distance,
     String? time,
     String? date,
+    List<LatLng>? polylinePoints,
+    String? imageUrl,
+    double? pace,
   }) {
     return Run(
       id: id ?? this.id,
@@ -81,7 +96,9 @@ class Run {
       distance: distance ?? this.distance,
       time: time ?? this.time,
       date: date ?? this.date,
-      polylinePoints: polylinePoints,
+      polylinePoints: polylinePoints ?? this.polylinePoints,
+      imageUrl: imageUrl ?? this.imageUrl,
+      pace: pace ?? this.pace,
     );
   }
 }

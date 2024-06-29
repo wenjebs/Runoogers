@@ -107,7 +107,7 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
               } else {
                 // Show an error message if the username is taken
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                       content: Text(
                           'Username is already taken, please choose another one.')),
                 );

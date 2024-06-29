@@ -112,4 +112,8 @@ class Repository {
       double distance, int time) {
     return database.updateUserAchievements(distance, time);
   }
+
+  static Future<void> addPoints(int points) {
+    return database.addPoints(points);
+  }
 }

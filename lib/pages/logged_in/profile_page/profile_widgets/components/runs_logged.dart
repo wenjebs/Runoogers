@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/running_post_creation_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class RunsSection extends ConsumerWidget {
@@ -25,62 +25,81 @@ class RunsSection extends ConsumerWidget {
                     children: runs.docs.map((doc) {
                       Run run = Run.fromFirestore(
                           doc as DocumentSnapshot<Map<String, dynamic>>, null);
-                      return ListTile(
-                        title: Text(doc['name'],
-                            style: Theme.of(context).textTheme.headlineMedium),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Date: ${run.date}"),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      const Text("Distance"),
-                                      Text("${run.distance} km"),
-                                    ],
+                      return Card(
+                        elevation: 4.0,
+                        margin: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    doc['name'] ?? 'Unknown',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      const Text("Time"),
-                                      Text(run.time),
-                                    ],
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [Text("Pace"), Text("hehe")],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 300, // adjust as needed
-                              child: GoogleMap(
-                                zoomControlsEnabled: false,
-                                initialCameraPosition: CameraPosition(
-                                  target: run.getPolylinePoints
-                                      .first, // assuming Run has a position field of type LatLng
-                                  zoom: 14,
-                                ),
-                                polylines: {
-                                  Polyline(
-                                    polylineId: const PolylineId('route'),
-                                    color: Colors.red,
-                                    points: run
-                                        .getPolylinePoints, // assuming Run has a polylineCoordinates field of type List<LatLng>
-                                  ),
-                                },
+                                  const Spacer(),
+                                  IconButton(
+                                      icon: const Icon(Icons.share),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RunningPostCreationPage(
+                                                    photoUrl:
+                                                        doc['imageUrl'] ?? ''),
+                                          ),
+                                        );
+                                      }),
+                                ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 8.0),
+                              Text("Date: ${run.date}"),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        const Text("Distance"),
+                                        Text("${run.distance} km"),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        const Text("Time"),
+                                        Text(run.time),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        const Text("Pace"),
+                                        Text(
+                                            "${run.pace.toStringAsFixed(2)} min/km"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Image.network(
+                                doc['imageUrl'] ?? '',
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }).toList(),

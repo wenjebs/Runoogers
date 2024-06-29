@@ -14,14 +14,16 @@ final trainingOnboardingProvider =
 class TrainingOnboardingState {
   final int timesPerWeek;
   final double targetDistance;
-  final double targetTime;
+  final String targetTime;
   final int weeksToTrain;
+  final String level;
 
   TrainingOnboardingState(
       {this.timesPerWeek = 0,
       this.targetDistance = 0,
-      this.targetTime = 0,
-      this.weeksToTrain = 0});
+      this.targetTime = '',
+      this.weeksToTrain = 0,
+      this.level = ""});
 }
 
 class TrainingOnboardingNotifier
@@ -30,26 +32,32 @@ class TrainingOnboardingNotifier
 
   void updateTimesPerWeek(int timesPerWeek) {
     state = TrainingOnboardingState(
-        timesPerWeek: timesPerWeek,
-        targetDistance: state.targetDistance,
-        targetTime: state.targetTime,
-        weeksToTrain: state.weeksToTrain);
+      timesPerWeek: timesPerWeek,
+      targetDistance: state.targetDistance,
+      targetTime: state.targetTime,
+      weeksToTrain: state.weeksToTrain,
+      level: state.level,
+    );
   }
 
   void updateTargetDistance(double targetDistance) {
     state = TrainingOnboardingState(
-        timesPerWeek: state.timesPerWeek,
-        targetDistance: targetDistance,
-        targetTime: state.targetTime,
-        weeksToTrain: state.weeksToTrain);
+      timesPerWeek: state.timesPerWeek,
+      targetDistance: targetDistance,
+      targetTime: state.targetTime,
+      weeksToTrain: state.weeksToTrain,
+      level: state.level,
+    );
   }
 
-  void updateTargetTime(double targetTime) {
+  void updateTargetTime(String targetTime) {
     state = TrainingOnboardingState(
-        timesPerWeek: state.timesPerWeek,
-        targetDistance: state.targetDistance,
-        targetTime: targetTime,
-        weeksToTrain: state.weeksToTrain);
+      timesPerWeek: state.timesPerWeek,
+      targetDistance: state.targetDistance,
+      targetTime: targetTime,
+      weeksToTrain: state.weeksToTrain,
+      level: state.level,
+    );
   }
 
   void updateWeeksToTrain(int weeksToTrain) {
@@ -57,7 +65,17 @@ class TrainingOnboardingNotifier
         timesPerWeek: state.timesPerWeek,
         targetDistance: state.targetDistance,
         targetTime: state.targetTime,
-        weeksToTrain: weeksToTrain);
+        weeksToTrain: weeksToTrain,
+        level: state.level);
+  }
+
+  void updateLevel(String level) {
+    state = TrainingOnboardingState(
+        timesPerWeek: state.timesPerWeek,
+        targetDistance: state.targetDistance,
+        targetTime: state.targetTime,
+        weeksToTrain: state.weeksToTrain,
+        level: level);
   }
 
   Future<void> saveToFirestore() async {
@@ -93,6 +111,30 @@ class _TrainingOnboardingPageState
         controller: _pageController,
         children: [
           OnboardingStep(
+            title: "Select your training level",
+            child: DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                hintText: "Choose your level",
+                labelText: "Training Level",
+              ),
+              items: const [
+                DropdownMenuItem(value: "beginner", child: Text("Beginner")),
+                DropdownMenuItem(
+                    value: "intermediate", child: Text("Intermediate")),
+                DropdownMenuItem(value: "advanced", child: Text("Advanced")),
+              ],
+              onChanged: (value) {
+                ref
+                    .read(trainingOnboardingProvider.notifier)
+                    .updateLevel(value!);
+              },
+            ),
+            onNext: () => _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeIn,
+            ),
+          ),
+          OnboardingStep(
             title: "How many times per week can you run?",
             child: TextField(
               decoration: const InputDecoration(hintText: "Times per week"),
@@ -117,19 +159,22 @@ class _TrainingOnboardingPageState
           ),
           OnboardingStep(
             title: "How many weeks do you have to train?",
-            child: TextField(
-              decoration: const InputDecoration(hintText: "Weeks to train"),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              onChanged: (value) {
-                final intValue = int.tryParse(value);
-                if (intValue != null) {
-                  // Use intValue here
+            child: DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                hintText: "Select weeks",
+                labelText: "Weeks to train",
+              ),
+              items: <int>[1, 2, 3, 4].map<DropdownMenuItem<int>>((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(value.toString()),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                if (newValue != null) {
                   ref
                       .read(trainingOnboardingProvider.notifier)
-                      .updateWeeksToTrain(intValue);
-                } else {
-                  // Handle the case where the conversion fails (e.g., input is not a valid integer)
+                      .updateWeeksToTrain(newValue);
                 }
               },
             ),
@@ -141,7 +186,8 @@ class _TrainingOnboardingPageState
           OnboardingStep(
             title: "What's the target distance you want to achieve?",
             child: TextField(
-              decoration: const InputDecoration(hintText: "Target distance"),
+              decoration:
+                  const InputDecoration(hintText: "Target distance (km)"),
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
@@ -165,22 +211,36 @@ class _TrainingOnboardingPageState
           ),
           OnboardingStep(
             title: "Target time per kilometre?",
-            child: TextField(
-              decoration: const InputDecoration(hintText: "Target time"),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(
-                    r'^\d*\.?\d*')), // TODO consider making this custom widget, may break if user puts 5:78 or sth
-              ],
-              onChanged: (value) {
-                final doubleValue = double.tryParse(value);
-                if (doubleValue != null) {
-                  // Use doubleValue here
+            child: DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                hintText: "Select target time",
+                labelText: "Target time (min:sec)",
+              ),
+              items: <String>[
+                "4:00",
+                "4:15",
+                "4:30",
+                "4:45",
+                "5:00",
+                "5:15",
+                "5:30",
+                "5:45",
+                "6:00",
+                "6:15",
+                "6:30",
+                "6:45",
+                "7:00",
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
                   ref
                       .read(trainingOnboardingProvider.notifier)
-                      .updateTargetTime(doubleValue);
-                } else {
-                  // Handle the case where the conversion fails (e.g., input is not a valid double)
+                      .updateTargetTime(newValue);
                 }
               },
             ),
