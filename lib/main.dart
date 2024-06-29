@@ -6,6 +6,7 @@ import 'package:runningapp/global_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:runningapp/providers.dart';
 import 'firebase_options.dart';
 
 String geminiApiKey = const String.fromEnvironment('GEMINI_API_KEY');
@@ -46,19 +47,22 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // watch for theme
+    final themeb = ref.watch(themeProviderRef);
+    ref.read(themeProviderRef);
     if (kDebugMode) {
       // print(dotenv.env["MAPS_API_KEY"]);
     }
     return MaterialApp(
       theme: GlobalThemeData.lightThemeData,
       darkTheme: GlobalThemeData.darkThemeData,
-      themeMode: ThemeMode.system,
+      themeMode: themeb,
       title: 'Goorunners',
       debugShowCheckedModeBanner: false,
       home: const AuthPage(),

@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
@@ -16,7 +17,9 @@ import 'map_and_location_logic/loading_map.dart';
 import 'components/run_detail_and_stop.dart';
 
 class RunPage extends StatefulWidget {
-  const RunPage({super.key});
+  const RunPage({super.key, required this.storyRun});
+
+  final bool storyRun;
 
   @override
   State<RunPage> createState() {
@@ -25,6 +28,9 @@ class RunPage extends StatefulWidget {
 }
 
 class _RunPageState extends State<RunPage> {
+  // Is this a run initiated from story page?
+  bool storyRun = false;
+  late AudioPlayer player;
   // Current Position
   Position? currPos;
 
@@ -54,6 +60,10 @@ class _RunPageState extends State<RunPage> {
   void initState() {
     super.initState();
     init();
+    storyRun = widget.storyRun;
+    if (storyRun) {
+      player = AudioPlayer();
+    }
     locationService.checkPermission();
     locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
@@ -81,8 +91,15 @@ class _RunPageState extends State<RunPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Track run",
-            style: TextStyle(color: Colors.black, fontSize: 16)),
+        title: storyRun
+            ? const Text(
+                "Moo tales",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              )
+            : const Text(
+                "Track run",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
       ),
       body: currPos == null
           ? LocationService.locationServiceEnabled
@@ -166,13 +183,8 @@ class _RunPageState extends State<RunPage> {
                           }),
                           GoogleMapsContainer.controller,
                           true,
-                        );
-                        locationService.listenToLocationChanges(
-                          (Position newPos) => setState(() {
-                            currPos = newPos;
-                          }),
-                          GoogleMapsContainer.controller,
-                          true,
+                          storyRun,
+                          player,
                         );
                       },
                       label: const Text("Start Run"),
@@ -193,6 +205,11 @@ class _RunPageState extends State<RunPage> {
 
     // Clear polylines and markers
     MapLineDrawer.clear();
+
+    // release audio player
+    if (storyRun) {
+      player.dispose();
+    }
 
     _stopWatchTimer.dispose();
   }
