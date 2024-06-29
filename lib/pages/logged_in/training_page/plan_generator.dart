@@ -28,6 +28,8 @@ Future<Map<String, dynamic>> plan(PlanRef ref) async {
     targetDistance: userData['targetDistance'] ?? 0,
     targetTime: userData['targetTime'] ?? '',
     weeksToTrain: userData['weeksToTrain'] ?? 0,
+    age: userData['age'] ?? 0,
+    level: userData['level'] ?? '',
   ).prompt;
 
   // Get the text from the model

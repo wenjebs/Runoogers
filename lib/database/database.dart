@@ -394,7 +394,7 @@ class Database {
           });
 
           final userPoints = userDoc.data()!['points'];
-          transaction.update(userRef, {'points': userPoints + 500});
+          transaction.update(userRef, {'points': userPoints + 5000});
 
           unlocked.add('Seasoned Runner');
         }

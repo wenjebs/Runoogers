@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/3d_avatar.dart';
 
 class ProfileHero extends StatelessWidget {
   const ProfileHero({super.key});

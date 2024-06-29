@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:o3d/o3d.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/rpm_api_service.dart';
 import 'package:runningapp/pages/logged_in/profile_page/webtest.dart';
 
@@ -52,9 +51,9 @@ class _RPMAvatarState extends State<RPMAvatar> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.edit),
+      icon: const Icon(Icons.edit),
       onPressed: () => Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => WebTest())),
+          context, MaterialPageRoute(builder: (context) => const WebTest())),
     );
   }
 }
