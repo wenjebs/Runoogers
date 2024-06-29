@@ -263,6 +263,10 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 }
                               }
 
+                              final downloadUrl = await FirebaseStorage.instance
+                                  .ref('images/$username$runsDone.png')
+                                  .getDownloadURL();
+
                               // add run to database
                               Repository.addRun(
                                 "runs",
@@ -276,6 +280,8 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   date: DateTime.now().toString(),
                                   polylinePoints:
                                       MapLineDrawer.polylineCoordinates,
+                                  imageUrl: downloadUrl,
+                                  pace: pace,
                                 ),
                               );
 

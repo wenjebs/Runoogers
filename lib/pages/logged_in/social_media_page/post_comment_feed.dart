@@ -13,14 +13,14 @@ class PostCommentFeed extends ConsumerWidget {
   final String id;
   final String userId;
   final String caption;
-  final Object run; // This still needs to be settled as per the TODO
+  final String photoUrl; // This still needs to be settled as per the TODO
 
   const PostCommentFeed({
     super.key,
     required this.id,
     required this.userId,
     required this.caption,
-    required this.run,
+    required this.photoUrl,
   });
 
   @override
@@ -39,9 +39,8 @@ class PostCommentFeed extends ConsumerWidget {
               id: id,
               userId: userId,
               caption: caption,
-              run: run,
-              disableCommentButton:
-                  true), // Consider using Riverpod for state management here as well
+              photoUrl: photoUrl,
+              disableCommentButton: true), // TODO Riverpod this
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {

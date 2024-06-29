@@ -346,6 +346,20 @@ class Database {
     });
   }
 
+  Future<void> storeImageUrl(String imageUrl) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    var documentReference =
+        FirebaseFirestore.instance.collection('users').doc();
+    await documentReference.set({
+      'imageUrl': imageUrl,
+      // Add other run details here
+    });
+  }
+
   ///////////////////////////////////////
   /// GAMIFICATION / ACHIEVEMENT RELATED
   ///////////////////////////////////////

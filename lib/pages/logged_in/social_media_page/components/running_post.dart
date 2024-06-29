@@ -8,7 +8,8 @@ class RunningPost extends ConsumerWidget {
   final String id;
   final String userId;
   final String caption;
-  final Object run; // TODO figure out how to settle run object / map object
+  final String
+      photoUrl; // TODO eventually make more posts for leaderboard rankings, achievements, etc
   final bool disableCommentButton;
 
   const RunningPost({
@@ -16,7 +17,7 @@ class RunningPost extends ConsumerWidget {
     required this.id,
     required this.userId,
     required this.caption,
-    required this.run,
+    required this.photoUrl,
     this.disableCommentButton = false,
   });
 
@@ -38,7 +39,12 @@ class RunningPost extends ConsumerWidget {
             subtitle: Text(caption),
           ),
           Image.network(
-              'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixlr.com%2Fimage-generator%2F&psig=AOvVaw3La1hOtbr1bK0DXQmiuNbF&ust=1718610129395000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOjm3uTP34YDFQAAAAAdAAAAABAE'),
+            // TODO eventually render different types of posts
+            photoUrl,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
           Row(
             children: <Widget>[
               IconButton(
@@ -48,12 +54,9 @@ class RunningPost extends ConsumerWidget {
                 },
               ),
               likes.when(
-                data: (int count) =>
-                    Text('$count likes'), // Display the actual number
-                loading: () =>
-                    const CircularProgressIndicator(), // Show a loading indicator
-                error: (e, stack) =>
-                    Text('Error: $e'), // Display an error message
+                data: (int count) => Text('$count likes'),
+                loading: () => const CircularProgressIndicator(),
+                error: (e, stack) => Text('Error: $e'),
               ),
               IconButton(
                 icon: const Icon(Icons.comment),
@@ -66,13 +69,12 @@ class RunningPost extends ConsumerWidget {
                             id: id,
                             userId: userId,
                             caption: caption,
-                            run: run,
+                            photoUrl: photoUrl,
                           ),
                         ));
                   }
                 },
               ),
-              // Assuming commentsProvider exists to fetch comments count
               Consumer(
                 builder: (context, ref, _) {
                   final commentsCount = ref.watch(commentsCountProvider(id));
