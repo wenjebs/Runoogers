@@ -459,4 +459,34 @@ class Database {
       });
     });
   }
+
+  Future<List<Map<String, dynamic>>> fetchTopUsersGlobal() async {
+    final querySnapshot = await firestore
+        .collection('users')
+        .orderBy('points', descending: true)
+        .limit(100)
+        .get();
+
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTopUsersFriends() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final List<String> friendIds = await getFriendList();
+
+    final List<Map<String, dynamic>> friendsData = [];
+    for (String friendId in friendIds) {
+      final doc = await firestore.collection('users').doc(friendId).get();
+      if (doc.exists) {
+        friendsData.add(doc.data() as Map<String, dynamic>);
+      }
+    }
+    friendsData.sort((a, b) => (b['points'] ?? 0).compareTo(a['points'] ?? 0));
+
+    return friendsData.take(100).toList();
+  }
 }
