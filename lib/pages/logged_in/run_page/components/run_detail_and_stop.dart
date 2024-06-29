@@ -283,6 +283,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                               Repository.incrementRuns();
                               Repository.incrementTotalDistanceRan(distance);
                               Repository.incrementTotalTimeRan(time);
+                              double totalPoints =
+                                  distance / (time / 60000) * 10;
+                              Repository.addPoints(totalPoints.toInt());
 
                               // update and display achievements
                               List<String> newAchievements =

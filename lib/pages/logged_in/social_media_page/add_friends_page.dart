@@ -20,18 +20,28 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   List<Map<String, dynamic>> _searchResults =
       []; // Step 1: Store search results
 
-  void searchUser() {
+  void searchUser() async {
     final query = _searchController.text.trim();
-    FirebaseFirestore.instance
+    final nameQuerySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .where('name', isEqualTo: query)
         .where('uid', isNotEqualTo: user.uid)
-        .get()
-        .then((snapshot) {
-      setState(() {
-        // Store the search results in _searchResults
-        _searchResults = snapshot.docs.map((doc) => doc.data()).toList();
-      });
+        .get();
+
+    final usernameQuerySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('username', isEqualTo: query)
+        .where('uid', isNotEqualTo: user.uid)
+        .get();
+
+    // Combine the results of the two queries, avoiding duplicates
+    final combinedResults = {
+      ...nameQuerySnapshot.docs.map((doc) => doc.data()),
+      ...usernameQuerySnapshot.docs.map((doc) => doc.data()),
+    }.toList();
+
+    setState(() {
+      _searchResults = combinedResults;
     });
   }
 
@@ -75,12 +85,11 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                 labelText: 'Search for users',
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
-                  onPressed: searchUser, // Call the search method on press
+                  onPressed: searchUser,
                 ),
               ),
             ),
             Expanded(
-              // Use Expanded to fill the remaining space
               child: _searchResults.isEmpty
                   ? const Center(
                       child: Text("No users found"),
@@ -90,7 +99,19 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                       itemBuilder: (context, index) {
                         final user = _searchResults[index];
                         return ListTile(
-                          title: Text(user['name']),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(user['name']),
+                              Text(
+                                "@${user['username']}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
                           trailing: friendsList.contains(user['uid'])
                               ? const Text("Added")
                               : IconButton(

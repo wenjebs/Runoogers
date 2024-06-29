@@ -28,41 +28,40 @@ class ProfileHero extends StatelessWidget {
           ),
 
           // PROFILE IMAGE CONTAINER
-          // Align(
-          //   alignment: const AlignmentDirectional(0, 1),
-          //   child: Padding(
-          //     padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-          //     child: Container(
-          //       width: 130,
-          //       height: 130,
-          //       decoration: BoxDecoration(
-          //         shape: BoxShape.circle,
-          //         border: Border.all(
-          //           width: 4,
-          //           color: Theme.of(context).colorScheme.secondary,
-          //         ),
-          //       ),
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(4),
-          //         child: ClipRRect(
-          //           borderRadius: BorderRadius.circular(50),
-          //           child: DecoratedBox(
-          //             decoration: BoxDecoration(
-          //               borderRadius: BorderRadius.circular(50),
-          //               image: const DecorationImage(
-          //                 fit: BoxFit.cover,
-          //                 image: NetworkImage(
-          //                   'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
-          //                 ), // To BE CHANGED FROM DATABASE
-          //               ),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          const RPMAvatar(),
+          Align(
+            alignment: const AlignmentDirectional(0, 1),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 4,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: const DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
+                          ), // To BE CHANGED FROM DATABASE
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
