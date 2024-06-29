@@ -13,7 +13,7 @@ class RunAchievementButton extends ConsumerWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         height: 52,
         decoration: BoxDecoration(
-          color: const Color(0xFFD1D1D1),
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(90),
         ),
         child: Row(
@@ -43,12 +43,18 @@ class RunAchievementButton extends ConsumerWidget {
         width: MediaQuery.of(context).size.width * 0.43,
         height: MediaQuery.of(context).size.height * 0.05,
         decoration: BoxDecoration(
-          color: selected == index ? Colors.white : Colors.transparent,
+          color: selected == index
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(90),
         ),
         child: Align(
           alignment: const AlignmentDirectional(0, 0),
-          child: Text(text),
+          child: Text(text,
+              style: TextStyle(
+                  color: selected == index
+                      ? Colors.black
+                      : const Color.fromARGB(255, 0, 0, 0))),
         ),
       ),
     );

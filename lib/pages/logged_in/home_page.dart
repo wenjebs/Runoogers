@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              AddFriendsPage()),
+                                              const AddFriendsPage()),
                                     );
                                   },
                                   icon: const Icon(
@@ -167,8 +167,8 @@ class _HomePageState extends State<HomePage> {
               ? const SizedBox()
               : GNav(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).focusColor,
-                  activeColor: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  activeColor: Theme.of(context).colorScheme.primary,
                   gap: 6,
                   selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
                   tabs: const [
