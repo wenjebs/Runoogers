@@ -79,9 +79,11 @@ class _RunPageState extends State<RunPage> {
 
   init() async {
     currPos = await Geolocator.getCurrentPosition();
-    setState(() {
-      currPos = currPos;
-    });
+    if (mounted) {
+      setState(() {
+        currPos = currPos;
+      });
+    }
   }
 
   @override

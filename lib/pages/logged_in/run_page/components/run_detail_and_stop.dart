@@ -231,8 +231,10 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   await Repository.getRunsDone();
 
                               //take screenshot of current run and upload to fb
+                              debugPrint("taking screenshot");
                               final screenshot =
                                   await mapContainer.takeSnapshot();
+                              debugPrint("screenshot taken");
                               if (screenshot != null) {
                                 final Directory tempDir =
                                     await getTemporaryDirectory();
@@ -240,7 +242,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 final imageFile =
                                     File('$path/$username$runsDone.png');
                                 // Write the screenshot data to the file
-                                await imageFile.writeAsBytes(screenshot);
+                                Future<void> writeFileFuture =
+                                    imageFile.writeAsBytes(screenshot);
+                                await writeFileFuture;
                                 // Ensure the file has been created and contains data
                                 if (await imageFile.exists()) {
                                   try {
@@ -293,11 +297,13 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   distance / (time / 60000) * 10;
                               Repository.addPoints(totalPoints.toInt());
 
+                              debugPrint("update achievements");
                               // update and display achievements
                               List<String> newAchievements =
                                   await Repository.updateUserAchievements(
                                       distance, time);
 
+                              debugPrint("show achievments dialog");
                               if (newAchievements.isNotEmpty) {
                                 // Show dialog with the list of new achievements
                                 showDialog(
@@ -327,8 +333,12 @@ class RunDetailsAndStop extends ConsumerWidget {
                                   },
                                 );
                               }
+
+                              debugPrint("stopping location tracking");
                               // stop location tracking and reset dist
                               LocationService.reset();
+                              // clear points
+                              MapLineDrawer.clear();
 
                               // reset timer
                               _stopWatchTimer.onResetTimer();

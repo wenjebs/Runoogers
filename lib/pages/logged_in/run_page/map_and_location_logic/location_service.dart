@@ -207,10 +207,10 @@ class LocationService {
     _positionSubscription?.cancel();
   }
 
-  static void reset() {
+  static void reset() async {
     // very important too! if not the page wont load when you go back in
     stopTrackingLocation();
-    _currentPosition = null;
+    _currentPosition = await Geolocator.getCurrentPosition();
     distance = 0;
   }
 
