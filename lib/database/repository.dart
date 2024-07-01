@@ -62,65 +62,78 @@ class Repository {
     return database.getFriendRequests();
   }
 
+  // Send friend request
   static Future<void> sendFriendRequest(String userId) {
     return database.sendFriendRequest(userId);
   }
 
+  // Accept friend request
   static Future<void> acceptFriendRequest(String userId) {
     return database.acceptFriendRequest(userId);
   }
 
+  // Reject friend request
   static Future<void> rejectFriendRequest(String userId) {
     return database.rejectFriendRequest(userId);
   }
 
+  // Get friend list
   static Future<List<String>> getFriendList() {
     return database.getFriendList();
   }
 
+  // Get training related data
   static Future<bool> getTrainingOnboarded() {
     return database.getTrainingOnboarded();
   }
 
+  // Set training related data
   static Future<List<dynamic>> getTrainingPlans() {
     return database.getTrainingPlans();
   }
 
-  // GET USER STATS
+  // Get runs completed
   static Future<int> getRunsDone() {
     return database.getRunsDone();
   }
 
-  // UPDATE USER STATS
+  // Increment total distance run
   static Future<void> incrementTotalDistanceRan(double distance) {
     return database.incrementTotalDistanceRan(distance);
   }
 
+  // Increment total time run
   static Future<void> incrementTotalTimeRan(int time) {
     return database.incrementTotalTimeRan(time);
   }
 
+  // Increment total runs
   static Future<void> incrementRuns() {
     return database.incrementRuns();
   }
 
+  // Get all unlocked achievements
   static Future<List<Map<String, dynamic>>> fetchUserAchievements() {
     return database.fetchUserAchievements();
   }
 
+  // Update user achievements
   static Future<List<String>> updateUserAchievements(
       double distance, int time) {
     return database.updateUserAchievements(distance, time);
   }
 
+  // Add points
   static Future<void> addPoints(int points) {
     return database.addPoints(points);
   }
 
+  // Fetch global leaderboard
   static Future<List<Map<String, dynamic>>> fetchTopUsersGlobal() {
     return database.fetchTopUsersGlobal();
   }
 
+  // Fetch friends leaderboard
   static Future<List<Map<String, dynamic>>> fetchTopUsersFriends() {
     return database.fetchTopUsersFriends();
   }

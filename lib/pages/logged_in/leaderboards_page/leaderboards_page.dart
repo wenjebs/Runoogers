@@ -120,7 +120,7 @@ class LeaderboardCard extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
       child: Container(
         width: 100,
-        height: 100, // Increased height from 72 to 100 to fix overflow
+        height: 100,
         decoration: const BoxDecoration(
           color: Colors.white,
           boxShadow: [

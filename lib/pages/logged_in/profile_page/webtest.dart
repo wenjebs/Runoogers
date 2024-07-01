@@ -16,18 +16,13 @@ class _WebTestState extends State<WebTest> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
-    // Use an asynchronous operation with mounted check
     _loadHtmlFromAssets();
   }
 
   Future<void> _loadHtmlFromAssets() async {
     await _controller.loadFlutterAsset('lib/assets/iframe.html');
     if (mounted) {
-      setState(() {
-        // Perform state updates or operations that require the widget to be in the tree.
-        // Since there's no explicit state change needed after loading the asset,
-        // this setState call might be unnecessary unless there are other state changes to make.
-      });
+      setState(() {});
     }
   }
 
@@ -35,11 +30,15 @@ class _WebTestState extends State<WebTest> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Web Test'),
+        title: const Text('3D Avatar Test'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      body: WebViewWidget(
-          controller:
-              _controller), // Assuming WebViewWidget is a custom widget you've defined.
+      body: WebViewWidget(controller: _controller),
     );
   }
 }
