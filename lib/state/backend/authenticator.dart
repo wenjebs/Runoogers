@@ -90,6 +90,7 @@ class Authenticator {
             'longestDistance': 0,
           },
           'points': 0,
+          'activeStory': "",
         });
       }
       return AuthResult.success;

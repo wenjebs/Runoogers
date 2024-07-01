@@ -16,7 +16,13 @@ class StoryTile extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const StoryDetailPage(),
+          builder: (context) => StoryDetailPage(
+            image: Image.asset("lib/assets/images/socat.jpg"),
+            title: '',
+            description: '',
+            id: '',
+            userID: '',
+          ),
         ),
       ),
       child: Column(
