@@ -169,7 +169,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                         // STOP BUTTON
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: FilledButton(
+                          child: ElevatedButton(
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<OutlinedBorder>(
                                 RoundedRectangleBorder(
@@ -179,171 +179,229 @@ class RunDetailsAndStop extends ConsumerWidget {
                               ),
                             ),
                             onPressed: () async {
+                              bool save = true;
                               // stop timer
                               _stopWatchTimer.onStopTimer();
 
-                              // get the time
+                              // get the time in Milliseconds
                               final int time = _stopWatchTimer.rawTime.value;
 
-                              // get distance travelled
+                              // get distance travelled in KM
                               final double distance =
                                   LocationService.distanceTravelled;
 
-                              // get pace of run
-                              final double pace = (time / 60000) / distance;
-
-                              // show completed run details
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("Run Completed"),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "Time: ${StopWatchTimer.getDisplayTime(time, hours: false)}",
-                                        ),
-                                        Text(
-                                          "Distance: $distance",
-                                        ),
-                                        Text(
-                                          "Pace: $pace min/km",
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text("Close"),
-                                      ),
-                                    ],
+                              // if travelled less than 20 metres, ask user if sure they want to save run
+                              if (distance < 0.02) {
+                                if (distance == 0) {
+                                  await showDialog<bool>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            const Text("You have not moved!"),
+                                        content: const Text(
+                                            "You have not moved at all! You cannot save this run."),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              save = false;
+                                            },
+                                            child: const Text("Ok"),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
-                              // get runs done
-                              final String username =
-                                  await Repository.fetchName(
-                                      FirebaseAuth.instance.currentUser!.uid);
-                              final int runsDone =
-                                  await Repository.getRunsDone();
-
-                              //take screenshot of current run and upload to fb
-                              final screenshot =
-                                  await mapContainer.takeSnapshot();
-                              if (screenshot != null) {
-                                final Directory tempDir =
-                                    await getTemporaryDirectory();
-                                final path = tempDir.path;
-                                final imageFile =
-                                    File('$path/$username$runsDone.png');
-                                // Write the screenshot data to the file
-                                await imageFile.writeAsBytes(screenshot);
-                                // Ensure the file has been created and contains data
-                                if (await imageFile.exists()) {
-                                  try {
-                                    // Reference to your Firebase Storage location
-                                    var imagesRef = FirebaseStorage.instance
-                                        .ref()
-                                        .child('images/$username$runsDone.png');
-
-                                    // Upload the file
-                                    await imagesRef.putFile(imageFile);
-                                    debugPrint(
-                                        'run detail and stop: Screenshot uploaded successfully');
-                                  } catch (e) {
-                                    debugPrint(
-                                        'Error uploading screenshot: $e');
-                                  }
                                 } else {
-                                  debugPrint(
-                                      'Failed to save screenshot to file.');
+                                  await showDialog<bool>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Are you sure?"),
+                                        content: const Text(
+                                            "You have only moved 20 metres.\nAre you sure you want to save this run?"),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              save = true;
+                                            },
+                                            child: const Text("Yes"),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              save = false;
+                                            },
+                                            child: const Text("No"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               }
 
-                              final downloadUrl = await FirebaseStorage.instance
-                                  .ref('images/$username$runsDone.png')
-                                  .getDownloadURL();
+                              if (save) {
+                                debugPrint("run detail and stop: Run saved");
+                                // get pace of run
+                                final double pace;
+                                pace = (time / 60000) / distance;
 
-                              // add run to database
-                              Repository.addRun(
-                                "runs",
-                                Run(
-                                  id: "",
-                                  name: "Run",
-                                  description: "Run",
-                                  distance: distance.toStringAsFixed(2),
-                                  time: StopWatchTimer.getDisplayTime(time,
-                                      hours: false),
-                                  date: DateTime.now().toString(),
-                                  polylinePoints:
-                                      MapLineDrawer.polylineCoordinates,
-                                  imageUrl: downloadUrl,
-                                  pace: pace,
-                                ),
-                              );
-
-                              //update stats
-                              Repository.incrementRuns();
-                              Repository.incrementTotalDistanceRan(distance);
-                              Repository.incrementTotalTimeRan(time);
-                              double totalPoints =
-                                  distance / (time / 60000) * 10;
-                              Repository.addPoints(totalPoints.toInt());
-
-                              // update and display achievements
-                              List<String> newAchievements =
-                                  await Repository.updateUserAchievements(
-                                      distance, time);
-
-                              if (newAchievements.isNotEmpty) {
-                                // Show dialog with the list of new achievements
+                                // show completed run details
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text(
-                                          "New achievements earned:"),
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: newAchievements
-                                              .map((achievement) =>
-                                                  Text(achievement))
-                                              .toList(),
-                                        ),
+                                      title: const Text("Run Completed"),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Time: ${StopWatchTimer.getDisplayTime(time, hours: false)}",
+                                          ),
+                                          Text(
+                                            "Distance: $distance",
+                                          ),
+                                          Text(
+                                            "Pace: $pace min/km",
+                                          ),
+                                        ],
                                       ),
-                                      actions: <Widget>[
+                                      actions: [
                                         TextButton(
-                                          child: const Text('Yay!'),
                                           onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // Close the dialog
+                                            Navigator.pop(context);
                                           },
+                                          child: const Text("Close"),
                                         ),
                                       ],
                                     );
                                   },
                                 );
+
+                                // get runs done
+                                final String username =
+                                    await Repository.fetchName(
+                                        FirebaseAuth.instance.currentUser!.uid);
+                                final int runsDone =
+                                    await Repository.getRunsDone();
+
+                                //take screenshot of current run and upload to fb
+                                final screenshot =
+                                    await mapContainer.takeSnapshot();
+                                if (screenshot != null) {
+                                  final Directory tempDir =
+                                      await getTemporaryDirectory();
+                                  final path = tempDir.path;
+                                  final imageFile =
+                                      File('$path/$username$runsDone.png');
+                                  // Write the screenshot data to the file
+                                  await imageFile.writeAsBytes(screenshot);
+                                  // Ensure the file has been created and contains data
+                                  if (await imageFile.exists()) {
+                                    try {
+                                      // Reference to your Firebase Storage location
+                                      var imagesRef = FirebaseStorage.instance
+                                          .ref()
+                                          .child(
+                                              'images/$username$runsDone.png');
+
+                                      // Upload the file
+                                      await imagesRef.putFile(imageFile);
+                                      debugPrint(
+                                          'run detail and stop: Screenshot uploaded successfully');
+                                    } catch (e) {
+                                      debugPrint(
+                                          'Error uploading screenshot: $e');
+                                    }
+                                  } else {
+                                    debugPrint(
+                                        'Failed to save screenshot to file.');
+                                  }
+                                }
+
+                                final downloadUrl = await FirebaseStorage
+                                    .instance
+                                    .ref('images/$username$runsDone.png')
+                                    .getDownloadURL();
+
+                                // add run to database
+                                Repository.addRun(
+                                  "runs",
+                                  Run(
+                                    id: "",
+                                    name: "Run",
+                                    description: "Run",
+                                    distance: distance.toStringAsFixed(2),
+                                    time: StopWatchTimer.getDisplayTime(time,
+                                        hours: false),
+                                    date: DateTime.now().toString(),
+                                    polylinePoints:
+                                        MapLineDrawer.polylineCoordinates,
+                                    imageUrl: downloadUrl,
+                                    pace: pace,
+                                  ),
+                                );
+
+                                //update stats
+                                Repository.incrementRuns();
+                                Repository.incrementTotalDistanceRan(distance);
+                                Repository.incrementTotalTimeRan(time);
+                                double totalPoints =
+                                    distance / (time / 60000) * 10;
+                                Repository.addPoints(totalPoints.toInt());
+
+                                // update and display achievements
+                                List<String> newAchievements =
+                                    await Repository.updateUserAchievements(
+                                        distance, time);
+
+                                if (newAchievements.isNotEmpty) {
+                                  // Show dialog with the list of new achievements
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            "New achievements earned:"),
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: newAchievements
+                                                .map((achievement) =>
+                                                    Text(achievement))
+                                                .toList(),
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Yay!'),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                                stopServices(ref);
+                              } else {
+                                debugPrint(
+                                    "run detail and stop: Run not saved");
+                                stopServices(ref);
                               }
-                              // stop location tracking and reset dist
-                              LocationService.reset();
-
-                              // reset timer
-                              _stopWatchTimer.onResetTimer();
-
-                              // set boolean to false
-                              ref.read(timerProvider.notifier).startStopTimer();
                             },
                             child: const Text("Stop Run"),
                           ),
                         ),
 
-                        // HIDE BUTTON
+                        // PAUSE BUTTON
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: FilledButton(
+                          child: ElevatedButton(
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<OutlinedBorder>(
                                 RoundedRectangleBorder(
@@ -370,9 +428,11 @@ class RunDetailsAndStop extends ConsumerWidget {
                             child: const Text("Pause"),
                           ),
                         ),
+
+                        // HIDE BUTTON
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: FilledButton(
+                          child: ElevatedButton(
                             style: ButtonStyle(
                               shape: WidgetStateProperty.all<OutlinedBorder>(
                                 RoundedRectangleBorder(
@@ -396,5 +456,14 @@ class RunDetailsAndStop extends ConsumerWidget {
               ),
             ),
           );
+  }
+
+  void stopServices(WidgetRef ref) {
+    // stop location tracking and reset dist
+    LocationService.reset();
+    // reset timer
+    _stopWatchTimer.onResetTimer();
+    // set boolean to false
+    ref.read(timerProvider.notifier).startStopTimer();
   }
 }
