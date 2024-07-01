@@ -50,6 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
             'longestDistance': 0,
           },
           'points': 0,
+          'activeStory': "",
         });
       } else {
         showErrorMessage("passwords dont match");

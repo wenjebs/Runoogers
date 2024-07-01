@@ -137,4 +137,19 @@ class Repository {
   static Future<List<Map<String, dynamic>>> fetchTopUsersFriends() {
     return database.fetchTopUsersFriends();
   }
+
+  //  Get stories
+  static Future<List<Map<String, dynamic>>> getStories() {
+    return database.getUserStories();
+  }
+  // Each story has a title, shortTitle, description and imageURL
+
+  // Check if user completed story
+  static Future<bool> hasUserCompletedStory(String userId, String storyId) {
+    return database.hasUserCompletedStory(userId, storyId);
+  }
+
+  static Future<void> setUserActiveStory(String userId, String storyId) {
+    return database.setUserActiveStory(userId, storyId);
+  }
 }

@@ -489,4 +489,31 @@ class Database {
 
     return friendsData.take(100).toList();
   }
+
+  ///////////////////////////////////////
+  /// STORY RELATED
+  ///////////////////////////////////////
+  Future<List<Map<String, dynamic>>> getUserStories() async {
+    final snapshot = await firestore.collection('stories').get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<bool> hasUserCompletedStory(String userId, String storyId) async {
+    final storyRef = firestore.collection('stories').doc(storyId);
+    final doc = await storyRef.get();
+
+    if (!doc.exists) {
+      throw Exception("Story does not exist");
+    }
+
+    // Assuming the document has a field 'completedBy' which is a list of user IDs who have completed the story
+    List<dynamic> completedBy = doc.data()?['completedBy'] ?? [];
+    return completedBy.contains(userId);
+  }
+
+  Future<void> setUserActiveStory(String userId, String storyId) {
+    final userRef = firestore.collection('users').doc(userId);
+    return userRef.update({'activeStory': storyId});
+  }
 }

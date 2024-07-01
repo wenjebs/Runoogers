@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 
 class StoryDetailPage extends StatefulWidget {
-  const StoryDetailPage({super.key});
+  final Image image;
+  final String title;
+  final String description;
+  final String id;
+  final String userID;
+
+  const StoryDetailPage(
+      {super.key,
+      required this.image,
+      required this.title,
+      required this.description,
+      required this.userID,
+      required this.id});
 
   @override
   State<StoryDetailPage> createState() => _StoryDetailPageState();
@@ -28,37 +41,55 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Story Detail Page"),
+        title: const Text("Story details"),
       ),
       body: Column(
         children: [
           // STORY IMAGE
-          Center(
-            child: Image.network(
-                "https://fastly.picsum.photos/id/9/250/250.jpg?hmac=tqDH5wEWHDN76mBIWEPzg1in6egMl49qZeguSaH9_VI"),
-          ),
-
-          // Chapter
-          const Text("Chapter 1"),
+          Center(child: widget.image),
 
           // Title
-          const Text("Title"),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
 
           // Description
-          const Text("The start of a beautiful story..."),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(widget.description),
+          ))),
 
           // Start button
           ElevatedButton(
-              onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      // TODO, handle no permission unhandled exception
-                      builder: (context) => const RunPage(
-                        storyRun: true,
-                      ),
-                    ),
+              // onPressed: () => Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         // TODO, handle no permission unhandled exception
+              //         builder: (context) => const RunPage(
+              //           storyRun: true,
+              //         ),
+              //       ),
+              //     ),
+              onPressed: () {
+                Repository.setUserActiveStory(widget.userID, widget.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Active story set successfully'),
+                    duration: Duration(seconds: 2),
                   ),
-              child: const Text("Start")),
+                );
+              },
+              child: const Text("Make active quest")),
 
           // Audio Test
           ElevatedButton(
