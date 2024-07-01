@@ -220,7 +220,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                                             "Distance: ${distance.toStringAsFixed(2)} km",
                                           ),
                                           Text(
-                                            "Pace: ${pace.floor()} min ${(pace - pace.floor()) * 60} s/km",
+                                            "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s/km",
                                           ),
                                         ],
                                       ),
