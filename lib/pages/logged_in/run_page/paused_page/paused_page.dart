@@ -32,7 +32,7 @@ class PausedPage extends StatelessWidget {
                   style: const TextStyle(fontSize: 20),
                 ),
                 Text(
-                  'Pace: ${((_stopWatchTimer.rawTime.value / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km',
+                  'Pace: ${LocationService.distanceTravelled == 0 ? 0 : ((_stopWatchTimer.rawTime.value / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km',
                   style: const TextStyle(fontSize: 20),
                 ),
               ],

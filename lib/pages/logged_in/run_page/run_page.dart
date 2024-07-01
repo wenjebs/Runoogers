@@ -168,7 +168,7 @@ class _RunPageState extends State<RunPage> {
                         mapContainer: googleMapsContainer,
                       ),
                     )
-                  : FloatingActionButton.extended(
+                  : FloatingActionButton.large(
                       onPressed: () {
                         // update the state of running
                         ref.read(timerProvider.notifier).startStopTimer();
@@ -188,7 +188,14 @@ class _RunPageState extends State<RunPage> {
                           player,
                         );
                       },
-                      label: const Text("Start Run"),
+                      shape: const CircleBorder(),
+                      child: const Text(
+                        "Start",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
                     );
         },
       ),
