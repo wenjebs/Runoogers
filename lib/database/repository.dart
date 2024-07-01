@@ -26,7 +26,7 @@ class Repository {
 
   // Add run
   static Future<void> addRun(String collection, Run run) {
-    debugPrint("Adding run to database");
+    // debugPrint("Adding run to database");
     return database.addRun(collection, run);
   }
 

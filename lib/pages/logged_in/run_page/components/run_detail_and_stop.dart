@@ -252,7 +252,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                                     // Upload the file
                                     await imagesRef.putFile(imageFile);
                                     debugPrint(
-                                        'Screenshot uploaded successfully');
+                                        'run detail and stop: Screenshot uploaded successfully');
                                   } catch (e) {
                                     debugPrint(
                                         'Error uploading screenshot: $e');
