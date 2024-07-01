@@ -61,9 +61,7 @@ class _RunPageState extends State<RunPage> {
     super.initState();
     init();
     storyRun = widget.storyRun;
-    if (storyRun) {
-      player = AudioPlayer();
-    }
+    player = AudioPlayer();
     locationService.checkPermission();
     locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
