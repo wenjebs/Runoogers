@@ -67,101 +67,56 @@ class RunDetailsAndStop extends ConsumerWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(paddingValue / 2),
                 ),
+
+                // DISPLAY DISTANCE TIME AND PACE
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Text(
-                        'TIME',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Column(
-                        children: [
-                          /// Display stop watch time
-                          StreamBuilder<int>(
-                              stream: _stopWatchTimer.rawTime,
-                              initialData: _stopWatchTimer.rawTime.value,
-                              builder: (context, snap) {
-                                final value = snap.data!;
-                                final displayTime =
-                                    StopWatchTimer.getDisplayTime(value,
-                                        hours: false);
-                                return Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text(
-                                        displayTime,
-                                        style: const TextStyle(
-                                            fontSize: 40,
-                                            fontFamily: 'Helvetica',
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                        ],
-                      ),
-                    ),
-                    const Divider(
-                      indent: 40,
-                      endIndent: 40,
-                    ),
-                    const Text(
-                      'PACE',
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: StreamBuilder<int>(
-                          stream: _stopWatchTimer.rawTime,
-                          initialData: _stopWatchTimer.rawTime.value,
-                          builder: (context, snap) {
-                            // debugPrint((snap.data! / 1000).toString());
-                            final value = snap.data!;
-                            final currentTime = value;
-                            return Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Text(
-                                    LocationService.distanceTravelled == 0
-                                        ? '0'
-                                        : "${((currentTime / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km",
-                                    style: const TextStyle(
-                                      fontSize: 40,
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                    const Divider(
-                      indent: 40,
-                      endIndent: 40,
-                    ),
-                    const Text(
-                      'DISTANCE',
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(
-                        '${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontFamily: 'Helvetica',
-                          fontWeight: FontWeight.bold,
+                    // DISPLAY DISTANCE
+                    Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 20.0),
+                          child: Text(
+                            'DISTANCE',
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            '${LocationService.distanceTravelled.toStringAsFixed(2)} km',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
+                    const Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                      endIndent: 50,
+                      indent: 50,
+                    ),
+                    Row(
+                      children: [
+                        // Display time
+                        TimeDisplayWidget(stopWatchTimer: _stopWatchTimer),
+                        const SizedBox(
+                          height: 60,
+                          child: VerticalDivider(
+                            color: Colors.black,
+                            thickness: 2,
+                          ),
+                        ),
+                        // Display pace
+                        PaceDisplayWidget(stopWatchTimer: _stopWatchTimer),
+                      ],
+                    ),
                     // STOP RUN BUTTON AND HIDE BUTTON
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -259,13 +214,13 @@ class RunDetailsAndStop extends ConsumerWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            "Time: ${StopWatchTimer.getDisplayTime(time, hours: false)}",
+                                            "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
                                           ),
                                           Text(
-                                            "Distance: $distance",
+                                            "Distance: ${distance.toStringAsFixed(2)} km",
                                           ),
                                           Text(
-                                            "Pace: $pace min/km",
+                                            "Pace: ${pace.floor()} min ${(pace - pace.floor()) * 60} s/km",
                                           ),
                                         ],
                                       ),
@@ -465,5 +420,153 @@ class RunDetailsAndStop extends ConsumerWidget {
     _stopWatchTimer.onResetTimer();
     // set boolean to false
     ref.read(timerProvider.notifier).startStopTimer();
+  }
+}
+
+class TimeDisplayWidget extends StatelessWidget {
+  const TimeDisplayWidget({
+    super.key,
+    required StopWatchTimer stopWatchTimer,
+  }) : _stopWatchTimer = stopWatchTimer;
+
+  final StopWatchTimer _stopWatchTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 30.0,
+        top: 20,
+        right: 10,
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'TIME',
+          ),
+          Column(
+            children: [
+              /// Display stop watch time
+              StreamBuilder<int>(
+                  stream: _stopWatchTimer.rawTime,
+                  initialData: _stopWatchTimer.rawTime.value,
+                  builder: (context, snap) {
+                    final value = snap.data!;
+                    final displayTime = StopWatchTimer.getDisplayTime(
+                      value,
+                      hours: false,
+                      milliSecond: false,
+                    );
+                    return Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            displayTime,
+                            style: const TextStyle(
+                                fontSize: 40,
+                                fontFamily: 'Helvetica',
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaceDisplayWidget extends StatelessWidget {
+  const PaceDisplayWidget({
+    super.key,
+    required StopWatchTimer stopWatchTimer,
+  }) : _stopWatchTimer = stopWatchTimer;
+
+  final StopWatchTimer _stopWatchTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 20,
+        left: 20,
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'PACE',
+          ),
+          StreamBuilder<int>(
+              stream: _stopWatchTimer.rawTime,
+              initialData: _stopWatchTimer.rawTime.value,
+              builder: (context, snap) {
+                // debugPrint((snap.data! / 1000).toString());
+                final value = snap.data!;
+                final currentTime = value;
+                return PaceWidget(currentTime: currentTime);
+              }),
+        ],
+      ),
+    );
+  }
+}
+
+class PaceWidget extends StatelessWidget {
+  const PaceWidget({
+    super.key,
+    required this.currentTime,
+  });
+
+  final int currentTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Text(
+                LocationService.distanceTravelled == 0
+                    ? '0'
+                    // minutes
+                    : "${((currentTime / 60000) / LocationService.distanceTravelled).toStringAsFixed(0)}:",
+                style: const TextStyle(
+                  fontSize: 40,
+                  fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                LocationService.distanceTravelled == 0
+                    ? '0'
+                    // minutes
+                    : ((((currentTime / 60000) /
+                                    LocationService.distanceTravelled) -
+                                ((currentTime / 60000) /
+                                        LocationService.distanceTravelled)
+                                    .floor()) *
+                            60)
+                        .toStringAsFixed(0),
+                style: const TextStyle(
+                  fontSize: 40,
+                  fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text(
+                " min/km",
+                style: TextStyle(fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

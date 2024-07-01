@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:just_audio/just_audio.dart';
@@ -130,24 +131,17 @@ class LocationService {
       (newPosition) {
         // update the distance travelled
         if (_currentPosition != null) {
-          // debugPrint("updating dist");
-          distance += Geolocator.distanceBetween(
+          final calculatedDist = Geolocator.distanceBetween(
                 _currentPosition!.latitude,
                 _currentPosition!.longitude,
                 newPosition.latitude,
                 newPosition.longitude,
               ) /
               1000.0;
-        }
-        if (storyRun) {
-          if (_currentPosition != null) {
-            distanceTracker += Geolocator.distanceBetween(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                  newPosition.latitude,
-                  newPosition.longitude,
-                ) /
-                1000.0;
+          debugPrint("updating dist$distanceTravelled");
+          distance += calculatedDist;
+          if (storyRun) {
+            distanceTracker += calculatedDist;
             // if its a story run, play audio!
             // check every 100m
             if (tracker >= (0.1)) {

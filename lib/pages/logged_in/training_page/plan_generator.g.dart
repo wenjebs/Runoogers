@@ -6,7 +6,7 @@ part of 'plan_generator.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$planHash() => r'25896fd2781e9a8acd179e14d5110c4a80e4fd29';
+String _$planHash() => r'fef9dc894bac86c3dad71761f0ea7c30c107bd98';
 
 /// See also [plan].
 @ProviderFor(plan)
