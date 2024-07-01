@@ -105,7 +105,11 @@ class RunsSection extends ConsumerWidget {
                     }).toList(),
                   );
                 },
-                loading: () => const CircularProgressIndicator(),
+                loading: () => const SizedBox(
+                  width: 100,
+                  height: 50,
+                  child: Text("Loading runs..."),
+                ),
                 error: (err, stack) => Text('Error: $err'),
               ),
             ),

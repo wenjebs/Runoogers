@@ -67,7 +67,7 @@ class ProfileHero extends StatelessWidget {
               const SizedBox(
                 width: 200,
                 height: 200,
-                child: const O3D(
+                child: O3D(
                   src:
                       'https://models.readyplayer.me/667ea6b3decc99af8e97c067.glb',
                 ),

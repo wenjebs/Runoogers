@@ -35,10 +35,12 @@ class LocationService {
   static List<ConnectivityResult> get connectivity => connectivityResult;
   static bool get locationServiceEnabled => serviceEnabled;
 
+  void openLocationSettings() async {
+    await Geolocator.openLocationSettings();
+  }
+
   void checkPermission() async {
-    debugPrint("Checking permission");
-    // TODO this function could be better but im laze
-    // LocationPermission permission;
+    debugPrint("location_service: Checking permission");
 
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -64,7 +66,7 @@ class LocationService {
       Geolocator.requestPermission();
     }
 
-    debugPrint("Checking done");
+    debugPrint("location service: Checking done");
   }
 
   Future<Position> getCurrentLocation() async {
@@ -74,7 +76,7 @@ class LocationService {
   }
 
   void listenToLocationChangesBeforeStart(callback) {
-    debugPrint("Listening before start...");
+    // debugPrint("location_service:  Listening before start...");
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.bestForNavigation,
       distanceFilter: 5, // how much distance to move before updating
@@ -107,7 +109,7 @@ class LocationService {
             onDone: () {
               debugPrint('Stream has been closed');
             });
-    debugPrint("Listening before start done...");
+    // debugPrint("location_service:  Listening before start done...");
   }
 
   void listenToLocationChanges(
@@ -128,24 +130,17 @@ class LocationService {
       (newPosition) {
         // update the distance travelled
         if (_currentPosition != null) {
-          // debugPrint("updating dist");
-          distance += Geolocator.distanceBetween(
+          final calculatedDist = Geolocator.distanceBetween(
                 _currentPosition!.latitude,
                 _currentPosition!.longitude,
                 newPosition.latitude,
                 newPosition.longitude,
               ) /
               1000.0;
-        }
-        if (storyRun) {
-          if (_currentPosition != null) {
-            distanceTracker += Geolocator.distanceBetween(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                  newPosition.latitude,
-                  newPosition.longitude,
-                ) /
-                1000.0;
+          debugPrint("updating dist$distanceTravelled");
+          distance += calculatedDist;
+          if (storyRun) {
+            distanceTracker += calculatedDist;
             // if its a story run, play audio!
             // check every 100m
             if (tracker >= (0.1)) {

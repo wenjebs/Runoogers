@@ -59,7 +59,7 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
-    init();
+
     storyRun = widget.storyRun;
     player = AudioPlayer();
     locationService.checkPermission();
@@ -75,39 +75,42 @@ class _RunPageState extends State<RunPage> {
           }
       },
     );
+    init();
   }
 
   init() async {
-    currPos = await Geolocator.getCurrentPosition();
+    // debugPrint("run_page : getting initial position");
+    Position? initialPosition = await Geolocator.getLastKnownPosition();
     setState(() {
-      currPos = currPos;
+      // debugPrint("run_page : getting initial position done");
+      currPos = initialPosition;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: storyRun
-            ? const Text(
+      appBar: storyRun
+          ? AppBar(
+              centerTitle: true,
+              title: const Text(
                 "Moo tales",
                 style: TextStyle(color: Colors.black, fontSize: 16),
-              )
-            : const Text(
-                "Track run",
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-      ),
+              ))
+          : null,
       body: currPos == null
           ? LocationService.locationServiceEnabled
               ? LocationService.connectivity.contains(ConnectivityResult.none)
                   ? const Text("NO internet!") // TODO make nicer
                   : const LoadingMap()
-              : const Text("Location services are disabled")
+              : DisabledLocationWidget(
+                  callback: setState,
+                  locationService: locationService,
+                )
           : SafeArea(
               child: Builder(builder: (context) {
                 return GoogleMap(
+                  myLocationEnabled: true,
                   zoomControlsEnabled: false,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(currPos!.latitude, currPos!.longitude),
@@ -165,7 +168,7 @@ class _RunPageState extends State<RunPage> {
                         mapContainer: googleMapsContainer,
                       ),
                     )
-                  : FloatingActionButton.extended(
+                  : FloatingActionButton.large(
                       onPressed: () {
                         // update the state of running
                         ref.read(timerProvider.notifier).startStopTimer();
@@ -185,7 +188,14 @@ class _RunPageState extends State<RunPage> {
                           player,
                         );
                       },
-                      label: const Text("Start Run"),
+                      shape: const CircleBorder(),
+                      child: const Text(
+                        "Start",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
                     );
         },
       ),
@@ -210,5 +220,37 @@ class _RunPageState extends State<RunPage> {
     }
 
     _stopWatchTimer.dispose();
+  }
+}
+
+class DisabledLocationWidget extends StatelessWidget {
+  final Function callback;
+  final LocationService locationService;
+
+  const DisabledLocationWidget({
+    super.key,
+    required this.callback,
+    required this.locationService,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Location services are disabled!"),
+          const Text("Please enable location services to continue."),
+          ElevatedButton(
+              onPressed: () {
+                locationService.openLocationSettings();
+                // locationService.checkPermission();
+                debugPrint("setstate of run page after enable pressed");
+                callback(() {});
+              },
+              child: const Text("Enable Location Services")),
+        ],
+      ),
+    );
   }
 }

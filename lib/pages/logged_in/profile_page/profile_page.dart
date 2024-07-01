@@ -37,7 +37,10 @@ class ProfilePage extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: name != null && username != null
                 ? ProfileDetails(name: name, username: username)
-                : const CircularProgressIndicator(),
+                : const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  ),
           ),
 
           // Button to alternate run or achievement section

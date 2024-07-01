@@ -16,7 +16,7 @@ class StoryTile extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => StoryDetailPage(),
+          builder: (context) => const StoryDetailPage(),
         ),
       ),
       child: Column(
@@ -26,8 +26,8 @@ class StoryTile extends StatelessWidget {
             height: 160,
             color: color,
           ),
-          Text("Chapter 1"),
-          Text("2km"),
+          const Text("Chapter 1"),
+          const Text("2km"),
         ],
       ),
     );
