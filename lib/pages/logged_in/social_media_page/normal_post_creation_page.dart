@@ -45,6 +45,8 @@ class PostCreationPageState extends State<PostCreationPage> {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
+                      'photoUrl':
+                          'https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg',
                     });
                     Navigator.pop(context);
                   }
