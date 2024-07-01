@@ -12,7 +12,6 @@ class StoryPage extends ConsumerWidget {
   const StoryPage({super.key});
 
   final stories = null;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInformationProvider).asData?.value;
@@ -98,7 +97,22 @@ class StoryPage extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  // debugPrint(userInfo?['activeStory']);
+                  final List<Map<String, dynamic>> quests =
+                      await Repository.getQuests(
+                    userInfo?['activeStory'],
+                  );
+                  // debugPrint("ahh");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ActiveQuestDisplayPage(
+                        quests: quests,
+                      ),
+                    ),
+                  );
+                },
                 child: Text(
                   "Active Quests",
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -107,6 +121,32 @@ class StoryPage extends ConsumerWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class ActiveQuestDisplayPage extends StatelessWidget {
+  final List<Map<String, dynamic>> quests;
+  const ActiveQuestDisplayPage({
+    super.key,
+    required this.quests,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Active Quests"),
+      ),
+      body: ListView.builder(
+        itemCount: quests.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(quests[index]['title'] ?? 'No Title'),
+            subtitle: Text(quests[index]['description'] ?? 'No Description'),
+          );
+        },
       ),
     );
   }

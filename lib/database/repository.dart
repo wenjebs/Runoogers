@@ -152,4 +152,9 @@ class Repository {
   static Future<void> setUserActiveStory(String userId, String storyId) {
     return database.setUserActiveStory(userId, storyId);
   }
+
+  static Future<List<Map<String, dynamic>>> getQuests(String storyId) {
+    // debugPrint("Repository: getting quests");
+    return database.getQuests(storyId);
+  }
 }

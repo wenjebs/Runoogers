@@ -516,4 +516,20 @@ class Database {
     final userRef = firestore.collection('users').doc(userId);
     return userRef.update({'activeStory': storyId});
   }
+
+  // returns a list of maps containing the quests completed by each user
+  // list is in quest order [quest1, quest2, ...]
+  // each quest is a map {description: ..., title: ..., distance: ...,}
+  Future<List<Map<String, dynamic>>> getQuests(String storyId) async {
+    final storyRef = firestore.collection('stories').doc(storyId);
+    final doc = await storyRef.get();
+
+    if (!doc.exists) {
+      throw Exception("Story does not exist");
+    }
+
+    // Assuming the document has a field 'quests' which is a list of quests
+    List<dynamic> quests = doc.data()?['quests'] ?? [];
+    return quests.cast<Map<String, dynamic>>();
+  }
 }

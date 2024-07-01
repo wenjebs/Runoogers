@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 
 class StoryDetailPage extends StatefulWidget {
   final Image image;
@@ -83,7 +82,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
               onPressed: () {
                 Repository.setUserActiveStory(widget.userID, widget.id);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('Active story set successfully'),
                     duration: Duration(seconds: 2),
                   ),
