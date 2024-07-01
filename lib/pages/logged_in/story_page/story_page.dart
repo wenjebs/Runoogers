@@ -30,7 +30,7 @@ class StoryPage extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              children: [
+              children: const [
                 StoryTile(color: Colors.red),
                 StoryTile(color: Colors.blue),
                 StoryTile(color: Colors.orange),
@@ -41,15 +41,15 @@ class StoryPage extends StatelessWidget {
           ),
           // Short Stories
 
-          Align(
+          const Align(
               alignment: Alignment.centerLeft,
-              child: const Text("Short stories")),
+              child: Text("Short stories")),
 
           Expanded(
             child: ListView(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              children: [
+              children: const [
                 StoryTile(color: Colors.red),
                 StoryTile(color: Colors.blue),
                 StoryTile(color: Colors.orange),
