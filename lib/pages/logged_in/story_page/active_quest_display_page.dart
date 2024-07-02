@@ -17,35 +17,42 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questProgress =
-        ref.watch(questProgressProvider(activeStory)).asData?.value;
-
+    final questProgress = ref.watch(questProgressProvider(activeStory));
+    // debugPrint(questProgress.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Active Quests"),
       ),
-      body: ListView.builder(
-        itemCount: quests.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: InkWell(
-              splashColor: Colors.blue.withAlpha(30),
-              onTap: () {
-                startQuest(quests[index], context);
-              },
-              child: QuestCardContentWidget(
-                  quests: quests, questProgress: questProgress, index: index),
-            ),
-          );
-        },
-      ),
+      body: switch (questProgress) {
+        AsyncData(:final value) => ListView.builder(
+            itemCount: quests.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: InkWell(
+                  splashColor: Colors.blue.withAlpha(30),
+                  onTap: () {
+                    startQuest(quests[index], context, value);
+                  },
+                  child: QuestCardContentWidget(
+                      quests: quests, questProgress: value, index: index),
+                ),
+              );
+            },
+          ),
+        AsyncError(:final error) => Text(error.toString()),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
     );
   }
 
-  void startQuest(Quest quest, BuildContext context) {
+  void startQuest(
+    Quest quest,
+    BuildContext context,
+    QuestProgressModel? questProgress,
+  ) {
     // Go run page
     Navigator.push(
       context,
@@ -53,6 +60,8 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         builder: (context) => RunPage(
           title: quest.getTitle,
           storyRun: true,
+          activeStory: activeStory,
+          questProgress: questProgress,
         ),
       ),
     );

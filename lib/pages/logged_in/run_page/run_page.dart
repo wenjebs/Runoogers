@@ -10,6 +10,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -17,14 +18,18 @@ import 'map_and_location_logic/loading_map.dart';
 import 'components/run_detail_and_stop.dart';
 
 class RunPage extends StatefulWidget {
+  final String? activeStory;
+  final QuestProgressModel? questProgress;
+  final bool storyRun;
+  final String title;
+
   const RunPage({
     super.key,
     required this.storyRun,
     required this.title,
+    this.activeStory,
+    this.questProgress,
   });
-
-  final bool storyRun;
-  final String title;
 
   @override
   State<RunPage> createState() {
@@ -175,6 +180,9 @@ class _RunPageState extends State<RunPage> {
                         stopWatchTimer: _stopWatchTimer,
                         context: context,
                         mapContainer: googleMapsContainer,
+                        questProgress: widget.questProgress,
+                        activeStory: widget.activeStory,
+                        storyRun: storyRun,
                       ),
                     )
                   : FloatingActionButton.large(

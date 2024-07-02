@@ -165,4 +165,13 @@ class Repository {
   static Future<QuestProgressModel> getQuestProgress(String storyId) {
     return database.getQuestProgress(storyId);
   }
+
+  static void updateQuestProgress(
+    double distance,
+    int time,
+    int currQuestID,
+    String storyId,
+  ) {
+    database.updateQuestProgress(distance, time, currQuestID, storyId);
+  }
 }

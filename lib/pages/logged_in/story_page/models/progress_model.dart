@@ -1,30 +1,37 @@
 class QuestProgressModel {
-  final int distanceTravelled;
+  final int currentQuest;
+  final double distanceTravelled;
   final List<bool> questCompletionStatus;
-  final List<int> questDistanceProgress;
+  final List<double> questDistanceProgress;
 
   QuestProgressModel({
+    required this.currentQuest,
     required this.distanceTravelled,
     required this.questCompletionStatus,
     required this.questDistanceProgress,
   });
 
   // Getters
-  int get getDistanceTravelled => distanceTravelled;
+  double get getDistanceTravelled => distanceTravelled;
   List<bool> get getQuestCompletionStatus => questCompletionStatus;
-  List<int> get getQuestDistanceProgress => questDistanceProgress;
+  List<double> get getQuestDistanceProgress => questDistanceProgress;
 
   // Factory constructor for creating a new Quest instance from a Firestore document.
   factory QuestProgressModel.fromFirestore(Map<String, dynamic> doc) {
     return QuestProgressModel(
-      distanceTravelled: doc['distanceTravelled'] ?? 0,
+      currentQuest: doc['currentQuest'] ?? 0,
+      distanceTravelled: doc['distanceTravelled'],
       questCompletionStatus: List<bool>.from(doc['questsCompleted'] ?? []),
-      questDistanceProgress: List<int>.from(doc['questProgress'] ?? []),
+      questDistanceProgress: (doc['questProgress'] as List<dynamic>?)
+              ?.map((item) => double.tryParse(item.toString()) ?? 0.0)
+              .toList() ??
+          [],
     );
   }
 
   // Method to convert a Quest instance to a Map for Firestore.
   Map<String, dynamic> toFirestore() => {
+        'currentQuest': currentQuest,
         'distanceTravelled': distanceTravelled,
         'questsCompleted': questCompletionStatus,
         'questProgress': questDistanceProgress,
@@ -32,6 +39,6 @@ class QuestProgressModel {
 
   @override
   String toString() {
-    return 'QuestProgressModel { distanceTravelled: $distanceTravelled, questCompletionStatus: $questCompletionStatus, questDistanceProgress: $questDistanceProgress }';
+    return 'QuestProgressModel { currentQuest: $currentQuest ,distanceTravelled: $distanceTravelled, questCompletionStatus: $questCompletionStatus, questDistanceProgress: $questDistanceProgress }';
   }
 }

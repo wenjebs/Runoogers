@@ -557,26 +557,76 @@ class Database {
         .doc(storyId);
     // If story progress is stored in a document
     final doc = await progressRef.get();
-    // debugPrint(doc.data().toString());
+    // debugPrint("GETQUESTPROGRESS" + doc.data().toString());
     if (doc.exists) {
       final data = doc.data();
       return QuestProgressModel.fromFirestore(data!);
     } else {
       return QuestProgressModel(
+          currentQuest: 0,
           distanceTravelled: 0,
           questCompletionStatus: [],
           questDistanceProgress: []);
     }
   }
-  //   if (doc.docs.isNotEmpty) {
-  //     final storyProgress = doc.docs.first;
-  //     final data = storyProgress.data();
-  //     return QuestProgressModel.fromFirestore(data);
-  //   } else {
-  //     return QuestProgressModel(
-  //         distanceTravelled: 0,
-  //         questCompletionStatus: [],
-  //         questDistanceProgress: []);
-  //   }
-  // }
+
+  Future<void> updateQuestProgress(
+    double distance,
+    int time,
+    int currQuestID,
+    String storyId,
+  ) async {
+    debugPrint("Repository: updating quest progress");
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final progressRef = userRef.collection('storyProgress').doc(storyId);
+    List<Quest> quests = await getQuests(storyId);
+    firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(progressRef);
+      final data = doc.data();
+      int currentQuest = data?['currentQuest'];
+      final currentDistance = data?['distanceTravelled'];
+      final currentQuestProgress = data?['questProgress'];
+      final currentQuestCompletionStatus = data?['questsCompleted'];
+      // Update current quest progress
+      double tracker = distance;
+      while (tracker >= 0 && currentQuest < quests.length) {
+        if (tracker + currentQuestProgress[currentQuest] >=
+            quests[currentQuest].distance) {
+          double temp = currentQuestProgress[currentQuest].toDouble();
+          currentQuestProgress[currentQuest] = quests[currentQuest].distance;
+          currentQuestCompletionStatus[currentQuest] = true;
+          tracker -= (quests[currentQuest].distance - temp);
+          currentQuest++;
+        } else {
+          currentQuestProgress[currentQuest] += tracker;
+          tracker = -1;
+        }
+      }
+      // Update distance travelled
+      transaction.update(
+        progressRef,
+        {
+          'distanceTravelled': currentDistance + distance,
+          'currentQuest': currentQuest,
+          'questProgress': currentQuestProgress,
+          'questsCompleted': currentQuestCompletionStatus,
+        },
+      );
+
+      // // Update quest progress
+      // for (int i = 0; i < currentQuestProgress.length; i++) {
+      //   if (!currentQuestCompletionStatus[i]) {
+      //     currentQuestProgress[i] += distance;
+      //     if (currentQuestProgress[i] >= 1000) {
+      //       currentQuestCompletionStatus[i] = true;
+      //     }
+      //   }
+      // }
+    });
+  }
 }

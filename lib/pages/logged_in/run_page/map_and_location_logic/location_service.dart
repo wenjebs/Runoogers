@@ -137,7 +137,7 @@ class LocationService {
                 newPosition.longitude,
               ) /
               1000.0;
-          debugPrint("updating dist$distanceTravelled");
+          // debugPrint("updating dist$distanceTravelled");
           distance += calculatedDist;
           if (storyRun) {
             distanceTracker += calculatedDist;
