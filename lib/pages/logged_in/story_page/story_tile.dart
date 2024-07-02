@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'story_detail_page.dart';
 
+// to be removed
 class StoryTile extends StatelessWidget {
   final Color color;
 

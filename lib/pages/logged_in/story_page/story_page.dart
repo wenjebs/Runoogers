@@ -5,6 +5,7 @@ import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart';
 
+import 'active_quest_display_page.dart';
 import 'story_tile.dart';
 
 class StoryPage extends ConsumerWidget {
@@ -14,6 +15,7 @@ class StoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInformationProvider).asData?.value;
+    // debugPrint(userInfo.toString());
     return Scaffold(
       body: Column(
         children: [
@@ -132,32 +134,6 @@ class StoryPage extends ConsumerWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class ActiveQuestDisplayPage extends StatelessWidget {
-  final List<Quest> quests;
-  const ActiveQuestDisplayPage({
-    super.key,
-    required this.quests,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Active Quests"),
-      ),
-      body: ListView.builder(
-        itemCount: quests.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(quests[index].getTitle),
-            subtitle: Text(quests[index].getDescription),
-          );
-        },
       ),
     );
   }

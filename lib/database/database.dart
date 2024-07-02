@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
@@ -541,5 +542,30 @@ class Database {
         .map((questData) => Quest.fromFirestore(questData))
         .toList();
     return quests;
+  }
+
+  Future<QuestProgressModel> getQuestProgress(String storyId) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final storyRef =
+        firestore.collection('users').doc(userId).collection('storyProgress');
+
+    // If story progress is stored in a document
+    final doc = await storyRef.doc(storyId).get();
+
+    if (doc.exists) {
+      // Assuming QuestProgressModel has a constructor that takes a Map<String, dynamic>
+      return QuestProgressModel.fromFirestore(
+          doc.data() as Map<String, dynamic>);
+    } else {
+      // Assuming QuestProgressModel can be initialized with an empty map or has a default constructor
+      return QuestProgressModel(
+          distanceTravelled: 0,
+          questCompletionStatus: [],
+          questDistanceProgress: []);
+    }
   }
 }
