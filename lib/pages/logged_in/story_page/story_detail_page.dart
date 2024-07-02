@@ -8,14 +8,17 @@ class StoryDetailPage extends StatefulWidget {
   final String description;
   final String id;
   final String userID;
+  final bool active;
 
-  const StoryDetailPage(
-      {super.key,
-      required this.image,
-      required this.title,
-      required this.description,
-      required this.userID,
-      required this.id});
+  const StoryDetailPage({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.description,
+    required this.userID,
+    required this.id,
+    required this.active,
+  });
 
   @override
   State<StoryDetailPage> createState() => _StoryDetailPageState();
@@ -70,33 +73,28 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
           // Start button
           ElevatedButton(
-              // onPressed: () => Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         // TODO, handle no permission unhandled exception
-              //         builder: (context) => const RunPage(
-              //           storyRun: true,
-              //         ),
-              //       ),
-              //     ),
-              onPressed: () {
-                Repository.setUserActiveStory(widget.userID, widget.id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Active story set successfully'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              child: const Text("Make active quest")),
-
-          // Audio Test
-          ElevatedButton(
-              onPressed: () async {
-                await player.setAsset('lib/assets/audio/cow.mp3');
-                player.play();
-              },
-              child: const Text("Moo"))
+            // onPressed: () => Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         // TODO, handle no permission unhandled exception
+            //         builder: (context) => const RunPage(
+            //           storyRun: true,
+            //         ),
+            //       ),
+            //     ),
+            onPressed: () {
+              Repository.setUserActiveStory(widget.userID, widget.id);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Active story set successfully'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            child: widget.active
+                ? const Text("This quest is currently active!")
+                : const Text("Make active quest"),
+          ),
         ],
       ),
     );

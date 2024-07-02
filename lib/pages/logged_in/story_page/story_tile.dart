@@ -22,6 +22,7 @@ class StoryTile extends StatelessWidget {
             description: '',
             id: '',
             userID: '',
+            active: false,
           ),
         ),
       ),

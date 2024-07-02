@@ -7,8 +7,6 @@ import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart
 
 import 'story_tile.dart';
 
-final items = List<String>.generate(10000, (i) => 'Item $i');
-
 class StoryPage extends ConsumerWidget {
   const StoryPage({super.key});
 
@@ -31,7 +29,7 @@ class StoryPage extends ConsumerWidget {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Main Quests",
+              "Main Stories",
               style: Theme.of(context).textTheme.headlineLarge,
             ),
           ),
@@ -55,7 +53,21 @@ class StoryPage extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     // debugPrint(stories[index].toString());
                     return StoryTileWithImage(
-                      image: Image.network(stories[index].getImageURL),
+                      image: Image.network(stories[index].getImageURL,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child; // Image has finished loading
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null, // Display the loading progress
+                          ),
+                        );
+                      }),
                       shortTitle: stories[index].getShortTitle,
                       title: stories[index].getTitle,
                       description: stories[index].getDescription,
