@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/providers.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -14,20 +15,31 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Consumer(
-        builder: (context, ref, child) {
-          return ElevatedButton(
-            onPressed: () {
-              ref.read(themeProviderRef.notifier).toggleTheme(darkmode);
-              debugPrint(darkmode.toString());
-              setState(() {
-                darkmode = !darkmode;
-              });
-            },
-            child: const Text('Toggle Theme'),
-          );
-        },
-      )),
+      body: Center(
+        child: Column(
+          children: [
+            Consumer(
+              builder: (context, ref, child) {
+                return ElevatedButton(
+                  onPressed: () {
+                    ref.read(themeProviderRef.notifier).toggleTheme(darkmode);
+                    debugPrint(darkmode.toString());
+                    setState(() {
+                      darkmode = !darkmode;
+                    });
+                  },
+                  child: const Text('Toggle Theme'),
+                );
+              },
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Repository.updateQuestProgress(23, 100, 0, "ivan");
+                },
+                child: const Text("Test"))
+          ],
+        ),
+      ),
     );
   }
 }

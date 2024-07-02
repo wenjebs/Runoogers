@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'route_provider.dart';
+part of 'providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$routeHash() => r'461f11b7b55c0dae9ecdd8ab662c2379de957036';
+String _$questProgressHash() => r'0ff047ca3c9ff3d2bc6d4daf12a2dc7cbf5dfcb9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,33 +29,30 @@ class _SystemHash {
   }
 }
 
-/// See also [route].
-@ProviderFor(route)
-const routeProvider = RouteFamily();
+/// See also [questProgress].
+@ProviderFor(questProgress)
+const questProgressProvider = QuestProgressFamily();
 
-/// See also [route].
-class RouteFamily extends Family<AsyncValue<Set<Object>>> {
-  /// See also [route].
-  const RouteFamily();
+/// See also [questProgress].
+class QuestProgressFamily extends Family<AsyncValue<QuestProgressModel>> {
+  /// See also [questProgress].
+  const QuestProgressFamily();
 
-  /// See also [route].
-  RouteProvider call(
-    int seed,
-    int distance,
+  /// See also [questProgress].
+  QuestProgressProvider call(
+    String storyId,
   ) {
-    return RouteProvider(
-      seed,
-      distance,
+    return QuestProgressProvider(
+      storyId,
     );
   }
 
   @override
-  RouteProvider getProviderOverride(
-    covariant RouteProvider provider,
+  QuestProgressProvider getProviderOverride(
+    covariant QuestProgressProvider provider,
   ) {
     return call(
-      provider.seed,
-      provider.distance,
+      provider.storyId,
     );
   }
 
@@ -71,104 +68,93 @@ class RouteFamily extends Family<AsyncValue<Set<Object>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'routeProvider';
+  String? get name => r'questProgressProvider';
 }
 
-/// See also [route].
-class RouteProvider extends AutoDisposeFutureProvider<Set<Object>> {
-  /// See also [route].
-  RouteProvider(
-    int seed,
-    int distance,
+/// See also [questProgress].
+class QuestProgressProvider
+    extends AutoDisposeFutureProvider<QuestProgressModel> {
+  /// See also [questProgress].
+  QuestProgressProvider(
+    String storyId,
   ) : this._internal(
-          (ref) => route(
-            ref as RouteRef,
-            seed,
-            distance,
+          (ref) => questProgress(
+            ref as QuestProgressRef,
+            storyId,
           ),
-          from: routeProvider,
-          name: r'routeProvider',
+          from: questProgressProvider,
+          name: r'questProgressProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$routeHash,
-          dependencies: RouteFamily._dependencies,
-          allTransitiveDependencies: RouteFamily._allTransitiveDependencies,
-          seed: seed,
-          distance: distance,
+                  : _$questProgressHash,
+          dependencies: QuestProgressFamily._dependencies,
+          allTransitiveDependencies:
+              QuestProgressFamily._allTransitiveDependencies,
+          storyId: storyId,
         );
 
-  RouteProvider._internal(
+  QuestProgressProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.seed,
-    required this.distance,
+    required this.storyId,
   }) : super.internal();
 
-  final int seed;
-  final int distance;
+  final String storyId;
 
   @override
   Override overrideWith(
-    FutureOr<Set<Object>> Function(RouteRef provider) create,
+    FutureOr<QuestProgressModel> Function(QuestProgressRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: RouteProvider._internal(
-        (ref) => create(ref as RouteRef),
+      override: QuestProgressProvider._internal(
+        (ref) => create(ref as QuestProgressRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        seed: seed,
-        distance: distance,
+        storyId: storyId,
       ),
     );
   }
 
   @override
-  AutoDisposeFutureProviderElement<Set<Object>> createElement() {
-    return _RouteProviderElement(this);
+  AutoDisposeFutureProviderElement<QuestProgressModel> createElement() {
+    return _QuestProgressProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is RouteProvider &&
-        other.seed == seed &&
-        other.distance == distance;
+    return other is QuestProgressProvider && other.storyId == storyId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, seed.hashCode);
-    hash = _SystemHash.combine(hash, distance.hashCode);
+    hash = _SystemHash.combine(hash, storyId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin RouteRef on AutoDisposeFutureProviderRef<Set<Object>> {
-  /// The parameter `seed` of this provider.
-  int get seed;
-
-  /// The parameter `distance` of this provider.
-  int get distance;
+mixin QuestProgressRef on AutoDisposeFutureProviderRef<QuestProgressModel> {
+  /// The parameter `storyId` of this provider.
+  String get storyId;
 }
 
-class _RouteProviderElement
-    extends AutoDisposeFutureProviderElement<Set<Object>> with RouteRef {
-  _RouteProviderElement(super.provider);
+class _QuestProgressProviderElement
+    extends AutoDisposeFutureProviderElement<QuestProgressModel>
+    with QuestProgressRef {
+  _QuestProgressProviderElement(super.provider);
 
   @override
-  int get seed => (origin as RouteProvider).seed;
-  @override
-  int get distance => (origin as RouteProvider).distance;
+  String get storyId => (origin as QuestProgressProvider).storyId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

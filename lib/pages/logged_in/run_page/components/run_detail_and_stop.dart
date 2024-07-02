@@ -11,6 +11,7 @@ import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,9 @@ class RunDetailsAndStop extends ConsumerWidget {
     required StopWatchTimer stopWatchTimer,
     required this.context,
     required this.mapContainer,
+    this.activeStory,
+    this.questProgress,
+    this.storyRun,
   }) : _stopWatchTimer = stopWatchTimer;
 
   final imagesRef = FirebaseStorage.instance.ref().child('images');
@@ -29,6 +33,9 @@ class RunDetailsAndStop extends ConsumerWidget {
   final StopWatchTimer _stopWatchTimer;
   final GoogleMapsContainer mapContainer;
   final BuildContext context;
+  final String? activeStory;
+  final QuestProgressModel? questProgress;
+  final bool? storyRun;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,13 +74,16 @@ class RunDetailsAndStop extends ConsumerWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(paddingValue / 2),
                 ),
-
+                ////////////////////////////////////////
                 // DISPLAY DISTANCE TIME AND PACE
+                ////////////////////////////////////////
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    ////////////////////
                     // DISPLAY DISTANCE
+                    ////////////////////
                     Column(
                       children: [
                         const Padding(
@@ -104,7 +114,9 @@ class RunDetailsAndStop extends ConsumerWidget {
                     ),
                     Row(
                       children: [
+                        ////////////////////
                         // Display time
+                        ////////////////////
                         TimeDisplayWidget(stopWatchTimer: _stopWatchTimer),
                         const SizedBox(
                           height: 60,
@@ -117,11 +129,15 @@ class RunDetailsAndStop extends ConsumerWidget {
                         PaceDisplayWidget(stopWatchTimer: _stopWatchTimer),
                       ],
                     ),
+                    ///////////////////////////////////
                     // STOP RUN BUTTON AND HIDE BUTTON
+                    ///////////////////////////////////
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        ////////////////////
                         // STOP BUTTON
+                        ////////////////////
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: ElevatedButton(
@@ -301,18 +317,22 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 );
 
                                 //update stats
-                                Repository.incrementRuns();
-                                Repository.incrementTotalDistanceRan(distance);
-                                Repository.incrementTotalTimeRan(time);
-                                double totalPoints =
-                                    distance / (time / 60000) * 10;
-                                Repository.addPoints(totalPoints.toInt());
+                                updateStats(distance, time);
 
+                                // update quest progress
+
+                                if (storyRun != null && storyRun == true) {
+                                  Repository.updateQuestProgress(
+                                      distance,
+                                      time,
+                                      questProgress!.currentQuest,
+                                      activeStory!);
+                                }
                                 // update and display achievements
                                 List<String> newAchievements =
+                                    //TODO IMPROVE, THIS IS HELLA SLOW
                                     await Repository.updateUserAchievements(
                                         distance, time);
-
                                 if (newAchievements.isNotEmpty) {
                                   // Show dialog with the list of new achievements
                                   showDialog(
@@ -420,6 +440,14 @@ class RunDetailsAndStop extends ConsumerWidget {
     _stopWatchTimer.onResetTimer();
     // set boolean to false
     ref.read(timerProvider.notifier).startStopTimer();
+  }
+
+  void updateStats(double distance, int time) {
+    Repository.incrementRuns();
+    Repository.incrementTotalDistanceRan(distance);
+    Repository.incrementTotalTimeRan(time);
+    double totalPoints = distance / (time / 60000) * 10;
+    Repository.addPoints(totalPoints.toInt());
   }
 }
 

@@ -34,6 +34,7 @@ class StoryTileWithImage extends StatelessWidget {
             description: description,
             id: id,
             userID: userID,
+            active: active,
           ),
         ),
       ),

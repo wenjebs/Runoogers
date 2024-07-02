@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const UserPage(),
     const RunPage(
+      title: "",
       storyRun: false,
     ),
     const SocialMediaPage(),

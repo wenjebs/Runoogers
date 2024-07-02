@@ -39,7 +39,7 @@ class LocationService {
     await Geolocator.openLocationSettings();
   }
 
-  void checkPermission() async {
+  Future<void> checkPermission() async {
     debugPrint("location_service: Checking permission");
 
     // Check if location services are enabled
@@ -137,7 +137,7 @@ class LocationService {
                 newPosition.longitude,
               ) /
               1000.0;
-          debugPrint("updating dist$distanceTravelled");
+          // debugPrint("updating dist$distanceTravelled");
           distance += calculatedDist;
           if (storyRun) {
             distanceTracker += calculatedDist;

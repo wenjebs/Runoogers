@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart';
 
+import 'active_quest_display_page.dart';
 import 'story_tile.dart';
-
-final items = List<String>.generate(10000, (i) => 'Item $i');
 
 class StoryPage extends ConsumerWidget {
   const StoryPage({super.key});
@@ -15,6 +15,7 @@ class StoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInformationProvider).asData?.value;
+    // debugPrint(userInfo.toString());
     return Scaffold(
       body: Column(
         children: [
@@ -30,7 +31,7 @@ class StoryPage extends ConsumerWidget {
           Align(
             alignment: Alignment.center,
             child: Text(
-              "Main Quests",
+              "Main Stories",
               style: Theme.of(context).textTheme.headlineLarge,
             ),
           ),
@@ -54,12 +55,26 @@ class StoryPage extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     // debugPrint(stories[index].toString());
                     return StoryTileWithImage(
-                      image: Image.network(stories[index]['imageURL']),
-                      shortTitle: stories[index]['shortTitle'],
-                      title: stories[index]['title'],
-                      description: stories[index]['description'],
-                      active: userInfo?['activeStory'] == stories[index]['id'],
-                      id: stories[index]['id'],
+                      image: Image.network(stories[index].getImageURL,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child; // Image has finished loading
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null, // Display the loading progress
+                          ),
+                        );
+                      }),
+                      shortTitle: stories[index].getShortTitle,
+                      title: stories[index].getTitle,
+                      description: stories[index].getDescription,
+                      active: userInfo?['activeStory'] == stories[index].getId,
+                      id: stories[index].getId,
                       userID: userInfo?['uid'],
                     );
                   },
@@ -68,7 +83,6 @@ class StoryPage extends ConsumerWidget {
             ),
           ),
           // Short Stories
-
           Align(
             alignment: Alignment.center,
             child: Text(
@@ -99,8 +113,7 @@ class StoryPage extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   // debugPrint(userInfo?['activeStory']);
-                  final List<Map<String, dynamic>> quests =
-                      await Repository.getQuests(
+                  final List<Quest> quests = await Repository.getQuests(
                     userInfo?['activeStory'],
                   );
                   // debugPrint("ahh");
@@ -108,6 +121,7 @@ class StoryPage extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ActiveQuestDisplayPage(
+                        activeStory: userInfo?['activeStory'],
                         quests: quests,
                       ),
                     ),
@@ -121,32 +135,6 @@ class StoryPage extends ConsumerWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class ActiveQuestDisplayPage extends StatelessWidget {
-  final List<Map<String, dynamic>> quests;
-  const ActiveQuestDisplayPage({
-    super.key,
-    required this.quests,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Active Quests"),
-      ),
-      body: ListView.builder(
-        itemCount: quests.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(quests[index]['title'] ?? 'No Title'),
-            subtitle: Text(quests[index]['description'] ?? 'No Description'),
-          );
-        },
       ),
     );
   }
