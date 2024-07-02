@@ -39,7 +39,7 @@ class LocationService {
     await Geolocator.openLocationSettings();
   }
 
-  void checkPermission() async {
+  Future<void> checkPermission() async {
     debugPrint("location_service: Checking permission");
 
     // Check if location services are enabled
