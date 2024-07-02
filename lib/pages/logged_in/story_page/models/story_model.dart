@@ -17,19 +17,18 @@ class Story {
   // Getters
   String get getId => id;
   String get getTitle => title;
+  String get getShortTitle => shortTitle;
   String get getDescription => description;
   String get getImageURL => imageURL;
 
   // Factory constructor for creating a new Story instance from a Firestore document.
-  factory Story.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options) {
-    final data = snapshot.data();
+  factory Story.fromFirestore(Map<String, dynamic> doc) {
     return Story(
-      id: data?['id'] ?? '',
-      shortTitle: data?['shortTitle'] ?? '',
-      title: data?['title'] ?? '',
-      description: data?['description'] ?? '',
-      imageURL: data?['imageURL'] ?? '',
+      id: doc['id'] ?? '',
+      shortTitle: doc['shortTitle'] ?? '',
+      title: doc['title'] ?? '',
+      description: doc['description'] ?? '',
+      imageURL: doc['imageURL'] ?? '',
     );
   }
 

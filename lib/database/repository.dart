@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/database.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
 
@@ -139,7 +140,7 @@ class Repository {
   }
 
   //  Get stories
-  static Future<List<Map<String, dynamic>>> getStories() {
+  static Future<List<Story>> getStories() {
     return database.getUserStories();
   }
   // Each story has a title, shortTitle, description and imageURL

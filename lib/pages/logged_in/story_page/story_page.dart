@@ -54,12 +54,12 @@ class StoryPage extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     // debugPrint(stories[index].toString());
                     return StoryTileWithImage(
-                      image: Image.network(stories[index]['imageURL']),
-                      shortTitle: stories[index]['shortTitle'],
-                      title: stories[index]['title'],
-                      description: stories[index]['description'],
-                      active: userInfo?['activeStory'] == stories[index]['id'],
-                      id: stories[index]['id'],
+                      image: Image.network(stories[index].getImageURL),
+                      shortTitle: stories[index].getShortTitle,
+                      title: stories[index].getTitle,
+                      description: stories[index].getDescription,
+                      active: userInfo?['activeStory'] == stories[index].getId,
+                      id: stories[index].getId,
                       userID: userInfo?['uid'],
                     );
                   },

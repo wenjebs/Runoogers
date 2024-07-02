@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class Database {
@@ -493,10 +494,14 @@ class Database {
   ///////////////////////////////////////
   /// STORY RELATED
   ///////////////////////////////////////
-  Future<List<Map<String, dynamic>>> getUserStories() async {
+  Future<List<Story>> getUserStories() async {
     final snapshot = await firestore.collection('stories').get();
 
-    return snapshot.docs.map((doc) => doc.data()).toList();
+    return snapshot.docs
+        .map((doc) => Story.fromFirestore(
+              doc.data(),
+            ))
+        .toList();
   }
 
   Future<bool> hasUserCompletedStory(String userId, String storyId) async {
