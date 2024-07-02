@@ -20,7 +20,7 @@ class QuestProgressModel {
   factory QuestProgressModel.fromFirestore(Map<String, dynamic> doc) {
     return QuestProgressModel(
       currentQuest: doc['currentQuest'] ?? 0,
-      distanceTravelled: doc['distanceTravelled'],
+      distanceTravelled: (doc['distanceTravelled'] as num?)?.toDouble() ?? 0.0,
       questCompletionStatus: List<bool>.from(doc['questsCompleted'] ?? []),
       questDistanceProgress: (doc['questProgress'] as List<dynamic>?)
               ?.map((item) => double.tryParse(item.toString()) ?? 0.0)
