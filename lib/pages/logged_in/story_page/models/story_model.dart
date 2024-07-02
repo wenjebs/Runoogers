@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Story {
   final String id;
   final String shortTitle;
   final String title;
   final String description;
   final String imageURL;
+  final List<Map<String, dynamic>> quests;
 
   Story({
     required this.id,
@@ -13,6 +12,7 @@ class Story {
     required this.title,
     required this.description,
     required this.imageURL,
+    required this.quests,
   });
   // Getters
   String get getId => id;
@@ -20,6 +20,7 @@ class Story {
   String get getShortTitle => shortTitle;
   String get getDescription => description;
   String get getImageURL => imageURL;
+  List<Map<String, dynamic>> get getQuests => quests;
 
   // Factory constructor for creating a new Story instance from a Firestore document.
   factory Story.fromFirestore(Map<String, dynamic> doc) {
@@ -29,6 +30,10 @@ class Story {
       title: doc['title'] ?? '',
       description: doc['description'] ?? '',
       imageURL: doc['imageURL'] ?? '',
+      quests: doc['quests'] != null
+          ? List<Map<String, dynamic>>.from(
+              doc['quests'].map((quest) => Map<String, dynamic>.from(quest)))
+          : [],
     );
   }
 
@@ -39,6 +44,7 @@ class Story {
         'title': title,
         'description': description,
         'imageURL': imageURL,
+        'quests': quests,
       };
 
   // Method to create a copy of an instance with optional new values.
@@ -48,6 +54,7 @@ class Story {
     String? title,
     String? description,
     String? imageURL,
+    List<Map<String, dynamic>>? quests,
   }) {
     return Story(
       id: id ?? this.id,
@@ -55,6 +62,7 @@ class Story {
       title: title ?? this.title,
       description: description ?? this.description,
       imageURL: imageURL ?? this.imageURL,
+      quests: quests ?? this.quests,
     );
   }
 }
