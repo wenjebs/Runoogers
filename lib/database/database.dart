@@ -550,22 +550,33 @@ class Database {
       throw Exception("User not logged in");
     }
 
-    final storyRef =
-        firestore.collection('users').doc(userId).collection('storyProgress');
-
+    final progressRef = firestore
+        .collection('users')
+        .doc(userId)
+        .collection('storyProgress')
+        .doc(storyId);
     // If story progress is stored in a document
-    final doc = await storyRef.doc(storyId).get();
-
+    final doc = await progressRef.get();
+    // debugPrint(doc.data().toString());
     if (doc.exists) {
-      // Assuming QuestProgressModel has a constructor that takes a Map<String, dynamic>
-      return QuestProgressModel.fromFirestore(
-          doc.data() as Map<String, dynamic>);
+      final data = doc.data();
+      return QuestProgressModel.fromFirestore(data!);
     } else {
-      // Assuming QuestProgressModel can be initialized with an empty map or has a default constructor
       return QuestProgressModel(
           distanceTravelled: 0,
           questCompletionStatus: [],
           questDistanceProgress: []);
     }
   }
+  //   if (doc.docs.isNotEmpty) {
+  //     final storyProgress = doc.docs.first;
+  //     final data = storyProgress.data();
+  //     return QuestProgressModel.fromFirestore(data);
+  //   } else {
+  //     return QuestProgressModel(
+  //         distanceTravelled: 0,
+  //         questCompletionStatus: [],
+  //         questDistanceProgress: []);
+  //   }
+  // }
 }

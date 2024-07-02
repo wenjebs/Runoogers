@@ -49,4 +49,9 @@ class Quest {
       distance: distance ?? this.distance,
     );
   }
+
+  @override
+  String toString() {
+    return 'Quest { id: $id, title: $title, description: $description, distance: $distance }';
+  }
 }

@@ -18,16 +18,20 @@ class QuestProgressModel {
   factory QuestProgressModel.fromFirestore(Map<String, dynamic> doc) {
     return QuestProgressModel(
       distanceTravelled: doc['distanceTravelled'] ?? 0,
-      questCompletionStatus:
-          List<bool>.from(doc['questCompletionStatus'] ?? []),
-      questDistanceProgress: List<int>.from(doc['questDistanceProgress'] ?? []),
+      questCompletionStatus: List<bool>.from(doc['questsCompleted'] ?? []),
+      questDistanceProgress: List<int>.from(doc['questProgress'] ?? []),
     );
   }
 
   // Method to convert a Quest instance to a Map for Firestore.
   Map<String, dynamic> toFirestore() => {
         'distanceTravelled': distanceTravelled,
-        'questCompletionStatus': questCompletionStatus,
-        'questDistanceProgress': questDistanceProgress,
+        'questsCompleted': questCompletionStatus,
+        'questProgress': questDistanceProgress,
       };
+
+  @override
+  String toString() {
+    return 'QuestProgressModel { distanceTravelled: $distanceTravelled, questCompletionStatus: $questCompletionStatus, questDistanceProgress: $questDistanceProgress }';
+  }
 }
