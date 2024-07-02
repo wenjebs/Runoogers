@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/database.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
@@ -154,7 +155,7 @@ class Repository {
     return database.setUserActiveStory(userId, storyId);
   }
 
-  static Future<List<Map<String, dynamic>>> getQuests(String storyId) {
+  static Future<List<Quest>> getQuests(String storyId) {
     // debugPrint("Repository: getting quests");
     return database.getQuests(storyId);
   }

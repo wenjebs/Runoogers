@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
@@ -525,7 +526,7 @@ class Database {
   // returns a list of maps containing the quests completed by each user
   // list is in quest order [quest1, quest2, ...]
   // each quest is a map {description: ..., title: ..., distance: ...,}
-  Future<List<Map<String, dynamic>>> getQuests(String storyId) async {
+  Future<List<Quest>> getQuests(String storyId) async {
     final storyRef = firestore.collection('stories').doc(storyId);
     final doc = await storyRef.get();
 
@@ -534,7 +535,11 @@ class Database {
     }
 
     // Assuming the document has a field 'quests' which is a list of quests
-    List<dynamic> quests = doc.data()?['quests'] ?? [];
-    return quests.cast<Map<String, dynamic>>();
+    List<dynamic> questsData = doc.data()?['quests'] ?? [];
+    List<Quest> quests = questsData
+        .cast<Map<String, dynamic>>()
+        .map((questData) => Quest.fromFirestore(questData))
+        .toList();
+    return quests;
   }
 }

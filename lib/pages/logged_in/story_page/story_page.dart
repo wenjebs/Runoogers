@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
+import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart';
 
 import 'story_tile.dart';
@@ -68,7 +69,6 @@ class StoryPage extends ConsumerWidget {
             ),
           ),
           // Short Stories
-
           Align(
             alignment: Alignment.center,
             child: Text(
@@ -99,8 +99,7 @@ class StoryPage extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   // debugPrint(userInfo?['activeStory']);
-                  final List<Map<String, dynamic>> quests =
-                      await Repository.getQuests(
+                  final List<Quest> quests = await Repository.getQuests(
                     userInfo?['activeStory'],
                   );
                   // debugPrint("ahh");
@@ -127,7 +126,7 @@ class StoryPage extends ConsumerWidget {
 }
 
 class ActiveQuestDisplayPage extends StatelessWidget {
-  final List<Map<String, dynamic>> quests;
+  final List<Quest> quests;
   const ActiveQuestDisplayPage({
     super.key,
     required this.quests,
@@ -143,8 +142,8 @@ class ActiveQuestDisplayPage extends StatelessWidget {
         itemCount: quests.length,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            title: Text(quests[index]['title'] ?? 'No Title'),
-            subtitle: Text(quests[index]['description'] ?? 'No Description'),
+            title: Text(quests[index].getTitle),
+            subtitle: Text(quests[index].getDescription),
           );
         },
       ),
