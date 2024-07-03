@@ -258,13 +258,15 @@ class _TrainingOnboardingPageState
                   .doc(userId)
                   .update({'trainingOnboarded': true});
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const HomePage(
-                          initialIndex: 5,
-                        )),
-              );
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage(
+                            initialIndex: 5,
+                          )),
+                );
+              }
             },
           ),
         ],

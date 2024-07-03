@@ -550,6 +550,7 @@ class Database {
       throw Exception("User not logged in");
     }
 
+    int noOfQuests = await getQuests(storyId).then((value) => value.length);
     final progressRef = firestore
         .collection('users')
         .doc(userId)
@@ -563,10 +564,11 @@ class Database {
       return QuestProgressModel.fromFirestore(data!);
     } else {
       return QuestProgressModel(
-          currentQuest: 0,
-          distanceTravelled: 0,
-          questCompletionStatus: [],
-          questDistanceProgress: []);
+        currentQuest: 0,
+        distanceTravelled: 0,
+        questCompletionStatus: List.filled(noOfQuests, false),
+        questDistanceProgress: List.filled(noOfQuests, 0),
+      );
     }
   }
 
