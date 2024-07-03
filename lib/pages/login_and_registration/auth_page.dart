@@ -22,7 +22,7 @@ class _AuthPageState extends State<AuthPage> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             // logged in
-            debugPrint(snapshot.data.toString());
+            // debugPrint(snapshot.data.toString());
             if (snapshot.data != null) {
               final user = snapshot.data;
               return FutureBuilder<DocumentSnapshot>(
