@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/pages/logged_in/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,14 +6,9 @@ import 'package:runningapp/pages/login_and_registration/basic_onboarding_page.da
 
 import 'login_or_register_page.dart';
 
-class AuthPage extends StatefulWidget {
+class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
-  @override
-  State<AuthPage> createState() => _AuthPageState();
-}
-
-class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,8 +16,7 @@ class _AuthPageState extends State<AuthPage> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             // logged in
-            // debugPrint(snapshot.data.toString());
-            if (snapshot.data != null) {
+            if (snapshot.hasData) {
               final user = snapshot.data;
               return FutureBuilder<DocumentSnapshot>(
                 future: FirebaseFirestore.instance

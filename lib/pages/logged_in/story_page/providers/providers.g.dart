@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$questProgressHash() => r'08570b497677c4876944edd081e0328a22923a18';
+String _$questProgressHash() => r'0ff047ca3c9ff3d2bc6d4daf12a2dc7cbf5dfcb9';
 
 /// Copied from Dart SDK
 class _SystemHash {

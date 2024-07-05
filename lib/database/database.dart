@@ -528,9 +528,6 @@ class Database {
   // list is in quest order [quest1, quest2, ...]
   // each quest is a map {description: ..., title: ..., distance: ...,}
   Future<List<Quest>> getQuests(String storyId) async {
-    if (storyId == "") {
-      return List<Quest>.empty();
-    }
     final storyRef = firestore.collection('stories').doc(storyId);
     final doc = await storyRef.get();
 
@@ -552,15 +549,7 @@ class Database {
     if (userId == null) {
       throw Exception("User not logged in");
     }
-    if (storyId == "") {
-      return QuestProgressModel(
-        currentQuest: 0,
-        distanceTravelled: 0,
-        questCompletionStatus: List.filled(0, false),
-        questDistanceProgress: List.filled(0, 0),
-      );
-    }
-    int noOfQuests = await getQuests(storyId).then((value) => value.length);
+
     final progressRef = firestore
         .collection('users')
         .doc(userId)
@@ -574,11 +563,10 @@ class Database {
       return QuestProgressModel.fromFirestore(data!);
     } else {
       return QuestProgressModel(
-        currentQuest: 0,
-        distanceTravelled: 0,
-        questCompletionStatus: List.filled(noOfQuests, false),
-        questDistanceProgress: List.filled(noOfQuests, 0),
-      );
+          currentQuest: 0,
+          distanceTravelled: 0,
+          questCompletionStatus: [],
+          questDistanceProgress: []);
     }
   }
 
