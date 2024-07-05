@@ -34,87 +34,87 @@ class _RoutesPageState extends ConsumerState<RoutesPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: const CameraPosition(
-                      target: LatLng(1.3843113892761545, 103.74289461016552),
-                      zoom: 16),
-                  polylines: {
-                    if (route.value != null) route.value!.first as Polyline
-                  },
-                  markers: route.value != null
-                      ? route.value!.last as Set<Marker>
-                      : <Marker>{},
+          body: switch (route) {
+        AsyncData(:final value) => Center(
+            child: Column(
+              children: [
+                Expanded(
+                  child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: const CameraPosition(
+                          // TODO unhardcode this
+                          target:
+                              LatLng(1.3843113892761545, 103.74289461016552),
+                          zoom: 16),
+                      polylines: {value.first as Polyline},
+                      markers: value.last as Set<Marker>),
                 ),
-              ),
-              Column(
-                children: [
-                  const Text("Distance:"),
-                  // NumberPicker(
-                  //   value: distance,
-                  //   itemCount: 3,
-                  //   minValue: 1,
-                  //   maxValue: 100,
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       distance = value;
-                  //     });
-                  //   },
-                  //   selectedTextStyle:
-                  //       // TODO change this
-                  //       const TextStyle(color: Colors.blue),
-                  //   itemHeight: 25,
-                  //   decoration: BoxDecoration(
-                  //     border: Border.all(color: Colors.blue),
-                  //   ),
-                  // ),
-                  Form(
-                    key: _formKey,
-                    child: TextFormField(
-                      controller: distanceController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        } else if (int.tryParse(value) == null) {
-                          return 'Please enter a valid number';
-                        } else if (int.parse(value) >= 99) {
-                          return 'Please a number less than 99';
-                        }
-                        return null;
-                      },
-                      keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true, signed: true),
+                Column(
+                  children: [
+                    const Text("Distance:"),
+                    // NumberPicker(
+                    //   value: distance,
+                    //   itemCount: 3,
+                    //   minValue: 1,
+                    //   maxValue: 100,
+                    //   onChanged: (value) {
+                    //     setState(() {
+                    //       distance = value;
+                    //     });
+                    //   },
+                    //   selectedTextStyle:
+                    //       // TODO change this
+                    //       const TextStyle(color: Colors.blue),
+                    //   itemHeight: 25,
+                    //   decoration: BoxDecoration(
+                    //     border: Border.all(color: Colors.blue),
+                    //   ),
+                    // ),
+                    Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        controller: distanceController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          } else if (int.tryParse(value) == null) {
+                            return 'Please enter a valid number';
+                          } else if (int.parse(value) >= 99) {
+                            return 'Please a number less than 99';
+                          }
+                          return null;
+                        },
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      FocusScope.of(context).unfocus();
-                      debugPrint("refresh");
-                      seed = Random().nextInt(90);
-                      distance = distanceController.text.isNotEmpty
-                          ? int.parse(distanceController.text)
-                          : 1;
-                      distanceController.text = "";
-                    });
-                  }
-                },
-                child: const Text("Regenerate Route"),
-              ),
-              route.value == null
-                  ? const CircularProgressIndicator()
-                  : const SizedBox()
-            ],
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        FocusScope.of(context).unfocus();
+                        debugPrint("refresh");
+                        seed = Random().nextInt(90);
+                        distance = distanceController.text.isNotEmpty
+                            ? int.parse(distanceController.text)
+                            : 1;
+                        distanceController.text = "";
+                      });
+                    }
+                  },
+                  child: const Text("Regenerate Route"),
+                ),
+                route.value == null
+                    ? const CircularProgressIndicator()
+                    : const SizedBox()
+              ],
+            ),
           ),
-        ),
-      ),
+        AsyncError(:final error) => Text("No internet/ API Down :()\n$error"),
+        _ => const Center(child: CircularProgressIndicator()),
+      }),
     );
   }
 
