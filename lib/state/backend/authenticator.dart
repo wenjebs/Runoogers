@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -75,23 +76,30 @@ class Authenticator {
           await FirebaseAuth.instance.signInWithCredential(oauthCredentials);
       final user = userCredential.user;
       if (user != null) {
-        Repository.addUser('users', {
-          'email': user.email,
-          'uid': user.uid,
-          'posts': [],
-          'friends': [],
-          'onboarded': false,
-          'trainingOnboarded': false,
-          'runstats': {
-            'totalDistance': 0,
-            'totalTime': 0,
-            'totalRuns': 0,
-            'fastestTime': 0,
-            'longestDistance': 0,
-          },
-          'points': 0,
-          'activeStory': "",
-        });
+        final userExists = await FirebaseFirestore.instance
+            .collection('users')
+            .where('uid', isEqualTo: user.uid)
+            .get()
+            .then((value) => value.docs.isNotEmpty);
+        if (!userExists) {
+          Repository.addUser('users', {
+            'email': user.email,
+            'uid': user.uid,
+            'posts': [],
+            'friends': [],
+            'onboarded': false,
+            'trainingOnboarded': false,
+            'runstats': {
+              'totalDistance': 0,
+              'totalTime': 0,
+              'totalRuns': 0,
+              'fastestTime': 0,
+              'longestDistance': 0,
+            },
+            'points': 0,
+            'activeStory': "",
+          });
+        }
       }
       return AuthResult.success;
     } catch (e) {
