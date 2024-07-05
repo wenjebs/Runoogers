@@ -70,15 +70,14 @@ class _TrainingPageState extends State<TrainingPage> {
                       .toList();
 
                   await Future.wait(deleteFutures);
-                  if (context.mounted) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage(
-                                initialIndex: 5,
-                              )),
-                    );
-                  }
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomePage(
+                              initialIndex: 5,
+                            )),
+                  );
                 },
                 color: Theme.of(context).colorScheme.primary,
                 child: const Text('Reset'),

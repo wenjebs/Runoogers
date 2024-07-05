@@ -106,13 +106,11 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
                 );
               } else {
                 // Show an error message if the username is taken
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                            'Username is already taken, please choose another one.')),
-                  );
-                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text(
+                          'Username is already taken, please choose another one.')),
+                );
               }
             },
           ),
@@ -135,12 +133,11 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
                   .collection('users')
                   .doc(userId)
                   .update({'onboarded': true});
-              if (context.mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              }
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
             },
           ),
         ],

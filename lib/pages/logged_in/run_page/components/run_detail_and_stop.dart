@@ -221,38 +221,37 @@ class RunDetailsAndStop extends ConsumerWidget {
                                 pace = (time / 60000) / distance;
 
                                 // show completed run details
-                                if (context.mounted) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text("Run Completed"),
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
-                                            ),
-                                            Text(
-                                              "Distance: ${distance.toStringAsFixed(2)} km",
-                                            ),
-                                            Text(
-                                              "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s/km",
-                                            ),
-                                          ],
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("Close"),
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text("Run Completed"),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
+                                          ),
+                                          Text(
+                                            "Distance: ${distance.toStringAsFixed(2)} km",
+                                          ),
+                                          Text(
+                                            "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s/km",
                                           ),
                                         ],
-                                      );
-                                    },
-                                  );
-                                }
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Close"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+
                                 // get runs done
                                 final String username =
                                     await Repository.fetchName(
@@ -334,8 +333,7 @@ class RunDetailsAndStop extends ConsumerWidget {
                                     //TODO IMPROVE, THIS IS HELLA SLOW
                                     await Repository.updateUserAchievements(
                                         distance, time);
-                                if (newAchievements.isNotEmpty &&
-                                    context.mounted) {
+                                if (newAchievements.isNotEmpty) {
                                   // Show dialog with the list of new achievements
                                   showDialog(
                                     context: context,

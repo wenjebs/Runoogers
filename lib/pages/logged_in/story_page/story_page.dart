@@ -117,17 +117,15 @@ class StoryPage extends ConsumerWidget {
                     userInfo?['activeStory'],
                   );
                   // debugPrint("ahh");
-                  if (context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ActiveQuestDisplayPage(
-                          activeStory: userInfo?['activeStory'],
-                          quests: quests,
-                        ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ActiveQuestDisplayPage(
+                        activeStory: userInfo?['activeStory'],
+                        quests: quests,
                       ),
-                    );
-                  }
+                    ),
+                  );
                 },
                 child: Text(
                   "Active Quests",
