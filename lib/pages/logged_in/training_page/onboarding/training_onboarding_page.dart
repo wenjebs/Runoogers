@@ -105,7 +105,8 @@ class _TrainingOnboardingPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("More information about your training plan"),
+        title: const Text("Onboarding"),
+        centerTitle: true,
       ),
       body: PageView(
         controller: _pageController,
@@ -258,13 +259,15 @@ class _TrainingOnboardingPageState
                   .doc(userId)
                   .update({'trainingOnboarded': true});
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const HomePage(
-                          initialIndex: 5,
-                        )),
-              );
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const HomePage(
+                            initialIndex: 5,
+                          )),
+                );
+              }
             },
           ),
         ],
