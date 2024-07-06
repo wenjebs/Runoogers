@@ -20,6 +20,8 @@ class Authenticator {
   Future<void> logOut() async {
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
+    FirebaseFirestore.instance.terminate();
+    FirebaseFirestore.instance.clearPersistence();
     // await FacebookAuth.instance.logOut(); TODO next time
   }
 
