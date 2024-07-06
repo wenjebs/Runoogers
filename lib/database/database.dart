@@ -599,6 +599,14 @@ class Database {
     List<Quest> quests = await getQuests(storyId);
     firestore.runTransaction((transaction) async {
       final doc = await transaction.get(progressRef);
+      if (!doc.exists) {
+        transaction.set(progressRef, {
+          'currentQuest': 0,
+          'distanceTravelled': 0,
+          'questProgress': List.filled(quests.length, 0),
+          'questsCompleted': List.filled(quests.length, false),
+        });
+      }
       final data = doc.data();
       int currentQuest = data?['currentQuest'];
       final currentDistance = data?['distanceTravelled'];
@@ -619,6 +627,7 @@ class Database {
           tracker = -1;
         }
       }
+
       // Update distance travelled
       transaction.update(
         progressRef,
