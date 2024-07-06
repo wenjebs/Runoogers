@@ -40,6 +40,7 @@ class RunStatsPage extends ConsumerWidget {
               ),
             );
           }
+          return null;
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),

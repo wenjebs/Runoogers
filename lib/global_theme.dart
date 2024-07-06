@@ -43,14 +43,14 @@ class GlobalThemeData {
     brightness: Brightness.light,
   );
   static const ColorScheme darkColorScheme = ColorScheme(
-    primary: Color(0xFFFF8383),
+    primary: Color.fromARGB(255, 90, 8, 8),
     secondary: Color(0xFF4D1F7C),
-    surface: Colors.white,
+    surface: Color.fromARGB(255, 0, 0, 0),
     error: Colors.redAccent,
     onError: Colors.white,
     onPrimary: Colors.white,
     onSecondary: Colors.white,
-    onSurface: Color.fromARGB(255, 0, 0, 0),
+    onSurface: Color.fromARGB(255, 255, 241, 241),
     brightness: Brightness.dark,
   );
 }

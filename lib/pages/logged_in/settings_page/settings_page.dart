@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/providers.dart';
 
 class SettingsPage extends StatefulWidget {
