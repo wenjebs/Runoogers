@@ -70,7 +70,12 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
             padding: const EdgeInsets.all(20.0),
             child: Text(widget.description),
           ))),
-
+          ElevatedButton(
+              onPressed: () {
+                player.setAsset("lib/assets/audio/${widget.id}.mp3");
+                player.play();
+              },
+              child: const Text("Narrate story")),
           // Start button
           ElevatedButton(
             // onPressed: () => Navigator.push(

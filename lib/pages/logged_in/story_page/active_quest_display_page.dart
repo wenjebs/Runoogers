@@ -105,7 +105,7 @@ class QuestCardContentWidget extends StatelessWidget {
           questProgress == null
               ? const LinearProgressIndicator()
               : Text(
-                  "${questProgress!.getQuestDistanceProgress[index]} / ${quests[index].getDistance} km"),
+                  "${(questProgress!.getQuestDistanceProgress[index]).toStringAsFixed(1)} / ${quests[index].getDistance} km"),
           const SizedBox(height: 5.0),
           questProgress == null
               ? const LinearProgressIndicator()

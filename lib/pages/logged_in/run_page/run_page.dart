@@ -187,6 +187,7 @@ class _RunPageState extends State<RunPage> {
                     )
                   : FloatingActionButton.large(
                       onPressed: () {
+                        if (storyRun) {}
                         // update the state of running
                         ref.read(timerProvider.notifier).startStopTimer();
 
