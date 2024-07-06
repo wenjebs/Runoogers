@@ -34,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  Repository.updateQuestProgress(23, 100, 0, "ivan");
+                  // Repository.updateQuestProgress(23, 100, 0, "ivan");
                 },
                 child: const Text("Test"))
           ],
