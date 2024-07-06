@@ -607,11 +607,17 @@ class Database {
           'questsCompleted': List.filled(quests.length, false),
         });
       }
-      final data = doc.data();
-      int currentQuest = data?['currentQuest'];
-      final currentDistance = data?['distanceTravelled'];
-      final currentQuestProgress = data?['questProgress'];
-      final currentQuestCompletionStatus = data?['questsCompleted'];
+      var data = doc.data();
+      data ??= {
+        'currentQuest': 0,
+        'distanceTravelled': 0.0,
+        'questProgress': List.filled(quests.length, 0.0),
+        'questsCompleted': List.filled(quests.length, false),
+      };
+      int currentQuest = data['currentQuest'];
+      final currentDistance = data['distanceTravelled'];
+      final currentQuestProgress = data['questProgress'];
+      final currentQuestCompletionStatus = data['questsCompleted'];
       // Update current quest progress
       double tracker = distance;
       while (tracker >= 0 && currentQuest < quests.length) {
