@@ -19,8 +19,12 @@ class LocationService {
   static Position? _currentPosition;
   static double distance = 0;
 
-  // this is for audio playing
+  // this is for audio playing purposes to know when to play audio
   static double distanceTracker = 0;
+
+  // audio players
+  static AudioPlayer _backgroundMusicPlayer = AudioPlayer();
+  static AudioPlayer _eventAudioPlayer = AudioPlayer();
 
   // internet status
   static List<ConnectivityResult> connectivityResult = [];
@@ -31,9 +35,35 @@ class LocationService {
   StreamSubscription? get positionSubscription => _positionSubscription;
   Position? get currentPosition => _currentPosition;
   static double get distanceTravelled => distance;
-  static double get tracker => distanceTracker;
+  static double get tracker => distanceTracker; // in km
   static List<ConnectivityResult> get connectivity => connectivityResult;
   static bool get locationServiceEnabled => serviceEnabled;
+
+  // for story run audios
+  int idx = 1;
+  bool endPlayed = false;
+
+  static Future<void> initialize() async {
+    // Initialize background music player
+    _backgroundMusicPlayer = AudioPlayer();
+    _eventAudioPlayer = AudioPlayer();
+    await _backgroundMusicPlayer.setAsset('lib/assets/audio/ivanbg.mp3');
+    _backgroundMusicPlayer.setVolume(0.5); // Set a lower volume
+    _backgroundMusicPlayer.setLoopMode(LoopMode.one);
+  }
+
+  static void playBGMusic() {
+    // Play the background music
+    debugPrint("playing bg audio");
+    _backgroundMusicPlayer.play();
+  }
+
+  static void playEventAudio(String assetPath) async {
+    // Play a specific audio for an event
+    debugPrint(assetPath);
+    await _eventAudioPlayer.setAsset(assetPath);
+    _eventAudioPlayer.play();
+  }
 
   void openLocationSettings() async {
     await Geolocator.openLocationSettings();
@@ -117,10 +147,10 @@ class LocationService {
     Completer<GoogleMapController> controller,
     bool running,
     bool storyRun,
-    AudioPlayer player,
+    double? questDistance,
   ) async {
     GoogleMapController mapController = await controller.future;
-
+    int lastKmPlayed = 0;
     const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.bestForNavigation,
       distanceFilter: 5, // how much distance to move before updating
@@ -141,12 +171,16 @@ class LocationService {
           distance += calculatedDist;
           if (storyRun) {
             distanceTracker += calculatedDist;
-            // if its a story run, play audio!
-            // check every 100m
-            if (tracker >= (0.1)) {
-              debugPrint("playing audio");
-              playAudio(player);
-              distanceTracker = 0;
+            debugPrint("tracker value: $tracker");
+            if (tracker >= lastKmPlayed + 1 && tracker < questDistance!) {
+              // play audio every 1km
+              playEventAudio("lib/assets/audio/ivan/ivan$idx.mp3");
+              idx++;
+              lastKmPlayed++;
+            } else if (tracker >= questDistance! && !endPlayed) {
+              // play audio when quest is completed
+              playEventAudio("lib/assets/audio/ivan/ivanend.mp3");
+              endPlayed = true;
             }
           }
         }
@@ -200,6 +234,8 @@ class LocationService {
   static void stopTrackingLocation() {
     // Cancel Stream subscription
     _positionSubscription?.cancel();
+    _backgroundMusicPlayer.dispose();
+    _eventAudioPlayer.dispose();
   }
 
   static void reset() {
@@ -207,6 +243,9 @@ class LocationService {
     stopTrackingLocation();
     _currentPosition = null;
     distance = 0;
+    distanceTracker = 0;
+    _backgroundMusicPlayer.dispose();
+    _eventAudioPlayer.dispose();
   }
 
   void playAudio(AudioPlayer player) async {

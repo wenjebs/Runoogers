@@ -62,6 +62,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
           storyRun: true,
           activeStory: activeStory,
           questProgress: questProgress,
+          questDistance: quest.getDistance,
         ),
       ),
     );

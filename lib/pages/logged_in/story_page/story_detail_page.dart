@@ -72,7 +72,8 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
           ))),
           ElevatedButton(
               onPressed: () {
-                player.setAsset("lib/assets/audio/${widget.id}.mp3");
+                player.setAsset(
+                    "lib/assets/audio/${widget.id}/${widget.id}intro.mp3");
                 player.play();
               },
               child: const Text("Narrate story")),

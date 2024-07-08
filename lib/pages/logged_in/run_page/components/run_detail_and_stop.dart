@@ -440,6 +440,8 @@ class RunDetailsAndStop extends ConsumerWidget {
     _stopWatchTimer.onResetTimer();
     // set boolean to false
     ref.read(timerProvider.notifier).startStopTimer();
+
+    MapLineDrawer.clear();
   }
 
   void updateStats(double distance, int time) {
