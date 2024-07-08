@@ -16,8 +16,8 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             // logged in
-            if (snapshot.hasData) {
-              final user = snapshot.data;
+            if (snapshot.hasData && snapshot.data != null) {
+              final User? user = snapshot.data;
               return FutureBuilder<DocumentSnapshot>(
                 future: FirebaseFirestore.instance
                     .collection('users')
@@ -25,12 +25,18 @@ class AuthPage extends StatelessWidget {
                     .get(),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  if (snapshot.hasData) {
-                    final data = snapshot.data!.data() as Map<String, dynamic>;
-                    final onboarded = data['onboarded'] as bool;
-                    return onboarded
-                        ? const HomePage()
-                        : const OnboardingPage();
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show a loading indicator while waiting for the data
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasData) {
+                    final data = snapshot.data!.data() as Map<String, dynamic>?;
+                    if (data != null) {
+                      final onboarded = data['onboarded'] as bool?;
+                      // Proceed based on the 'onboarded' flag
+                      return onboarded != null && onboarded
+                          ? const HomePage()
+                          : const OnboardingPage();
+                    }
                   }
                   // Loading or error state
                   return const HomePage();

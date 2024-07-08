@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
@@ -30,39 +31,80 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
               ref.refresh(questProgressProvider(activeStory));
               return Future.value();
             },
-            child: ListView.builder(
-              itemCount: quests.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      if (index != 0 &&
-                          value.getQuestCompletionStatus[index - 1] == false) {
-                        showSnackBarMessage(
-                            context, "Complete previous quest first!");
-                      } else if (value.getQuestCompletionStatus[index] ==
-                          false) {
-                        startQuest(quests[index], context, value, ref);
-                      } else {
-                        showSnackBarMessage(
-                            context, "Quest already completed!");
-                      }
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: quests.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: InkWell(
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            if (index != 0 &&
+                                value.getQuestCompletionStatus[index - 1] ==
+                                    false) {
+                              showSnackBarMessage(
+                                  context, "Complete previous quest first!");
+                            } else if (value.getQuestCompletionStatus[index] ==
+                                false) {
+                              startQuest(quests[index], context, value, ref);
+                            } else {
+                              showSnackBarMessage(
+                                  context, "Quest already completed!");
+                            }
+                          },
+                          child: QuestCardContentWidget(
+                              quests: quests,
+                              questProgress: value,
+                              index: index),
+                        ),
+                      );
                     },
-                    child: QuestCardContentWidget(
-                        quests: quests, questProgress: value, index: index),
                   ),
-                );
-              },
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    bool confirm = await showConfirmationDialog(context);
+                    if (confirm) {
+                      await Repository.resetQuestsProgress(activeStory);
+                      // ignore: unused_result
+                      ref.refresh(questProgressProvider(activeStory));
+                    }
+                  },
+                  child: const Text("Reset quests progress"),
+                ),
+              ],
             ),
           ),
         AsyncError(:final error) => Text(error.toString()),
         _ => const Center(child: CircularProgressIndicator()),
       },
     );
+  }
+
+  Future<bool> showConfirmationDialog(BuildContext context) async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm'),
+            content: const Text('Are you sure you want to reset?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false; // Returning false if dialog is dismissed
   }
 
   void showSnackBarMessage(BuildContext context, message) {

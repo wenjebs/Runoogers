@@ -174,4 +174,11 @@ class Repository {
   ) {
     database.updateQuestProgress(distance, time, currQuestID, storyId);
   }
+
+  static Future<void> resetQuestsProgress(
+    String storyId,
+  ) async {
+    debugPrint("Repository: resetting quests progress");
+    await database.resetQuestsProgress(storyId);
+  }
 }
