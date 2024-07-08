@@ -8,7 +8,6 @@ class StoryDetailPage extends StatefulWidget {
   final String description;
   final String id;
   final String userID;
-  final bool active;
 
   const StoryDetailPage({
     super.key,
@@ -17,7 +16,6 @@ class StoryDetailPage extends StatefulWidget {
     required this.description,
     required this.userID,
     required this.id,
-    required this.active,
   });
 
   @override
@@ -26,7 +24,7 @@ class StoryDetailPage extends StatefulWidget {
 
 class _StoryDetailPageState extends State<StoryDetailPage> {
   late AudioPlayer player;
-
+  bool active = false;
   @override
   void initState() {
     super.initState();
@@ -88,16 +86,27 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
             //         ),
             //       ),
             //     ),
-            onPressed: () {
-              Repository.setUserActiveStory(widget.userID, widget.id);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Active story set successfully'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            },
-            child: widget.active
+            onPressed: active
+                ? () {}
+                : () {
+                    Repository.setUserActiveStory(widget.userID, widget.id);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        dismissDirection: DismissDirection.up,
+                        behavior: SnackBarBehavior.floating,
+                        margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.height - 150,
+                            left: 10,
+                            right: 10),
+                        content: const Text('Active story set successfully'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                    setState(() {
+                      active = true;
+                    });
+                  },
+            child: active
                 ? const Text("This quest is currently active!")
                 : const Text("Make active quest"),
           ),

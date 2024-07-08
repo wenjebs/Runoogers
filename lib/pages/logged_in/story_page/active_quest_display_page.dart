@@ -34,7 +34,15 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                 child: InkWell(
                   splashColor: Colors.blue.withAlpha(30),
                   onTap: () {
-                    startQuest(quests[index], context, value);
+                    if (index != 0 &&
+                        value.getQuestCompletionStatus[index - 1] == false) {
+                      showSnackBarMessage(
+                          context, "Complete previous quest first!");
+                    } else if (value.getQuestCompletionStatus[index] == false) {
+                      startQuest(quests[index], context, value);
+                    } else {
+                      showSnackBarMessage(context, "Quest already completed!");
+                    }
                   },
                   child: QuestCardContentWidget(
                       quests: quests, questProgress: value, index: index),
@@ -45,6 +53,21 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         AsyncError(:final error) => Text(error.toString()),
         _ => const Center(child: CircularProgressIndicator()),
       },
+    );
+  }
+
+  void showSnackBarMessage(BuildContext context, message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        dismissDirection: DismissDirection.up,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 10,
+            right: 10),
+        content: const Text('Complete previous quest first!'),
+        duration: const Duration(seconds: 2),
+      ),
     );
   }
 
