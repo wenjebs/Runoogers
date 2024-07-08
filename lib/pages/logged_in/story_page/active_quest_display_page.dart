@@ -24,31 +24,40 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         title: const Text("Active Quests"),
       ),
       body: switch (questProgress) {
-        AsyncData(:final value) => ListView.builder(
-            itemCount: quests.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: InkWell(
-                  splashColor: Colors.blue.withAlpha(30),
-                  onTap: () {
-                    if (index != 0 &&
-                        value.getQuestCompletionStatus[index - 1] == false) {
-                      showSnackBarMessage(
-                          context, "Complete previous quest first!");
-                    } else if (value.getQuestCompletionStatus[index] == false) {
-                      startQuest(quests[index], context, value);
-                    } else {
-                      showSnackBarMessage(context, "Quest already completed!");
-                    }
-                  },
-                  child: QuestCardContentWidget(
-                      quests: quests, questProgress: value, index: index),
-                ),
-              );
+        AsyncData(:final value) => RefreshIndicator(
+            onRefresh: () {
+              // ignore: unused_result
+              ref.refresh(questProgressProvider(activeStory));
+              return Future.value();
             },
+            child: ListView.builder(
+              itemCount: quests.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: InkWell(
+                    splashColor: Colors.blue.withAlpha(30),
+                    onTap: () {
+                      if (index != 0 &&
+                          value.getQuestCompletionStatus[index - 1] == false) {
+                        showSnackBarMessage(
+                            context, "Complete previous quest first!");
+                      } else if (value.getQuestCompletionStatus[index] ==
+                          false) {
+                        startQuest(quests[index], context, value, ref);
+                      } else {
+                        showSnackBarMessage(
+                            context, "Quest already completed!");
+                      }
+                    },
+                    child: QuestCardContentWidget(
+                        quests: quests, questProgress: value, index: index),
+                  ),
+                );
+              },
+            ),
           ),
         AsyncError(:final error) => Text(error.toString()),
         _ => const Center(child: CircularProgressIndicator()),
@@ -65,19 +74,20 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
             bottom: MediaQuery.of(context).size.height - 150,
             left: 10,
             right: 10),
-        content: const Text('Complete previous quest first!'),
+        content: Text(message),
         duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  void startQuest(
+  Future<void> startQuest(
     Quest quest,
     BuildContext context,
     QuestProgressModel? questProgress,
-  ) {
+    WidgetRef ref,
+  ) async {
     // Go run page
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => RunPage(
@@ -89,6 +99,8 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         ),
       ),
     );
+    // ignore: unused_result
+    ref.refresh(questProgressProvider(activeStory));
   }
 }
 
