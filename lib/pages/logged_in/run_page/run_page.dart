@@ -10,7 +10,6 @@ import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 

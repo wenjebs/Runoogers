@@ -27,7 +27,7 @@ class AuthPage extends StatelessWidget {
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading indicator while waiting for the data
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasData) {
                     final data = snapshot.data!.data() as Map<String, dynamic>?;
                     if (data != null) {
