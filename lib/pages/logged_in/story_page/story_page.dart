@@ -20,19 +20,22 @@ class StoryPage extends ConsumerWidget {
       body: Column(
         children: [
           // SEARCH BAR
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SearchBar(
-              leading: Icon(Icons.search),
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.all(8.0),
+          //   child: SearchBar(
+          //     leading: Icon(Icons.search),
+          //   ),
+          // ),
 
           // Main Stories
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Main Stories",
-              style: Theme.of(context).textTheme.headlineLarge,
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Main Campaigns",
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
             ),
           ),
 
@@ -83,11 +86,14 @@ class StoryPage extends ConsumerWidget {
             ),
           ),
           // Short Stories
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Side quests",
-              style: Theme.of(context).textTheme.headlineMedium,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Side quests",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
           ),
 
