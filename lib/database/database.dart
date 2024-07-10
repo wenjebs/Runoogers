@@ -656,4 +656,35 @@ class Database {
       // }
     });
   }
+
+  Future<void> resetQuestsProgress(
+    String storyId,
+  ) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final progressRef = userRef.collection('storyProgress').doc(storyId);
+    List<Quest> quests = await getQuests(storyId);
+    firestore.runTransaction((transaction) async {
+      final doc = await transaction.get(progressRef);
+      if (!doc.exists) {
+        transaction.set(progressRef, {
+          'currentQuest': 0,
+          'distanceTravelled': 0,
+          'questProgress': List.filled(quests.length, 0),
+          'questsCompleted': List.filled(quests.length, false),
+        });
+      } else {
+        transaction.update(progressRef, {
+          'currentQuest': 0,
+          'distanceTravelled': 0,
+          'questProgress': List.filled(quests.length, 0),
+          'questsCompleted': List.filled(quests.length, false),
+        });
+      }
+    });
+  }
 }

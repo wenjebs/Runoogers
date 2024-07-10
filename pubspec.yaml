@@ -96,6 +96,9 @@ flutter:
     - lib/assets/iframe.html
     - lib/assets/images/
     - lib/assets/audio/
+    - lib/assets/audio/ivan1/
+    - lib/assets/audio/ivan2/
+    - lib/assets/audio/jianbing1/
     - lib/assets/lottie/ai.json
     - dotenv.env
 
