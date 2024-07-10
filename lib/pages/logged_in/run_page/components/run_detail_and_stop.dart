@@ -249,6 +249,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     setState(() => savingRun = true);
                                     await saveRun(time, distance, ref);
                                     setState(() => savingRun = false);
+                                    stopServices(ref);
                                   } else {
                                     debugPrint(
                                         "run detail and stop: Run not saved");
@@ -468,7 +469,6 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         },
       );
     }
-    stopServices(ref);
   }
 }
 

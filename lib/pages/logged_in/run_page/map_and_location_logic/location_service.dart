@@ -49,12 +49,15 @@ class LocationService {
     _eventAudioPlayer = AudioPlayer();
   }
 
-  static Future<void> playBGMusic(String? activeStoryTitle) async {
+  static Future<void> playBGMusic(
+    String? activeStoryTitle,
+    int? currentQuest,
+  ) async {
     // Play the background music
     debugPrint("playing bg audio");
     debugPrint(activeStoryTitle!);
     await _backgroundMusicPlayer.setAsset(
-        'lib/assets/audio/$activeStoryTitle/${activeStoryTitle}bg.mp3');
+        'lib/assets/audio/$activeStoryTitle$currentQuest/${activeStoryTitle}bg.mp3');
     // cb.. need delete apk and reinstall when moving audio files
     _backgroundMusicPlayer.setVolume(0.5); // Set a lower volume
     _backgroundMusicPlayer.setLoopMode(LoopMode.one);
@@ -152,6 +155,7 @@ class LocationService {
     bool storyRun,
     double? questDistance,
     String? activeStoryTitle,
+    int? currentQuest,
   ) async {
     GoogleMapController mapController = await controller.future;
     int lastKmPlayed = 0;
@@ -179,13 +183,13 @@ class LocationService {
             if (tracker >= lastKmPlayed + 1 && tracker < questDistance!) {
               // play audio every 1km
               playEventAudio(
-                  "lib/assets/audio/$activeStoryTitle/$activeStoryTitle$idx.mp3");
+                  "lib/assets/audio/$activeStoryTitle${currentQuest! + 1}/$activeStoryTitle$idx.mp3");
               idx++;
               lastKmPlayed++;
             } else if (tracker >= questDistance! && !endPlayed) {
               // play audio when quest is completed
               playEventAudio(
-                  "lib/assets/audio/$activeStoryTitle/${activeStoryTitle}end.mp3");
+                  "lib/assets/audio/$activeStoryTitle${currentQuest! + 1}/${activeStoryTitle}end.mp3");
               endPlayed = true;
             }
           }

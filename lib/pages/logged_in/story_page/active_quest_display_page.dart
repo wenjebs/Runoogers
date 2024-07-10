@@ -51,7 +51,8 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                                   context, "Complete previous quest first!");
                             } else if (value.getQuestCompletionStatus[index] ==
                                 false) {
-                              startQuest(quests[index], context, value, ref);
+                              startQuest(
+                                  quests[index], context, value, ref, index);
                             } else {
                               showSnackBarMessage(
                                   context, "Quest already completed!");
@@ -127,6 +128,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
     BuildContext context,
     QuestProgressModel? questProgress,
     WidgetRef ref,
+    int currentQuest,
   ) async {
     // Go run page
     await Navigator.push(
@@ -138,6 +140,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
           activeStoryTitle: activeStoryTitle,
           questProgress: questProgress,
           questDistance: quest.getDistance,
+          currentQuest: currentQuest,
         ),
       ),
     );
