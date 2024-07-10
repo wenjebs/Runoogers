@@ -43,26 +43,29 @@ class LocationService {
   int idx = 1;
   bool endPlayed = false;
 
-  static Future<void> initialize() async {
+  static void initialize() {
     // Initialize background music player
     _backgroundMusicPlayer = AudioPlayer();
     _eventAudioPlayer = AudioPlayer();
-    await _backgroundMusicPlayer.setAsset('lib/assets/audio/ivanbg.mp3');
-    _backgroundMusicPlayer.setVolume(0.5); // Set a lower volume
-    _backgroundMusicPlayer.setLoopMode(LoopMode.one);
   }
 
-  static void playBGMusic() {
+  static Future<void> playBGMusic(String? activeStoryTitle) async {
     // Play the background music
     debugPrint("playing bg audio");
+    debugPrint(activeStoryTitle!);
+    await _backgroundMusicPlayer.setAsset(
+        'lib/assets/audio/$activeStoryTitle/${activeStoryTitle}bg.mp3');
+    // cb.. need delete apk and reinstall when moving audio files
+    _backgroundMusicPlayer.setVolume(0.5); // Set a lower volume
+    _backgroundMusicPlayer.setLoopMode(LoopMode.one);
     _backgroundMusicPlayer.play();
   }
 
-  static void playEventAudio(String assetPath) async {
+  static Future<void> playEventAudio(String assetPath) async {
     // Play a specific audio for an event
     debugPrint(assetPath);
     await _eventAudioPlayer.setAsset(assetPath);
-    _eventAudioPlayer.play();
+    await _eventAudioPlayer.play();
   }
 
   void openLocationSettings() async {
@@ -148,6 +151,7 @@ class LocationService {
     bool running,
     bool storyRun,
     double? questDistance,
+    String? activeStoryTitle,
   ) async {
     GoogleMapController mapController = await controller.future;
     int lastKmPlayed = 0;
@@ -174,12 +178,14 @@ class LocationService {
             debugPrint("tracker value: $tracker");
             if (tracker >= lastKmPlayed + 1 && tracker < questDistance!) {
               // play audio every 1km
-              playEventAudio("lib/assets/audio/ivan/ivan$idx.mp3");
+              playEventAudio(
+                  "lib/assets/audio/$activeStoryTitle/$activeStoryTitle$idx.mp3");
               idx++;
               lastKmPlayed++;
             } else if (tracker >= questDistance! && !endPlayed) {
               // play audio when quest is completed
-              playEventAudio("lib/assets/audio/ivan/ivanend.mp3");
+              playEventAudio(
+                  "lib/assets/audio/$activeStoryTitle/${activeStoryTitle}end.mp3");
               endPlayed = true;
             }
           }

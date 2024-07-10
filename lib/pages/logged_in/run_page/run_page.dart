@@ -22,13 +22,13 @@ class RunPage extends ConsumerStatefulWidget {
 
   // quest fields
   final double? questDistance;
-  final String? activeStory;
+  final String? activeStoryTitle;
   final QuestProgressModel? questProgress;
   const RunPage({
     super.key,
     required this.storyRun,
     required this.title,
-    this.activeStory,
+    this.activeStoryTitle,
     this.questProgress,
     this.questDistance,
   });
@@ -184,13 +184,12 @@ class _RunPageState extends ConsumerState<RunPage> {
                         context: context,
                         mapContainer: googleMapsContainer,
                         questProgress: widget.questProgress,
-                        activeStory: widget.activeStory,
+                        activeStory: widget.activeStoryTitle,
                         storyRun: storyRun,
                       ),
                     )
                   : FloatingActionButton.large(
                       onPressed: () {
-                        if (storyRun) {}
                         // update the state of running
                         ref.read(timerProvider.notifier).startStopTimer();
 
@@ -208,10 +207,14 @@ class _RunPageState extends ConsumerState<RunPage> {
                           true,
                           storyRun,
                           widget.questDistance,
+                          widget.activeStoryTitle,
                         );
-                        LocationService.playBGMusic();
-                        LocationService.playEventAudio(
-                            "lib/assets/audio/${widget.activeStory}/${widget.activeStory}start.mp3");
+
+                        if (storyRun) {
+                          LocationService.playBGMusic(widget.activeStoryTitle);
+                          LocationService.playEventAudio(
+                              "lib/assets/audio/${widget.activeStoryTitle}/${widget.activeStoryTitle}start.mp3");
+                        }
                       },
                       shape: const CircleBorder(),
                       child: const Text(

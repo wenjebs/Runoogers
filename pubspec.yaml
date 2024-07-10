@@ -97,6 +97,7 @@ flutter:
     - lib/assets/images/
     - lib/assets/audio/
     - lib/assets/audio/ivan/
+    - lib/assets/audio/jianbing/
     - lib/assets/lottie/ai.json
     - dotenv.env
 

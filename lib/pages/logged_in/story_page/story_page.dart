@@ -121,7 +121,7 @@ class StoryPage extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ActiveQuestDisplayPage(
-                        activeStory: userInfo?['activeStory'],
+                        activeStoryTitle: userInfo?['activeStory'],
                         quests: quests,
                       ),
                     ),

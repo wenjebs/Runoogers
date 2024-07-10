@@ -68,13 +68,6 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
             padding: const EdgeInsets.all(20.0),
             child: Text(widget.description),
           ))),
-          ElevatedButton(
-              onPressed: () {
-                player.setAsset(
-                    "lib/assets/audio/${widget.id}/${widget.id}intro.mp3");
-                player.play();
-              },
-              child: const Text("Narrate story")),
           // Start button
           ElevatedButton(
             // onPressed: () => Navigator.push(
@@ -111,6 +104,21 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
                 : const Text("Make active quest"),
           ),
         ],
+      ),
+    );
+  }
+
+  void showSnackBar(BuildContext context, String s) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        dismissDirection: DismissDirection.up,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 150,
+            left: 10,
+            right: 10),
+        content: Text(s),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

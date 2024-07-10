@@ -8,17 +8,17 @@ import 'package:runningapp/pages/logged_in/story_page/providers/providers.dart';
 
 class ActiveQuestDisplayPage extends ConsumerWidget {
   final List<Quest> quests;
-  final String activeStory;
+  final String activeStoryTitle;
 
   const ActiveQuestDisplayPage({
     super.key,
     required this.quests,
-    required this.activeStory,
+    required this.activeStoryTitle,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questProgress = ref.watch(questProgressProvider(activeStory));
+    final questProgress = ref.watch(questProgressProvider(activeStoryTitle));
     // debugPrint(questProgress.toString());
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +28,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         AsyncData(:final value) => RefreshIndicator(
             onRefresh: () {
               // ignore: unused_result
-              ref.refresh(questProgressProvider(activeStory));
+              ref.refresh(questProgressProvider(activeStoryTitle));
               return Future.value();
             },
             child: Column(
@@ -70,9 +70,9 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                   onPressed: () async {
                     bool confirm = await showConfirmationDialog(context);
                     if (confirm) {
-                      await Repository.resetQuestsProgress(activeStory);
+                      await Repository.resetQuestsProgress(activeStoryTitle);
                       // ignore: unused_result
-                      ref.refresh(questProgressProvider(activeStory));
+                      ref.refresh(questProgressProvider(activeStoryTitle));
                     }
                   },
                   child: const Text("Reset quests progress"),
@@ -135,14 +135,14 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         builder: (context) => RunPage(
           title: quest.getTitle,
           storyRun: true,
-          activeStory: activeStory,
+          activeStoryTitle: activeStoryTitle,
           questProgress: questProgress,
           questDistance: quest.getDistance,
         ),
       ),
     );
     // ignore: unused_result
-    ref.refresh(questProgressProvider(activeStory));
+    ref.refresh(questProgressProvider(activeStoryTitle));
   }
 }
 
