@@ -376,11 +376,20 @@ class Database {
     final userRef = firestore.collection('users').doc(userId);
     final userDoc = await userRef.get();
 
-    List<String> current = List<String>.from(userDoc.data()!['achievements']);
+    List<String> current =
+        List<String>.from(userDoc.data()?['achievements'] ?? []);
+
+    if (current.isEmpty) {
+      debugPrint("empty");
+      return [];
+    }
 
     final achievementsRef = firestore.collection('achievements');
     final querySnapshot =
-        await achievementsRef.where('name', whereIn: current).get();
+        await achievementsRef.where('id', whereIn: current).get();
+    for (var doc in querySnapshot.docs) {
+      debugPrint(doc.data().toString());
+    }
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
