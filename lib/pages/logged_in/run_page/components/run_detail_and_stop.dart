@@ -388,6 +388,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     final screenshot = await widget.mapContainer.takeSnapshot();
     if (screenshot != null) {
       final Directory tempDir = await getTemporaryDirectory();
+
       final path = tempDir.path;
       final imageFile = File('$path/$username$runsDone.png');
       // Write the screenshot data to the file
@@ -401,7 +402,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
               .child('images/$username$runsDone.png');
 
           // Upload the file
-          await imagesRef.putFile(imageFile);
+          imagesRef.putFile(imageFile);
+
           debugPrint('run detail and stop: Screenshot uploaded successfully');
         } catch (e) {
           debugPrint('Error uploading screenshot: $e');
@@ -410,7 +412,6 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         debugPrint('Failed to save screenshot to file.');
       }
     }
-
     final downloadUrl = await FirebaseStorage.instance
         .ref('images/$username$runsDone.png')
         .getDownloadURL();

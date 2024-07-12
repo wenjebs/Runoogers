@@ -100,6 +100,7 @@ class Authenticator {
             },
             'points': 0,
             'activeStory': "",
+            'achievements': [],
           });
         }
       }

@@ -51,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
           },
           'points': 0,
           'activeStory': "",
+          'achievements': [],
         });
       } else {
         showErrorMessage("passwords dont match");
