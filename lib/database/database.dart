@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
@@ -655,5 +656,39 @@ class Database {
       //   }
       // }
     });
+  }
+
+  Future<bool> routeExists(String id) {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final routeRef = userRef.collection('routes').doc(id);
+    return routeRef.get().then((doc) => doc.exists);
+  }
+
+  Future<void> saveRoute(RouteModel route) async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final routeRef = userRef
+        .collection('routes')
+        .withConverter(
+          fromFirestore: RouteModel.fromFirestore,
+          toFirestore: (RouteModel route, options) => route.toFirestore(),
+        )
+        .doc();
+    final id = routeRef.id;
+    // check if route already exists using id
+    if (await routeExists(id)) {
+      throw Exception("Route already exists");
+    }
+    RouteModel newRoute = route.copyWith(id: id);
+    return routeRef.set(newRoute);
   }
 }

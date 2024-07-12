@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/database.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
@@ -173,5 +174,13 @@ class Repository {
     String storyId,
   ) {
     database.updateQuestProgress(distance, time, currQuestID, storyId);
+  }
+
+  /////////////////////
+  /// Route saving logic
+  /////////////////////
+  // Save route
+  static Future<void> saveRoute(RouteModel route) {
+    return database.saveRoute(route);
   }
 }

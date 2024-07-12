@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class RoutesGenerationPage extends ConsumerStatefulWidget {
@@ -13,6 +15,7 @@ class RoutesGenerationPage extends ConsumerStatefulWidget {
 }
 
 class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
+  bool saved = false;
   int seed = 0;
   int distance = 1;
   // AsyncValue<Polyline> route =
@@ -34,46 +37,36 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          appBar: AppBar(
-            title: const Text("Generate Route"),
-          ),
-          body: switch (route) {
-            AsyncData(:final value) => Center(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: GoogleMap(
-                          onMapCreated: _onMapCreated,
-                          initialCameraPosition: const CameraPosition(
-                              // TODO unhardcode this
-                              target: LatLng(
-                                  1.3843113892761545, 103.74289461016552),
-                              zoom: 16),
-                          polylines: {value.first as Polyline},
-                          markers: value.last as Set<Marker>),
-                    ),
-                    Column(
-                      children: [
-                        const Text("Distance:"),
-                        // NumberPicker(
-                        //   value: distance,
-                        //   itemCount: 3,
-                        //   minValue: 1,
-                        //   maxValue: 100,
-                        //   onChanged: (value) {
-                        //     setState(() {
-                        //       distance = value;
-                        //     });
-                        //   },
-                        //   selectedTextStyle:
-                        //       // TODO change this
-                        //       const TextStyle(color: Colors.blue),
-                        //   itemHeight: 25,
-                        //   decoration: BoxDecoration(
-                        //     border: Border.all(color: Colors.blue),
-                        //   ),
-                        // ),
-                        Form(
+        appBar: AppBar(
+          title: const Text("Generate Route"),
+        ),
+        body: switch (route) {
+          AsyncData(:final value) => Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: const CameraPosition(
+                            // TODO unhardcode this
+                            target:
+                                LatLng(1.3843113892761545, 103.74289461016552),
+                            zoom: 16),
+                        polylines: {value.first as Polyline},
+                        markers: value.last as Set<Marker>),
+                  ),
+                  Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("Distance:"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 24.0,
+                          right: 24.0,
+                        ),
+                        child: Form(
                           key: _formKey,
                           child: TextFormField(
                             controller: distanceController,
@@ -91,12 +84,14 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                                 decimal: true, signed: true),
                           ),
                         ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        setState(
+                          () {
                             FocusScope.of(context).unfocus();
                             debugPrint("refresh");
                             seed = Random().nextInt(90);
@@ -104,21 +99,60 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                                 ? int.parse(distanceController.text)
                                 : 1;
                             distanceController.text = "";
-                          });
-                        }
-                      },
-                      child: const Text("Regenerate Route"),
-                    ),
-                    route.value == null
-                        ? const CircularProgressIndicator()
-                        : const SizedBox()
-                  ],
-                ),
+                            saved = false;
+                          },
+                        );
+                      }
+                    },
+                    child: const Text("Regenerate Route"),
+                  ),
+
+                  // save route button
+                  ElevatedButton(
+                    onPressed: () {
+                      if (saved) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Route already saved!"),
+                              content:
+                                  const Text("Route has already been saved!"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        return;
+                      }
+                      Repository.saveRoute(
+                        RouteModel(
+                            id: "2",
+                            name: "test",
+                            description: "test",
+                            distance: "5",
+                            polylinePoints: List.empty(),
+                            imageUrl: "32"),
+                      );
+                      setState(() {
+                        saved = true;
+                      });
+                    },
+                    child: const Text("Save route"),
+                  ),
+                ],
               ),
-            AsyncError(:final error) =>
-              Text("No internet/ API Down :()\n$error"),
-            _ => const Center(child: CircularProgressIndicator()),
-          }),
+            ),
+          AsyncError(:final error) => Text("No internet/ API Down :()\n$error"),
+          _ => const Center(child: CircularProgressIndicator()),
+        },
+      ),
     );
   }
 
