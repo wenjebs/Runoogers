@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
+import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 
 class RoutesView extends StatefulWidget {
   const RoutesView({super.key});
@@ -147,24 +148,30 @@ class RoutesDetailsPage extends StatelessWidget {
             SizedBox(
               height: 500,
               child: SizedBox(
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: routes[index].getPolylinePoints.first,
-                    zoom: 16,
+                child: Card(
+                  elevation: 10.0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: routes[index].getPolylinePoints.first,
+                        zoom: 16,
+                      ),
+                      polylines: {
+                        Polyline(
+                          polylineId: const PolylineId('route'),
+                          points: routes[index].getPolylinePoints.toList(),
+                          color: Colors.blue,
+                          width: 2,
+                          visible: true,
+                          geodesic: true,
+                          jointType: JointType.round,
+                          startCap: Cap.roundCap,
+                          endCap: Cap.roundCap,
+                        )
+                      },
+                    ),
                   ),
-                  polylines: {
-                    Polyline(
-                      polylineId: const PolylineId('route'),
-                      points: routes[index].getPolylinePoints.toList(),
-                      color: Colors.blue,
-                      width: 2,
-                      visible: true,
-                      geodesic: true,
-                      jointType: JointType.round,
-                      startCap: Cap.roundCap,
-                      endCap: Cap.roundCap,
-                    )
-                  },
                 ),
               ),
             ),
@@ -187,6 +194,25 @@ class RoutesDetailsPage extends StatelessWidget {
                       fontSize: 14.0,
                       color: Colors.grey[600],
                     ),
+                  ),
+                  // Start run button
+                  ElevatedButton(
+                    onPressed: () {
+                      // Navigate to run page with the selected route
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return RunPage(
+                              route: routes[index],
+                              storyRun: false,
+                              title: "Route run",
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: const Text('Start Run'),
                   ),
                 ],
               ),
