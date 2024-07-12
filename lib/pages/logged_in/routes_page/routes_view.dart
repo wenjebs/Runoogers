@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
-
-final List<String> savedRoutes = [
-  'Route 1',
-  'Route 2',
-  'Route 3',
-  // Add more routes as needed
-];
 
 class RoutesView extends StatelessWidget {
   const RoutesView({super.key});
@@ -19,21 +14,31 @@ class RoutesView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Saved Routes'),
       ),
-      body: ListView.builder(
-        itemCount: savedRoutes.length,
-        itemBuilder: (context, index) {
-          // For each saved route, create a card.
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(savedRoutes[index]),
-              // Add more details here, such as subtitle, leading, trailing, etc.
-              onTap: () {
-                // Handle the tap event. For example, navigate to the route's details page.
-                print('Tapped on ${savedRoutes[index]}');
+      body: FutureBuilder(
+        future: Repository.getSavedRoutes(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            List<RouteModel> routes = snapshot.data!;
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(routes[index].distance),
+                  onTap: () {
+                    // Route to route details page
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const RoutesDetailsPage()));
+                  },
+                );
               },
-            ),
-          );
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton.extended(

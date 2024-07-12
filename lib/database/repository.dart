@@ -190,4 +190,9 @@ class Repository {
   static Future<void> saveRoute(RouteModel route) {
     return database.saveRoute(route);
   }
+
+  // Get saved routes
+  static Future<List<RouteModel>> getSavedRoutes() {
+    return database.getSavedRoutes();
+  }
 }

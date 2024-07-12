@@ -722,4 +722,17 @@ class Database {
     RouteModel newRoute = route.copyWith(id: id);
     return routeRef.set(newRoute);
   }
+
+  Future<List<RouteModel>> getSavedRoutes() {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    return userRef.collection('routes').get().then((querySnapshot) =>
+        querySnapshot.docs
+            .map((doc) => RouteModel.fromFirestore(doc, null))
+            .toList());
+  }
 }
