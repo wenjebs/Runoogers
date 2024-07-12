@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/database/repository.dart';
@@ -131,18 +132,37 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                         );
                         return;
                       }
+                      // debugPrint(value.first.toString());
+                      Polyline encoded = value.first as Polyline;
                       Repository.saveRoute(
                         RouteModel(
-                            id: "2",
+                            id: "1",
                             name: "test",
                             description: "test",
                             distance: "5",
-                            polylinePoints: List.empty(),
+                            polylinePoints: encoded.points.toSet(),
                             imageUrl: "32"),
                       );
                       setState(() {
                         saved = true;
                       });
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Route saved!"),
+                            content: const Text("Route has been saved!"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("OK"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                     child: const Text("Save route"),
                   ),
@@ -162,4 +182,12 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
     distanceController.dispose();
     super.dispose();
   }
+}
+
+Set<LatLng> convertPolylineToLatLngSet(String polyline) {
+  PolylinePoints polylinePoints = PolylinePoints();
+  List<PointLatLng> points = polylinePoints.decodePolyline(polyline);
+  Set<LatLng> latLngSet =
+      points.map((point) => LatLng(point.latitude, point.longitude)).toSet();
+  return latLngSet;
 }

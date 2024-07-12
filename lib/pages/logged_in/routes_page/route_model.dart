@@ -6,7 +6,7 @@ class RouteModel {
   final String name;
   final String description;
   final String distance;
-  final List<LatLng> polylinePoints;
+  final Set<LatLng> polylinePoints;
   final String imageUrl;
 
   RouteModel({
@@ -24,7 +24,7 @@ class RouteModel {
   String get getName => name;
   String get getDescription => description;
   String get getDistance => distance;
-  List<LatLng> get getPolylinePoints => polylinePoints;
+  Set<LatLng> get getPolylinePoints => polylinePoints;
   String get getImageUrl => imageUrl;
 
   factory RouteModel.fromFirestore(
@@ -35,7 +35,8 @@ class RouteModel {
     var pointsData = (data!['polylinePoints'] as List)
         .map((pointData) =>
             LatLng(pointData['latitude'], pointData['longitude']))
-        .toList();
+        .toList()
+        .toSet();
 
     return RouteModel(
       id: data['id'],
@@ -64,7 +65,7 @@ class RouteModel {
     String? name,
     String? description,
     String? distance,
-    List<LatLng>? polylinePoints,
+    Set<LatLng>? polylinePoints,
     String? imageUrl,
   }) {
     return RouteModel(
