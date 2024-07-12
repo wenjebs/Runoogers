@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
@@ -34,10 +35,12 @@ class _RoutesViewState extends State<RoutesView> {
                   child: InkWell(
                     onTap: () {
                       // Route to route details page
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => const RoutesDetailsPage()),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                RoutesDetailsPage(index, routes)),
+                      );
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -49,12 +52,12 @@ class _RoutesViewState extends State<RoutesView> {
                             children: <Widget>[
                               Text(
                                 routes[index].getName,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4.0),
+                              const SizedBox(height: 4.0),
                               Text(
                                 "${routes[index].getDistance} m",
                                 style: TextStyle(
@@ -65,7 +68,7 @@ class _RoutesViewState extends State<RoutesView> {
                             ],
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () {
                               // Are you sure dialog
                               showDialog(
@@ -120,6 +123,76 @@ class _RoutesViewState extends State<RoutesView> {
           setState(() {});
         },
         label: const Text("Generate Route"),
+      ),
+    );
+  }
+}
+
+class RoutesDetailsPage extends StatelessWidget {
+  final List<RouteModel> routes;
+  final int index;
+  const RoutesDetailsPage(this.index, this.routes, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Route Details'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // Map
+            SizedBox(
+              height: 500,
+              child: SizedBox(
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: routes[index].getPolylinePoints.first,
+                    zoom: 16,
+                  ),
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId('route'),
+                      points: routes[index].getPolylinePoints.toList(),
+                      color: Colors.blue,
+                      width: 2,
+                      visible: true,
+                      geodesic: true,
+                      jointType: JointType.round,
+                      startCap: Cap.roundCap,
+                      endCap: Cap.roundCap,
+                    )
+                  },
+                ),
+              ),
+            ),
+            // Route details
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    routes[index].getName,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    'Distance: ${routes[index].distance} m',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
