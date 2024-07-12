@@ -3,11 +3,15 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
 
-class RoutesView extends StatelessWidget {
+class RoutesView extends StatefulWidget {
   const RoutesView({super.key});
 
-  // Example list of saved routes. Replace this with your actual data source.
+  @override
+  State<RoutesView> createState() => _RoutesViewState();
+}
 
+class _RoutesViewState extends State<RoutesView> {
+  // Example list of saved routes. Replace this with your actual data source.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,15 +30,78 @@ class RoutesView extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(routes[index].distance),
-                  onTap: () {
-                    // Route to route details page
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const RoutesDetailsPage()));
-                  },
+                return Card(
+                  child: InkWell(
+                    onTap: () {
+                      // Route to route details page
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const RoutesDetailsPage()),
+                      // );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                routes[index].getName,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                "${routes[index].getDistance} m",
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              // Are you sure dialog
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete Route'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this route?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // Delete route
+                                          Repository.deleteRoute(
+                                              routes[index].getId);
+                                          Navigator.pop(context);
+                                          setState(() {});
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             );
@@ -42,12 +109,15 @@ class RoutesView extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
+        onPressed: () async {
           // Route to route generation page
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const RoutesGenerationPage()));
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RoutesGenerationPage(),
+            ),
+          );
+          setState(() {});
         },
         label: const Text("Generate Route"),
       ),

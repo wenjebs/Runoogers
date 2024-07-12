@@ -195,4 +195,8 @@ class Repository {
   static Future<List<RouteModel>> getSavedRoutes() {
     return database.getSavedRoutes();
   }
+
+  static void deleteRoute(String getId) {
+    database.deleteRoute(getId);
+  }
 }

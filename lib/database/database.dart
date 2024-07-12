@@ -735,4 +735,15 @@ class Database {
             .map((doc) => RouteModel.fromFirestore(doc, null))
             .toList());
   }
+
+  Future<void> deleteRoute(String getId) {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final routeRef = userRef.collection('routes').doc(getId);
+    return routeRef.delete();
+  }
 }
