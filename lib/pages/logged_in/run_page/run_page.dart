@@ -6,7 +6,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
@@ -17,30 +16,35 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'map_and_location_logic/loading_map.dart';
 import 'components/run_detail_and_stop.dart';
 
-class RunPage extends StatefulWidget {
-  final String? activeStory;
-  final QuestProgressModel? questProgress;
+class RunPage extends ConsumerStatefulWidget {
   final bool storyRun;
   final String title;
+
+  // quest fields
+  final double? questDistance;
+  final String? activeStoryTitle;
+  final QuestProgressModel? questProgress;
+  final int? currentQuest;
 
   const RunPage({
     super.key,
     required this.storyRun,
     required this.title,
-    this.activeStory,
+    this.activeStoryTitle,
     this.questProgress,
+    this.questDistance,
+    this.currentQuest,
   });
 
   @override
-  State<RunPage> createState() {
+  ConsumerState<RunPage> createState() {
     return _RunPageState();
   }
 }
 
-class _RunPageState extends State<RunPage> {
+class _RunPageState extends ConsumerState<RunPage> {
   // Is this a run initiated from story page?
   bool storyRun = false;
-  late AudioPlayer player;
   // Current Position
   Position? currPos;
 
@@ -69,9 +73,8 @@ class _RunPageState extends State<RunPage> {
   @override
   void initState() {
     super.initState();
-
+    LocationService.initialize();
     storyRun = widget.storyRun;
-    player = AudioPlayer();
     checkPermission();
     locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
@@ -103,14 +106,17 @@ class _RunPageState extends State<RunPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isRunning = ref.watch(timerProvider);
     return Scaffold(
       appBar: storyRun
-          ? AppBar(
-              centerTitle: true,
-              title: Text(
-                widget.title,
-                style: const TextStyle(color: Colors.black, fontSize: 16),
-              ))
+          ? isRunning
+              ? null
+              : AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    widget.title,
+                    style: const TextStyle(color: Colors.black, fontSize: 16),
+                  ))
           : null,
       body: currPos == null
           ? LocationService.locationServiceEnabled
@@ -181,7 +187,7 @@ class _RunPageState extends State<RunPage> {
                         context: context,
                         mapContainer: googleMapsContainer,
                         questProgress: widget.questProgress,
-                        activeStory: widget.activeStory,
+                        activeStory: widget.activeStoryTitle,
                         storyRun: storyRun,
                       ),
                     )
@@ -195,6 +201,7 @@ class _RunPageState extends State<RunPage> {
 
                         // start location tracking
                         LocationService.reset();
+                        LocationService.initialize();
                         locationService.listenToLocationChanges(
                           (Position newPos) => setState(() {
                             currPos = newPos;
@@ -202,8 +209,19 @@ class _RunPageState extends State<RunPage> {
                           GoogleMapsContainer.controller,
                           true,
                           storyRun,
-                          player,
+                          widget.questDistance,
+                          widget.activeStoryTitle,
+                          widget.currentQuest,
                         );
+
+                        if (storyRun) {
+                          LocationService.playBGMusic(
+                            widget.activeStoryTitle,
+                            widget.currentQuest,
+                          );
+                          LocationService.playEventAudio(
+                              "lib/assets/audio/${widget.activeStoryTitle}${widget.currentQuest! + 1}/${widget.activeStoryTitle}start.mp3");
+                        }
                       },
                       shape: const CircleBorder(),
                       child: const Text(
@@ -230,11 +248,6 @@ class _RunPageState extends State<RunPage> {
 
     // Clear polylines and markers
     MapLineDrawer.clear();
-
-    // release audio player
-    if (storyRun) {
-      player.dispose();
-    }
 
     _stopWatchTimer.dispose();
   }
