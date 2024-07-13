@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
+import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart';
 
 import 'active_quest_display_page.dart';

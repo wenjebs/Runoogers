@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
+import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class RoutesGenerationPage extends ConsumerStatefulWidget {

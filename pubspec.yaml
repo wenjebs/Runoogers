@@ -66,6 +66,11 @@ dependencies:
   http: ^1.2.1
   webview_flutter: ^4.8.0
   just_audio: ^0.9.38
+  firebase_auth_mocks: ^0.13.0
+  fake_cloud_firestore: ^2.5.2
+  mockito: ^5.4.4
+  provider: ^6.1.2
+  google_sign_in_mocks: ^0.2.2
 
 dev_dependencies:
   flutter_test:

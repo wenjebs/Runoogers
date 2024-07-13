@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
+import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 
 class RoutesDetailsPage extends StatelessWidget {

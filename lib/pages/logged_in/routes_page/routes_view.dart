@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
+import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
 
 import 'routes_details_page.dart';
