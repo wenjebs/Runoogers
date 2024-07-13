@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
@@ -20,6 +21,8 @@ class RunPage extends ConsumerStatefulWidget {
   final bool storyRun;
   final String title;
 
+// possible route
+  final RouteModel? route;
   // quest fields
   final double? questDistance;
   final String? activeStoryTitle;
@@ -28,6 +31,7 @@ class RunPage extends ConsumerStatefulWidget {
 
   const RunPage({
     super.key,
+    this.route,
     required this.storyRun,
     required this.title,
     this.activeStoryTitle,
@@ -142,7 +146,20 @@ class _RunPageState extends ConsumerState<RunPage> {
                       points: MapLineDrawer.polylineCoordinates,
                       color: Colors.red,
                       width: polylineWidth,
-                    )
+                    ),
+                    widget.route != null
+                        ? Polyline(
+                            polylineId: const PolylineId("route"),
+                            points: widget.route!.getPolylinePoints.toList(),
+                            color: Colors.blue,
+                            width: 2,
+                          )
+                        : const Polyline(
+                            polylineId: PolylineId("route"),
+                            points: [],
+                            color: Colors.blue,
+                            width: 2,
+                          ),
                   },
                   mapType: MapType.normal,
                   markers: {
