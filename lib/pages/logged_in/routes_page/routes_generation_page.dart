@@ -21,6 +21,8 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
   bool generated = false;
   int seed = 0;
   int distance = 1;
+  int _selectedPoints = 10;
+  final List<int> _pointsOptions = List.generate(96, (index) => 5 + index);
   late Future<Position?> currentLocation;
   AsyncValue<Set<Object>> route = const AsyncValue.loading();
   GoogleMapController? mapController;
@@ -42,7 +44,8 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
 
   @override
   Widget build(BuildContext context) {
-    route = ref.watch(routeProvider(seed, distance));
+    route = ref
+        .watch(routeProvider(seed, distance, currentLocation, _selectedPoints));
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -74,7 +77,19 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                                         zoom: 16,
                                       ),
                                       polylines: {value.first as Polyline},
-                                      markers: value.last as Set<Marker>,
+                                      // markers: value.last as Set<Marker>,
+                                      markers: {
+                                        Marker(
+                                          markerId: const MarkerId("current"),
+                                          position: LatLng(
+                                            snapshot.data!.latitude,
+                                            snapshot.data!.longitude,
+                                          ),
+                                          infoWindow: const InfoWindow(
+                                            title: "Current Location",
+                                          ),
+                                        )
+                                      },
                                     )
                                   : const Center(
                                       child: CircularProgressIndicator()),
@@ -114,6 +129,37 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                       ),
                     ],
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Select number of points:"),
+                        DropdownButton<int>(
+                          enableFeedback: true,
+                          borderRadius: BorderRadius.circular(10),
+                          menuMaxHeight: 200,
+                          value: _selectedPoints,
+                          items: _pointsOptions
+                              .map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10.0,
+                                  horizontal: 10.0,
+                                ),
+                                child: Text(value.toString()),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (int? newValue) {
+                            _selectedPoints = newValue!;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -125,8 +171,8 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                             distance = distanceController.text.isNotEmpty
                                 ? int.parse(distanceController.text)
                                 : 1;
-                            distanceController.text = "";
                             saved = false;
+                            generated = true;
                           },
                         );
                       }

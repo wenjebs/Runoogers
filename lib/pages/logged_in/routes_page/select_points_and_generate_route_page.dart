@@ -19,6 +19,7 @@ class _SelectPointsAndGenerateRoutePageState
   final _submitFormKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  late Future<Position?> currentLocation;
   bool saved = false;
   bool generated = false;
   Set<Marker> markers = <Marker>{};
@@ -32,6 +33,13 @@ class _SelectPointsAndGenerateRoutePageState
     startCap: Cap.roundCap,
     endCap: Cap.roundCap,
   );
+
+  @override
+  void initState() {
+    currentLocation = Geolocator.getLastKnownPosition();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = ref.watch(pointsRouteProvider(markers));
@@ -57,48 +65,81 @@ class _SelectPointsAndGenerateRoutePageState
                             child: SizedBox(
                               height: 500,
                               width: 400,
-                              child: GoogleMap(
-                                initialCameraPosition: const CameraPosition(
-                                    target: LatLng(
-                                        1.384320955589256, 103.74288823076182),
-                                    zoom: 16),
-                                markers: markers,
-                                polylines: {
-                                  Polyline(
-                                      polylineId: polyline.polylineId,
-                                      points: result.value!,
-                                      color: polyline.color,
-                                      width: polyline.width)
-                                },
-                                onTap: (coordinate) {
-                                  final Marker newMarker = Marker(
-                                    markerId: MarkerId(coordinate.toString()),
-                                    position: coordinate,
-                                    onTap: () {
-                                      // remove itself from markers on tap
-                                      setState(() {
-                                        markers.removeWhere(
-                                          (m) =>
-                                              m.markerId ==
-                                              MarkerId(coordinate.toString()),
-                                        );
-                                      });
-                                    },
-                                  );
-                                  final Marker existingMarker =
-                                      markers.firstWhere(
-                                    (marker) =>
-                                        marker.markerId == newMarker.markerId,
-                                    orElse: () =>
-                                        const Marker(markerId: MarkerId('')),
-                                  );
-                                  if (existingMarker.markerId.value == '') {
-                                    setState(() {
-                                      markers.add(newMarker);
-                                    });
-                                  }
-                                },
-                              ),
+                              child: FutureBuilder(
+                                  future: currentLocation,
+                                  builder: (context, snapshot) {
+                                    Set<Marker> allMarkers = <Marker>{};
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      allMarkers.addAll(markers);
+                                      allMarkers.add(
+                                        Marker(
+                                          markerId: const MarkerId("Start"),
+                                          position: LatLng(
+                                            snapshot.data!.latitude,
+                                            snapshot.data!.longitude,
+                                          ),
+                                          icon: BitmapDescriptor
+                                              .defaultMarkerWithHue(
+                                                  BitmapDescriptor.hueGreen),
+                                        ),
+                                      );
+                                    }
+                                    return snapshot.connectionState ==
+                                            ConnectionState.done
+                                        ? GoogleMap(
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                              target: LatLng(
+                                                  snapshot.data!.latitude,
+                                                  snapshot.data!.longitude),
+                                              zoom: 16,
+                                            ),
+                                            markers: allMarkers,
+                                            polylines: {
+                                              Polyline(
+                                                polylineId: polyline.polylineId,
+                                                points: result.value!,
+                                                color: polyline.color,
+                                                width: polyline.width,
+                                              ),
+                                            },
+                                            onTap: (coordinate) {
+                                              final Marker newMarker = Marker(
+                                                markerId: MarkerId(
+                                                    coordinate.toString()),
+                                                position: coordinate,
+                                                onTap: () {
+                                                  // remove itself from markers on tap
+                                                  setState(() {
+                                                    markers.removeWhere(
+                                                      (m) =>
+                                                          m.markerId ==
+                                                          MarkerId(coordinate
+                                                              .toString()),
+                                                    );
+                                                  });
+                                                },
+                                              );
+                                              final Marker existingMarker =
+                                                  markers.firstWhere(
+                                                (marker) =>
+                                                    marker.markerId ==
+                                                    newMarker.markerId,
+                                                orElse: () => const Marker(
+                                                    markerId: MarkerId('')),
+                                              );
+                                              if (existingMarker
+                                                      .markerId.value ==
+                                                  '') {
+                                                setState(() {
+                                                  markers.add(newMarker);
+                                                });
+                                              }
+                                            },
+                                          )
+                                        : const CircularProgressIndicator();
+                                  }),
                             ),
                           ),
                         ),
@@ -107,10 +148,12 @@ class _SelectPointsAndGenerateRoutePageState
               onPressed: () {
                 // generate a polyline based on the set of markers
                 // ignore: unused_result
-                setState(() {
-                  saved = false;
-                  generated = true;
-                });
+                if (markers.length > 1) {
+                  setState(() {
+                    saved = false;
+                    generated = true;
+                  });
+                }
                 // ignore: unused_result
                 ref.refresh(pointsRouteProvider(markers));
               },
@@ -193,6 +236,9 @@ class _SelectPointsAndGenerateRoutePageState
                 }
               },
               child: const Text("Save route"),
+            ),
+            const SizedBox(
+              height: 50,
             ),
           ],
         ),
