@@ -21,8 +21,7 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
   bool generated = false;
   int seed = 0;
   int distance = 1;
-  // AsyncValue<Polyline> route =
-  //     const AsyncValue.data(Polyline(polylineId: PolylineId('route')));
+  late Future<Position?> currentLocation;
   AsyncValue<Set<Object>> route = const AsyncValue.loading();
   GoogleMapController? mapController;
   final distanceController = TextEditingController();
@@ -33,6 +32,12 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  @override
+  void initState() {
+    currentLocation = Geolocator.getLastKnownPosition();
+    super.initState();
   }
 
   @override
@@ -55,15 +60,25 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
                         elevation: 10,
-                        child: GoogleMap(
-                            onMapCreated: _onMapCreated,
-                            initialCameraPosition: const CameraPosition(
-                                // TODO unhardcode this
-                                target: LatLng(
-                                    1.3843113892761545, 103.74289461016552),
-                                zoom: 16),
-                            polylines: {value.first as Polyline},
-                            markers: value.last as Set<Marker>),
+                        child: FutureBuilder(
+                          future: currentLocation,
+                          builder: (context, snapshot) =>
+                              snapshot.connectionState == ConnectionState.done
+                                  ? GoogleMap(
+                                      onMapCreated: _onMapCreated,
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          snapshot.data!.latitude,
+                                          snapshot.data!.longitude,
+                                        ),
+                                        zoom: 16,
+                                      ),
+                                      polylines: {value.first as Polyline},
+                                      markers: value.last as Set<Marker>,
+                                    )
+                                  : const Center(
+                                      child: CircularProgressIndicator()),
+                        ),
                       ),
                     ),
                   ),
