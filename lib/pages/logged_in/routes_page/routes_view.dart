@@ -4,6 +4,7 @@ import 'package:runningapp/pages/logged_in/routes_page/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_generation_page.dart';
 
 import 'routes_details_page.dart';
+import 'select_points_and_generate_route_page.dart';
 
 class RoutesView extends StatefulWidget {
   const RoutesView({super.key});
@@ -115,11 +116,47 @@ class _RoutesViewState extends State<RoutesView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           // Route to route generation page
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RoutesGenerationPage(),
-            ),
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Choose an Option'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      ElevatedButton(
+                        child: const Text('Round loop'),
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // Close the dialog
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RoutesGenerationPage(), // Replace with your first page
+                            ),
+                          );
+                          setState(() {});
+                        },
+                      ),
+                      ElevatedButton(
+                        child: const Text('Select your own points'),
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // Close the dialog
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SelectPointsAndGenerateRoutePage(), // Replace with your second page
+                            ),
+                          );
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
           setState(() {});
         },

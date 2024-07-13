@@ -59,3 +59,31 @@ Future<Set<Object>> route(RouteRef ref, int seed, int distance) async {
 
   return {routePolyline, markers};
 }
+
+@riverpod
+Future<List<LatLng>> pointsRoute(
+    PointsRouteRef ref, Set<Marker> markers) async {
+  if (markers.length <= 1) {
+    return [];
+  }
+  // Convert set of markers to list of ORS coordinates
+  final List<ORSCoordinate> coordinates = markers
+      .map((marker) => ORSCoordinate(
+          latitude: marker.position.latitude,
+          longitude: marker.position.longitude))
+      .toList();
+
+  // Form Route between coordinates
+  final OpenRouteService client = OpenRouteService(apiKey: orsApiKey);
+
+  final List<ORSCoordinate> route = await client.directionsMultiRouteCoordsPost(
+    coordinates: coordinates,
+  );
+
+  // Map route coordinates to a list of LatLng to be used in the Map route Polyline.
+  final List<LatLng> routePoints = route
+      .map((coordinate) => LatLng(coordinate.latitude, coordinate.longitude))
+      .toList();
+
+  return routePoints;
+}

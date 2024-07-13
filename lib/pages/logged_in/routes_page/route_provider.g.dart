@@ -170,5 +170,133 @@ class _RouteProviderElement
   @override
   int get distance => (origin as RouteProvider).distance;
 }
+
+String _$pointsRouteHash() => r'03845c5636d0323ac0cb2f31b6f7d189266eafa2';
+
+/// See also [pointsRoute].
+@ProviderFor(pointsRoute)
+const pointsRouteProvider = PointsRouteFamily();
+
+/// See also [pointsRoute].
+class PointsRouteFamily extends Family<AsyncValue<List<LatLng>>> {
+  /// See also [pointsRoute].
+  const PointsRouteFamily();
+
+  /// See also [pointsRoute].
+  PointsRouteProvider call(
+    Set<Marker> markers,
+  ) {
+    return PointsRouteProvider(
+      markers,
+    );
+  }
+
+  @override
+  PointsRouteProvider getProviderOverride(
+    covariant PointsRouteProvider provider,
+  ) {
+    return call(
+      provider.markers,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'pointsRouteProvider';
+}
+
+/// See also [pointsRoute].
+class PointsRouteProvider extends AutoDisposeFutureProvider<List<LatLng>> {
+  /// See also [pointsRoute].
+  PointsRouteProvider(
+    Set<Marker> markers,
+  ) : this._internal(
+          (ref) => pointsRoute(
+            ref as PointsRouteRef,
+            markers,
+          ),
+          from: pointsRouteProvider,
+          name: r'pointsRouteProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$pointsRouteHash,
+          dependencies: PointsRouteFamily._dependencies,
+          allTransitiveDependencies:
+              PointsRouteFamily._allTransitiveDependencies,
+          markers: markers,
+        );
+
+  PointsRouteProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.markers,
+  }) : super.internal();
+
+  final Set<Marker> markers;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<LatLng>> Function(PointsRouteRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: PointsRouteProvider._internal(
+        (ref) => create(ref as PointsRouteRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        markers: markers,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<LatLng>> createElement() {
+    return _PointsRouteProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PointsRouteProvider && other.markers == markers;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, markers.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin PointsRouteRef on AutoDisposeFutureProviderRef<List<LatLng>> {
+  /// The parameter `markers` of this provider.
+  Set<Marker> get markers;
+}
+
+class _PointsRouteProviderElement
+    extends AutoDisposeFutureProviderElement<List<LatLng>> with PointsRouteRef {
+  _PointsRouteProviderElement(super.provider);
+
+  @override
+  Set<Marker> get markers => (origin as PointsRouteProvider).markers;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

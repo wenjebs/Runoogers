@@ -171,7 +171,7 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Save Route'),
+          title: const Text('Save Route'),
           content: Form(
             key: _submitFormKey,
             child: Column(
@@ -179,7 +179,7 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
               children: <Widget>[
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: const InputDecoration(labelText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a name';
@@ -189,7 +189,7 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                 ),
                 TextFormField(
                   controller: _descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -202,11 +202,11 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             ElevatedButton(
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () => _saveRoute(encoded),
             ),
           ],
@@ -221,10 +221,8 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
       // Use the name and description from the controllers
       String name = _nameController.text;
       String description = _descriptionController.text;
-      // TODO: Implement your save logic here
       Repository.saveRoute(
         RouteModel(
-            // TODO unhardcode this
             id: "",
             name: name,
             description: description,
