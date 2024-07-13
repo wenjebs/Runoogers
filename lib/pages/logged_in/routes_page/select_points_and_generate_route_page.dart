@@ -20,6 +20,7 @@ class _SelectPointsAndGenerateRoutePageState
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   bool saved = false;
+  bool generated = false;
   Set<Marker> markers = <Marker>{};
   Polyline polyline = const Polyline(
     polylineId: PolylineId('route'),
@@ -48,48 +49,56 @@ class _SelectPointsAndGenerateRoutePageState
                     child: Center(child: CircularProgressIndicator()))
                 : result.hasError
                     ? Text(result.value.toString())
-                    : SizedBox(
-                        height: 500,
-                        width: 400,
-                        child: GoogleMap(
-                          initialCameraPosition: const CameraPosition(
-                              target:
-                                  LatLng(1.384320955589256, 103.74288823076182),
-                              zoom: 16),
-                          markers: markers,
-                          polylines: {
-                            Polyline(
-                                polylineId: polyline.polylineId,
-                                points: result.value!,
-                                color: polyline.color,
-                                width: polyline.width)
-                          },
-                          onTap: (coordinate) {
-                            final Marker newMarker = Marker(
-                              markerId: MarkerId(coordinate.toString()),
-                              position: coordinate,
-                              onTap: () {
-                                // remove itself from markers on tap
-                                setState(() {
-                                  markers.removeWhere(
-                                    (m) =>
-                                        m.markerId ==
-                                        MarkerId(coordinate.toString()),
-                                  );
-                                });
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 10,
+                          child: SizedBox(
+                            height: 500,
+                            width: 400,
+                            child: GoogleMap(
+                              initialCameraPosition: const CameraPosition(
+                                  target: LatLng(
+                                      1.384320955589256, 103.74288823076182),
+                                  zoom: 16),
+                              markers: markers,
+                              polylines: {
+                                Polyline(
+                                    polylineId: polyline.polylineId,
+                                    points: result.value!,
+                                    color: polyline.color,
+                                    width: polyline.width)
                               },
-                            );
-                            final Marker existingMarker = markers.firstWhere(
-                              (marker) => marker.markerId == newMarker.markerId,
-                              orElse: () =>
-                                  const Marker(markerId: MarkerId('')),
-                            );
-                            if (existingMarker.markerId.value == '') {
-                              setState(() {
-                                markers.add(newMarker);
-                              });
-                            }
-                          },
+                              onTap: (coordinate) {
+                                final Marker newMarker = Marker(
+                                  markerId: MarkerId(coordinate.toString()),
+                                  position: coordinate,
+                                  onTap: () {
+                                    // remove itself from markers on tap
+                                    setState(() {
+                                      markers.removeWhere(
+                                        (m) =>
+                                            m.markerId ==
+                                            MarkerId(coordinate.toString()),
+                                      );
+                                    });
+                                  },
+                                );
+                                final Marker existingMarker =
+                                    markers.firstWhere(
+                                  (marker) =>
+                                      marker.markerId == newMarker.markerId,
+                                  orElse: () =>
+                                      const Marker(markerId: MarkerId('')),
+                                );
+                                if (existingMarker.markerId.value == '') {
+                                  setState(() {
+                                    markers.add(newMarker);
+                                  });
+                                }
+                              },
+                            ),
+                          ),
                         ),
                       ),
             ElevatedButton(
@@ -98,6 +107,7 @@ class _SelectPointsAndGenerateRoutePageState
                 // ignore: unused_result
                 setState(() {
                   saved = false;
+                  generated = true;
                 });
                 // ignore: unused_result
                 ref.refresh(pointsRouteProvider(markers));
@@ -119,6 +129,7 @@ class _SelectPointsAndGenerateRoutePageState
                     startCap: Cap.roundCap,
                     endCap: Cap.roundCap,
                   );
+                  generated = false;
                 });
                 // ignore: unused_result
                 ref.refresh(pointsRouteProvider(markers));
@@ -135,6 +146,26 @@ class _SelectPointsAndGenerateRoutePageState
                       return AlertDialog(
                         title: const Text("Route already saved!"),
                         content: const Text("Route has already been saved!"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  return;
+                }
+                if (!generated) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Route not generated!"),
+                        content: const Text("Route has not been generated!"),
                         actions: [
                           TextButton(
                             onPressed: () {

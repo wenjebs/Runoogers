@@ -18,6 +18,7 @@ class RoutesGenerationPage extends ConsumerStatefulWidget {
 
 class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
   bool saved = false;
+  bool generated = false;
   int seed = 0;
   int distance = 1;
   // AsyncValue<Polyline> route =
@@ -50,15 +51,21 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
               child: Column(
                 children: [
                   Expanded(
-                    child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: const CameraPosition(
-                            // TODO unhardcode this
-                            target:
-                                LatLng(1.3843113892761545, 103.74289461016552),
-                            zoom: 16),
-                        polylines: {value.first as Polyline},
-                        markers: value.last as Set<Marker>),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        elevation: 10,
+                        child: GoogleMap(
+                            onMapCreated: _onMapCreated,
+                            initialCameraPosition: const CameraPosition(
+                                // TODO unhardcode this
+                                target: LatLng(
+                                    1.3843113892761545, 103.74289461016552),
+                                zoom: 16),
+                            polylines: {value.first as Polyline},
+                            markers: value.last as Set<Marker>),
+                      ),
+                    ),
                   ),
                   Column(
                     children: [
@@ -123,6 +130,27 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
                               title: const Text("Route already saved!"),
                               content:
                                   const Text("Route has already been saved!"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        return;
+                      }
+                      if (!generated) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Route not generated!"),
+                              content:
+                                  const Text("Route has not been generated!"),
                               actions: [
                                 TextButton(
                                   onPressed: () {
