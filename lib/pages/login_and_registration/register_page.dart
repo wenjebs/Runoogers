@@ -14,11 +14,33 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool isLoaded = false;
+  final emailRegex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   void signUserUp() async {
+    if (!emailRegex.hasMatch(emailController.text)) {
+      // If the email format is invalid, show an error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Invalid Email'),
+            content: const Text('Please enter a valid email address.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Do not proceed with the sign-in process
+    }
     //loading circle
     showDialog(
       context: context,
@@ -178,6 +200,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     // sign in button
                     MyButton(
+                      text: 'Sign Up',
                       onTap: signUserUp,
                     ),
 

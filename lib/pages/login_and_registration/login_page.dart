@@ -214,6 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
+                            key: const Key('forgotPassword'),
                             onTap: () {
                               debugPrint("forgot password");
                               Navigator.push(
@@ -235,6 +236,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     // sign in button
                     MyButton(
+                      text: 'Sign In',
                       onTap: signUserIn,
                     ),
 
@@ -297,6 +299,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
+                          key: const Key('registerNow'),
                           onTap: widget.onTap,
                           child: const Text(
                             'Register now',
