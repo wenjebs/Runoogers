@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post_comment.dart';
@@ -30,8 +32,7 @@ class PostCommentFeed extends ConsumerWidget {
           title: const Text('Comments')),
       body: Column(
         children: [
-          RunningPost(
-              post: post, disableCommentButton: true), // TODO Riverpod this
+          RunningPost(post: post, disableCommentButton: true),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {
@@ -40,6 +41,7 @@ class PostCommentFeed extends ConsumerWidget {
                 }
                 final comments = snapshot.data!.docs.map((doc) {
                   return RunningPostComment(
+                    name: doc['name'],
                     postId: post.id,
                     commentId: doc.id,
                     userId: doc['userId'],
@@ -77,14 +79,17 @@ class PostCommentFeed extends ConsumerWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () {
+                  onPressed: () async {
                     FocusScope.of(context).unfocus();
+                    String name = await Repository.fetchName(
+                        FirebaseAuth.instance.currentUser!.uid);
                     FirebaseFirestore.instance
                         .collection('posts')
                         .doc(post.id)
                         .collection('comments')
                         .add({
-                      'userId': 'placeholder, change in post_comment_feed.dart',
+                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'name': name,
                       'comment': commentController.text,
                       'likes': 0,
                     });

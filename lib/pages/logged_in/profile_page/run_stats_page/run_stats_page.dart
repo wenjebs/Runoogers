@@ -7,14 +7,12 @@ class RunStatsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Use userInfoProvider to get user information
     final userInfoAsyncValue = ref.watch(userInformationProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: userInfoAsyncValue.when(
         data: (snapshot) {
-          // Assuming 'posts' and 'friends' are fields in your user document
-          // final postsCount = snapshot.docs.length; // Number of posts
           if (snapshot != null) {
             final fastestTime = snapshot['fastestTime'] ?? 0;
             final totalTime = snapshot['totalTime'] ?? 0;
@@ -23,27 +21,74 @@ class RunStatsPage extends ConsumerWidget {
             final totalDistance = snapshot['totalDistance'] ?? 0;
             final totalDistanceRan = snapshot['totalDistanceRan'] ?? 0;
             final points = snapshot['points'] ?? 0;
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Fastest Time: $fastestTime'),
-                  Text('Total Time: $totalTime'),
-                  Text('Longest Distance: $longestDistance'),
-                  Text('Total Runs: $totalRuns'),
-                  Text('Total Distance: $totalDistance'),
-                  Text('Total Distance Ran: $totalDistanceRan'),
-                  Text('Points: $points'),
-                  // Add more stats as needed
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    StatCard(
+                        title: 'Fastest Time',
+                        value: '$fastestTime',
+                        icon: Icons.timer),
+                    StatCard(
+                        title: 'Total Time',
+                        value: '$totalTime',
+                        icon: Icons.hourglass_bottom),
+                    StatCard(
+                        title: 'Longest Distance',
+                        value: '$longestDistance',
+                        icon: Icons.route),
+                    StatCard(
+                        title: 'Total Runs',
+                        value: '$totalRuns',
+                        icon: Icons.directions_run),
+                    StatCard(
+                        title: 'Total Distance',
+                        value: '$totalDistance',
+                        icon: Icons.map),
+                    StatCard(
+                        title: 'Total Distance Ran',
+                        value: '$totalDistanceRan',
+                        icon: Icons.terrain),
+                    StatCard(
+                        title: 'Points', value: '$points', icon: Icons.star),
+                  ],
+                ),
               ),
             );
+          } else {
+            return const Center(child: Text('No data available'));
           }
-          return null;
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
+      ),
+    );
+  }
+}
+
+class StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+
+  const StatCard(
+      {super.key,
+      required this.title,
+      required this.value,
+      required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        leading: Icon(icon, color: Theme.of(context).primaryColor),
+        title: Text(title, style: const TextStyle(color: Colors.black)),
+        trailing: Text(value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ),
     );
   }

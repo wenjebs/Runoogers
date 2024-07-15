@@ -8,7 +8,8 @@ import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 
 class SocialMediaPage extends ConsumerWidget {
-  const SocialMediaPage({super.key});
+  final bool showFloatingActionButton;
+  const SocialMediaPage({super.key, this.showFloatingActionButton = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,16 +57,18 @@ class SocialMediaPage extends ConsumerWidget {
               );
             },
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const PostCreationPage()),
-              );
-            },
-            child: const Icon(Icons.add),
-          ),
+          floatingActionButton: showFloatingActionButton // Step 2: Use the flag
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PostCreationPage()),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                )
+              : null,
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),

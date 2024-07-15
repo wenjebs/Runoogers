@@ -174,13 +174,9 @@ class Repository {
     return database.getQuestProgress(storyId);
   }
 
-  static void updateQuestProgress(
-    double distance,
-    int time,
-    int currQuestID,
-    String storyId,
-  ) {
-    database.updateQuestProgress(distance, time, currQuestID, storyId);
+  static void updateQuestProgress(double distance, int time, int currQuestID,
+      String storyId, BuildContext context) {
+    database.updateQuestProgress(distance, time, currQuestID, storyId, context);
   }
 
   static Future<void> resetQuestsProgress(

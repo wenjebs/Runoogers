@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   bool trainingOnboarded = false;
 
   final List<Widget> _pages = [
-    const UserPage(),
+    UserPage(),
     const RunPage(
       title: "",
       storyRun: false,

@@ -440,12 +440,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     // update quest progress
     if (widget.storyRun != null && widget.storyRun == true) {
       Repository.updateQuestProgress(distance, time,
-          widget.questProgress!.currentQuest, widget.activeStory!);
+          widget.questProgress!.currentQuest, widget.activeStory!, context);
     }
     // update and display achievements
     debugPrint("before update user achievements");
     List<String> newAchievements =
-        //TODO IMPROVE, THIS IS HELLA SLOW
         await Repository.updateUserAchievements(distance, time);
     if (newAchievements.isNotEmpty) {
       // Show dialog with the list of new achievements

@@ -599,12 +599,8 @@ class Database {
     }
   }
 
-  Future<void> updateQuestProgress(
-    double distance,
-    int time,
-    int currQuestID,
-    String storyId,
-  ) async {
+  void updateQuestProgress(double distance, int time, int currQuestID,
+      String storyId, BuildContext context) async {
     debugPrint("Repository: updating quest progress");
     final userId = auth.userId;
     if (userId == null) {
@@ -637,12 +633,14 @@ class Database {
       final currentQuestCompletionStatus = data['questsCompleted'];
       // Update current quest progress
       double tracker = distance;
+      int storiesCompleted = 0;
       while (tracker >= 0 && currentQuest < quests.length) {
         if (tracker + currentQuestProgress[currentQuest] >=
             quests[currentQuest].distance) {
           double temp = currentQuestProgress[currentQuest].toDouble();
           currentQuestProgress[currentQuest] = quests[currentQuest].distance;
           currentQuestCompletionStatus[currentQuest] = true;
+          storiesCompleted += 1;
           tracker -= (quests[currentQuest].distance - temp);
           currentQuest++;
         } else {
@@ -662,6 +660,11 @@ class Database {
         },
       );
 
+      if (storiesCompleted != 0) {
+        await addPoints(storiesCompleted * 2000);
+        await showCompletionPopup(context, storiesCompleted);
+      }
+
       // // Update quest progress
       // for (int i = 0; i < currentQuestProgress.length; i++) {
       //   if (!currentQuestCompletionStatus[i]) {
@@ -672,6 +675,38 @@ class Database {
       //   }
       // }
     });
+  }
+
+  Future<void> showCompletionPopup(
+      BuildContext context, int storiesCompleted) async {
+    int pointsEarned =
+        storiesCompleted * 2000; // Assuming each story awards 2000 points
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button to close the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Congratulations!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'You have completed $storiesCompleted ${storiesCompleted == 1 ? "story" : "stories"}!'),
+                Text('You have earned $pointsEarned points!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> resetQuestsProgress(
