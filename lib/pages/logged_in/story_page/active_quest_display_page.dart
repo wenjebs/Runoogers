@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
+import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/providers/providers.dart';
 
 class ActiveQuestDisplayPage extends ConsumerWidget {

@@ -7,7 +7,7 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
-import 'package:runningapp/pages/logged_in/routes_page/routes_page.dart';
+import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     const RunStatsPage(),
     const LeaderboardsPage(),
     const SettingsPage(),
-    const RoutesPage(),
+    const RoutesView(),
   ];
 
   String getTitle(int index) {

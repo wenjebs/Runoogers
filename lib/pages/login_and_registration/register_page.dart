@@ -29,7 +29,10 @@ class _RegisterPageState extends State<RegisterPage> {
       },
     );
     try {
-      if (passwordController.text == confirmPasswordController.text) {
+      if (passwordController.text == "" || passwordController.text == "") {
+        Navigator.pop(context);
+        showErrorMessage("Please enter a password!");
+      } else if (passwordController.text == confirmPasswordController.text) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
@@ -53,18 +56,20 @@ class _RegisterPageState extends State<RegisterPage> {
           'activeStory': "",
           'achievements': [],
         });
+        Navigator.pop(context);
       } else {
-        showErrorMessage("passwords dont match");
+        Navigator.pop(context);
+        showErrorMessage("Passwords dont match!");
       }
       //remove loading circle after login
       // if (mounted) {
-      Navigator.pop(context);
+
       // }
     } on FirebaseAuthException catch (e) {
       // if (mounted) {
       Navigator.pop(context);
       // }
-      showErrorMessage(e.message!);
+      showErrorMessage(getErrorMessage(e.code));
     }
   }
 
@@ -254,5 +259,28 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  String getErrorMessage(String errorCode) {
+    String errorMessage;
+
+    switch (errorCode) {
+      case 'invalid-credential':
+        errorMessage = 'The email address or password is not valid.';
+      case 'invalid-email':
+        errorMessage = 'The email address is not valid.';
+      case 'user-disabled':
+        errorMessage = 'This user has been disabled.';
+      case 'user-not-found':
+        errorMessage = 'No user found with this email.';
+      case 'wrong-password':
+        errorMessage = 'Wrong password provided.';
+      case 'network-request-failed':
+        errorMessage = 'Check your internet connection and try again.';
+      default:
+        errorMessage = 'An unexpected error occurred. Please try again.';
+    }
+
+    return errorMessage;
   }
 }

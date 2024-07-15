@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/database.dart';
 import 'package:runningapp/models/run.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/quests_model.dart';
+import 'package:runningapp/models/route_model.dart';
+import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
@@ -180,5 +181,22 @@ class Repository {
   ) async {
     debugPrint("Repository: resetting quests progress");
     await database.resetQuestsProgress(storyId);
+  }
+
+  /////////////////////
+  /// Route saving logic
+  /////////////////////
+  // Save route
+  static Future<void> saveRoute(RouteModel route) {
+    return database.saveRoute(route);
+  }
+
+  // Get saved routes
+  static Future<List<RouteModel>> getSavedRoutes() {
+    return database.getSavedRoutes();
+  }
+
+  static void deleteRoute(String getId) {
+    database.deleteRoute(getId);
   }
 }

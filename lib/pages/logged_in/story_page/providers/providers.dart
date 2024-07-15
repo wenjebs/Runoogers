@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/story_page/models/progress_model.dart';
+import 'package:runningapp/models/progress_model.dart';
 
 part 'providers.g.dart';
 
