@@ -392,7 +392,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       final path = tempDir.path;
       final imageFile = File('$path/$username$runsDone.png');
       // Write the screenshot data to the file
-      await imageFile.writeAsBytes(screenshot);
+      // TODO this seems problematic
+      imageFile.writeAsBytes(screenshot);
       // Ensure the file has been created and contains data
       if (await imageFile.exists()) {
         try {
@@ -402,7 +403,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
               .child('images/$username$runsDone.png');
 
           // Upload the file
-          imagesRef.putFile(imageFile);
+          await imagesRef.putFile(imageFile);
 
           debugPrint('run detail and stop: Screenshot uploaded successfully');
         } catch (e) {
@@ -412,10 +413,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         debugPrint('Failed to save screenshot to file.');
       }
     }
+    debugPrint("$runsDone, $username");
     final downloadUrl = await FirebaseStorage.instance
         .ref('images/$username$runsDone.png')
         .getDownloadURL();
-
+    debugPrint("after download url");
     // add run to database
     Repository.addRun(
       "runs",
@@ -431,7 +433,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         pace: pace,
       ),
     );
-
+    debugPrint("after add run");
     //update stats
     updateStats(distance, time);
 
@@ -441,6 +443,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
           widget.questProgress!.currentQuest, widget.activeStory!);
     }
     // update and display achievements
+    debugPrint("before update user achievements");
     List<String> newAchievements =
         //TODO IMPROVE, THIS IS HELLA SLOW
         await Repository.updateUserAchievements(distance, time);

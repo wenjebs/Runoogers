@@ -12,9 +12,9 @@ class User {
   final int points;
   final List<DocumentReference> posts;
   final Map<String, dynamic> runstats;
-  final int totalDistanceRan;
+  final double totalDistanceRan;
   final int totalRuns;
-  final int totalTime;
+  final double totalTime;
   final bool trainingOnboarded;
   final String uid;
   final String username;
@@ -52,9 +52,10 @@ class User {
         points = doc.data()?['points'] ?? 0,
         posts = List<DocumentReference>.from(doc.data()?['posts'] ?? []),
         runstats = doc.data()?['runstats'] ?? {},
-        totalDistanceRan = doc.data()?['totalDistanceRan'] ?? 0,
+        // Ensure these are doubles even if the Firestore value is an int
+        totalDistanceRan = (doc.data()?['totalDistanceRan']?.toDouble() ?? 0.0),
         totalRuns = doc.data()?['totalRuns'] ?? 0,
-        totalTime = doc.data()?['totalTime'] ?? 0,
+        totalTime = (doc.data()?['totalTime']?.toDouble() ?? 0.0),
         trainingOnboarded = doc.data()?['trainingOnboarded'] ?? false,
         uid = doc.data()?['uid'] ?? '',
         username = doc.data()?['username'] ?? '';
@@ -93,9 +94,9 @@ class User {
     int? points,
     List<DocumentReference>? posts,
     Map<String, dynamic>? runstats,
-    int? totalDistanceRan,
+    double? totalDistanceRan,
     int? totalRuns,
-    int? totalTime,
+    double? totalTime,
     bool? trainingOnboarded,
     String? uid,
     String? username,

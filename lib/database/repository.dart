@@ -5,6 +5,7 @@ import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
+import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
@@ -86,6 +87,11 @@ class Repository {
     return database.getFriendList();
   }
 
+  // Get user profile
+  static Future<User> getUserProfile(String userId) {
+    return database.getUserProfile(userId);
+  }
+
   // Get training related data
   static Future<bool> getTrainingOnboarded() {
     return database.getTrainingOnboarded();
@@ -117,8 +123,9 @@ class Repository {
   }
 
   // Get all unlocked achievements
-  static Future<List<Map<String, dynamic>>> fetchUserAchievements() {
-    return database.fetchUserAchievements();
+  static Future<List<Map<String, dynamic>>> fetchUserAchievements(
+      {String? uid}) {
+    return database.fetchUserAchievements(uid: uid);
   }
 
   // Update user achievements

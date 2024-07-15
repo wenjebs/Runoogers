@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post_comment.dart';
 
@@ -10,17 +11,11 @@ final commentControllerProvider =
 });
 
 class PostCommentFeed extends ConsumerWidget {
-  final String id;
-  final String userId;
-  final String caption;
-  final String photoUrl; // This still needs to be settled as per the TODO
+  final Post post;
 
   const PostCommentFeed({
     super.key,
-    required this.id,
-    required this.userId,
-    required this.caption,
-    required this.photoUrl,
+    required this.post,
   });
 
   @override
@@ -36,11 +31,7 @@ class PostCommentFeed extends ConsumerWidget {
       body: Column(
         children: [
           RunningPost(
-              id: id,
-              userId: userId,
-              caption: caption,
-              photoUrl: photoUrl,
-              disableCommentButton: true), // TODO Riverpod this
+              post: post, disableCommentButton: true), // TODO Riverpod this
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {
@@ -49,7 +40,7 @@ class PostCommentFeed extends ConsumerWidget {
                 }
                 final comments = snapshot.data!.docs.map((doc) {
                   return RunningPostComment(
-                    postId: id,
+                    postId: post.id,
                     commentId: doc.id,
                     userId: doc['userId'],
                     comment: doc['comment'],
@@ -64,7 +55,7 @@ class PostCommentFeed extends ConsumerWidget {
               },
               stream: FirebaseFirestore.instance
                   .collection('posts')
-                  .doc(id)
+                  .doc(post.id)
                   .collection('comments')
                   .snapshots(),
             ),
@@ -90,14 +81,14 @@ class PostCommentFeed extends ConsumerWidget {
                     FocusScope.of(context).unfocus();
                     FirebaseFirestore.instance
                         .collection('posts')
-                        .doc(id)
+                        .doc(post.id)
                         .collection('comments')
                         .add({
                       'userId': 'placeholder, change in post_comment_feed.dart',
                       'comment': commentController.text,
                       'likes': 0,
                     });
-                    // Clear the text field after sending the comment
+
                     commentController.clear();
                   },
                 ),

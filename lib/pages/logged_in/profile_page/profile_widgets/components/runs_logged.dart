@@ -7,11 +7,12 @@ import 'package:runningapp/pages/logged_in/social_media_page/running_post_creati
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class RunsSection extends ConsumerWidget {
-  const RunsSection({super.key});
+  final String? userId;
+  const RunsSection({super.key, this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final runs = ref.watch(getRunsProvider(Authenticator().userId!));
+    final runs = ref.watch(getRunsProvider(userId ?? Authenticator().userId!));
     return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.max,

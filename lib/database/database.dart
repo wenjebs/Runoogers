@@ -4,6 +4,7 @@ import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
+import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
@@ -245,6 +246,18 @@ class Database {
     });
   }
 
+  Future<User> getUserProfile(String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (docSnapshot.exists) {
+      User user = User.fromFirestore(docSnapshot);
+      return user;
+    } else {
+      throw Exception("User not found");
+    }
+  }
+
   ///////////////////////////////////////
   /// TRAINING METHODS
   ///////////////////////////////////////
@@ -368,30 +381,52 @@ class Database {
   /// GAMIFICATION / ACHIEVEMENT RELATED
   ///////////////////////////////////////
 
-  Future<List<Map<String, dynamic>>> fetchUserAchievements() async {
-    final userId = auth.userId;
-    if (userId == null) {
-      throw Exception("User not logged in");
+  Future<List<Map<String, dynamic>>> fetchUserAchievements(
+      {String? uid}) async {
+    if (uid == null) {
+      final userId = auth.userId;
+      if (userId == null) {
+        throw Exception("User not logged in");
+      }
+
+      final userRef = firestore.collection('users').doc(userId);
+      final userDoc = await userRef.get();
+
+      List<String> current =
+          List<String>.from(userDoc.data()?['achievements'] ?? []);
+
+      if (current.isEmpty) {
+        debugPrint("empty");
+        return [];
+      }
+
+      final achievementsRef = firestore.collection('achievements');
+      final querySnapshot =
+          await achievementsRef.where('id', whereIn: current).get();
+      for (var doc in querySnapshot.docs) {
+        debugPrint(doc.data().toString());
+      }
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } else {
+      final userRef = firestore.collection('users').doc(uid);
+      final userDoc = await userRef.get();
+
+      List<String> current =
+          List<String>.from(userDoc.data()?['achievements'] ?? []);
+
+      if (current.isEmpty) {
+        debugPrint("empty");
+        return [];
+      }
+
+      final achievementsRef = firestore.collection('achievements');
+      final querySnapshot =
+          await achievementsRef.where('id', whereIn: current).get();
+      for (var doc in querySnapshot.docs) {
+        debugPrint(doc.data().toString());
+      }
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
     }
-
-    final userRef = firestore.collection('users').doc(userId);
-    final userDoc = await userRef.get();
-
-    List<String> current =
-        List<String>.from(userDoc.data()?['achievements'] ?? []);
-
-    if (current.isEmpty) {
-      debugPrint("empty");
-      return [];
-    }
-
-    final achievementsRef = firestore.collection('achievements');
-    final querySnapshot =
-        await achievementsRef.where('id', whereIn: current).get();
-    for (var doc in querySnapshot.docs) {
-      debugPrint(doc.data().toString());
-    }
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
   Future<List<String>> updateUserAchievements(double distance, int time) async {

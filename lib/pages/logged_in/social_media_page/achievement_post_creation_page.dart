@@ -1,20 +1,34 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievement.dart';
 
-class RunningPostCreationPage extends StatefulWidget {
-  final String photoUrl;
+class AchievementPostCreationPage extends StatefulWidget {
+  final String picture;
+  final String name;
+  final String description;
+  final int points;
 
-  const RunningPostCreationPage({super.key, required this.photoUrl});
+  const AchievementPostCreationPage(
+      {super.key,
+      required this.picture,
+      required this.name,
+      required this.description,
+      required this.points});
 
   @override
-  RunningPostCreationPageState createState() => RunningPostCreationPageState();
+  AchievementPostCreationPageState createState() =>
+      AchievementPostCreationPageState();
 }
 
-class RunningPostCreationPageState extends State<RunningPostCreationPage> {
+class AchievementPostCreationPageState
+    extends State<AchievementPostCreationPage> {
   final _formKey = GlobalKey<FormState>();
   String _caption = '';
-  String get photoUrl => widget.photoUrl;
+  String get picture => widget.picture;
+  String get name => widget.name;
+  String get description => widget.description;
+  int get points => widget.points;
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +42,11 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              Image.network(
-                photoUrl,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              Achievement(
+                  picture: picture,
+                  name: name,
+                  description: description,
+                  points: points),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Caption'),
                 validator: (value) {
@@ -54,7 +67,10 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
-                      'runImageUrl': photoUrl,
+                      'achievementDescription': description,
+                      'achievementTitle': name,
+                      'achievementImageUrl': picture,
+                      'achievementPoints': points,
                     });
                     Navigator.pop(context);
                   }
