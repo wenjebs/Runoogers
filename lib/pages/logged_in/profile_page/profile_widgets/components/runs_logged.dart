@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/running_post_creation_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class RunsSection extends ConsumerWidget {

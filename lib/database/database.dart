@@ -496,6 +496,8 @@ class Database {
 
     final List<String> friendIds = await getFriendList();
 
+    friendIds.add(userId);
+
     final List<Map<String, dynamic>> friendsData = [];
     for (String friendId in friendIds) {
       final doc = await firestore.collection('users').doc(friendId).get();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/achievement_post_creation_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/achievement_post_creation_page.dart';
 
 class ShareableAchievement extends StatelessWidget {
   final String picture;

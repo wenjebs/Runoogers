@@ -34,6 +34,10 @@ class RunningPost extends ConsumerWidget {
     } else if (post.isRunPost) {
       debugPrint('Building run post');
       content = _buildRunPost(post.runImageUrl!);
+    } else if (post.isLeaderboardPost) {
+      debugPrint("Building leaderboard post");
+      content = _buildLeaderboardPost(
+          post.leaderboardPoints!, post.rank!, post.username!, post.caption);
     } else {
       debugPrint('Building caption post');
       content = _buildCaptionPost(post);
@@ -150,9 +154,59 @@ class RunningPost extends ConsumerWidget {
   }
 
   Widget _buildCaptionPost(Post post) {
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildLeaderboardPost(
+      int points, int rank, String username, String caption) {
     return Column(
       children: [
-        ListTile(title: Text(post.caption)),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  'https://img.freepik.com/free-vector/colorful-confetti-background-with-text-space_1017-32374.jpg',
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '$username is rank #$rank globally!',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                'with $points points',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
