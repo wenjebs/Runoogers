@@ -10,7 +10,7 @@ import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats
 import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/add_friends_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';

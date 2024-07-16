@@ -7,11 +7,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/run_page/components/ratings_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -247,9 +249,25 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
                                   if (save) {
                                     setState(() => savingRun = true);
-                                    await saveRun(time, distance, ref);
+                                    String downloadUrl =
+                                        await saveRun(time, distance, ref);
                                     setState(() => savingRun = false);
                                     stopServices(ref);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RatingPage(
+                                                onRated: (rating) {
+                                                  // Handle the rating, then navigate to RunSharingPage
+                                                  Navigator.of(context).pushReplacement(
+                                                      MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              RunningPostCreationPage(
+                                                                  photoUrl:
+                                                                      downloadUrl)));
+                                                },
+                                              )),
+                                    );
                                   } else {
                                     debugPrint(
                                         "run detail and stop: Run not saved");
@@ -341,7 +359,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     Repository.addPoints(totalPoints.toInt());
   }
 
-  Future<void> saveRun(int time, double distance, WidgetRef ref) async {
+  Future<String> saveRun(int time, double distance, WidgetRef ref) async {
     debugPrint("run detail and stop: Run saved");
     // get pace of run
     final double pace;
@@ -413,7 +431,6 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         debugPrint('Failed to save screenshot to file.');
       }
     }
-    debugPrint("$runsDone, $username");
     final downloadUrl = await FirebaseStorage.instance
         .ref('images/$username$runsDone.png')
         .getDownloadURL();
@@ -464,7 +481,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
               TextButton(
                 child: const Text('Yay!'),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -472,6 +489,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         },
       );
     }
+    return downloadUrl;
   }
 }
 
