@@ -54,6 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
           },
           'points': 0,
           'activeStory': "",
+          'achievements': [],
         });
         Navigator.pop(context);
       } else {
@@ -177,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 25),
 
                     // sign in button
-                    MyButton(
+                    SignUpButton(
                       onTap: signUserUp,
                     ),
 

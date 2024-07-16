@@ -54,7 +54,7 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
-                      'photoUrl': photoUrl,
+                      'runImageUrl': photoUrl,
                     });
                     Navigator.pop(context);
                   }

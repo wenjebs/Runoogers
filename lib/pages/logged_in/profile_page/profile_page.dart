@@ -47,7 +47,7 @@ class ProfilePage extends ConsumerWidget {
           const RunAchievementButton(),
 
           // Run or Achievement section
-          // ignore: avoid_types_as_parameter_names
+
           Consumer(builder: (context, ref, child) {
             return ref.watch(selectedIndexProvider) == 0
                 ? const AchievementsFeed()
