@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
@@ -66,16 +67,20 @@ class TrainingCard extends StatelessWidget {
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.fitness_center, size: 50), // Example icon
+                    SizedBox(height: 20),
+                    // Example icon
                     Text(
                       'No training plan found.',
                       style: TextStyle(
+                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    Icon(Icons.fitness_center, size: 50, color: Colors.black),
                   ],
                 ),
               ),
