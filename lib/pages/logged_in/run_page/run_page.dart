@@ -142,7 +142,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                   ),
                   polylines: {
                     Polyline(
-                      polylineId: const PolylineId("route"),
+                      polylineId: const PolylineId("draw"),
                       points: MapLineDrawer.polylineCoordinates,
                       color: Colors.red,
                       width: polylineWidth,
@@ -156,7 +156,6 @@ class _RunPageState extends ConsumerState<RunPage> {
                           )
                         : const Polyline(
                             polylineId: PolylineId("route"),
-                            points: [],
                             color: Colors.blue,
                             width: 2,
                           ),
