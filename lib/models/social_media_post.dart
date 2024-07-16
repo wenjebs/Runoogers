@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Post {
   final String id;
   final String userId;
   final String caption;
   final int likes;
+  final Timestamp timestamp;
 
   // if its an achievement post
   final String? achievementDescription;
@@ -25,6 +28,7 @@ class Post {
     required this.userId,
     required this.caption,
     required this.likes,
+    required this.timestamp,
     this.achievementDescription,
     this.achievementTitle,
     this.achievementImageUrl,
