@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:runningapp/pages/logged_in/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 final onboardingProvider =
     StateNotifierProvider<OnboardingNotifier, OnboardingState>(
@@ -59,6 +59,21 @@ class OnboardingPage extends ConsumerStatefulWidget {
 class OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
 
+  bool _isNameValid = false;
+  bool _isAgeValid = false;
+
+  void _validateName(String value) {
+    setState(() {
+      _isNameValid = value.trim().isNotEmpty;
+    });
+  }
+
+  void _validateAge(String value) {
+    setState(() {
+      _isAgeValid = value.isNotEmpty && int.tryParse(value) != null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,17 +85,21 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
         children: [
           OnboardingStep(
             title: "What's your name?",
-            child: TextField(
-              decoration: const InputDecoration(hintText: "Enter your name"),
-              onChanged: (value) =>
-                  ref.read(onboardingProvider.notifier).updateName(value),
-            ),
             onNext: () => _pageController.nextPage(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeIn,
             ),
+            isInputValid: _isNameValid,
+            child: TextField(
+              decoration: const InputDecoration(hintText: "Enter your name"),
+              onChanged: (value) {
+                ref.read(onboardingProvider.notifier).updateName(value);
+                _validateName(value);
+              },
+            ),
           ),
           OnboardingStep(
+            isInputValid: true,
             title: "Choose a username",
             child: TextField(
               decoration:
@@ -98,7 +117,7 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
                   .get()
                   .then((snapshot) => snapshot.docs.isNotEmpty);
 
-              if (!usernameExists) {
+              if (!usernameExists && username.isNotEmpty) {
                 // Username is unique, allow the user to proceed
                 _pageController.nextPage(
                   duration: const Duration(milliseconds: 300),
@@ -115,13 +134,15 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
             },
           ),
           OnboardingStep(
+            isInputValid: _isAgeValid,
             title: "What's your age?",
             child: TextField(
-              decoration: const InputDecoration(hintText: "Enter your age"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) =>
-                  ref.read(onboardingProvider.notifier).updateAge(value),
-            ),
+                decoration: const InputDecoration(hintText: "Enter your age"),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  ref.read(onboardingProvider.notifier).updateAge(value);
+                  _validateAge(value);
+                }),
             onNext: () async {
               await ref.read(onboardingProvider.notifier).saveToFirestore();
 
@@ -150,12 +171,14 @@ class OnboardingStep extends StatelessWidget {
   final String title;
   final Widget child;
   final VoidCallback onNext;
+  final bool isInputValid;
 
   const OnboardingStep({
     super.key,
     required this.title,
     required this.child,
     required this.onNext,
+    this.isInputValid = false,
   });
 
   @override
@@ -172,7 +195,7 @@ class OnboardingStep extends StatelessWidget {
           child,
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: onNext,
+            onPressed: isInputValid ? onNext : null,
             child: const Text("Next"),
           ),
         ],

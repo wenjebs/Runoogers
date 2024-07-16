@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
@@ -305,6 +306,33 @@ class Database {
     } else {
       // Handle the case where the collection does not exist or has no documents
       return [];
+    }
+  }
+
+  Future<String> getTodayTrainingType() async {
+    // Format today's date
+    final String todayFormatted =
+        DateFormat('EEEE, d MMMM').format(DateTime.now());
+
+    try {
+      // Retrieve the training plans
+      List<dynamic> trainingPlans = await getTrainingPlans();
+
+      // Search for today's date in the training plans
+      for (var week in trainingPlans) {
+        for (var day in week['daily_schedule']) {
+          if (day['day_of_week'] == todayFormatted) {
+            // Return the type of day if found
+            return day['type'];
+          }
+        }
+      }
+
+      // Return a default value if today's date is not found
+      return "Training plan expired";
+    } catch (e) {
+      // Handle errors, e.g., user not logged in or no training plans found
+      return "Error: ${e.toString()}";
     }
   }
 

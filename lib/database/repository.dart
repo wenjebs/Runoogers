@@ -106,6 +106,10 @@ class Repository {
     return database.getTrainingPlans();
   }
 
+  static Future<String> getTodayTrainingType() {
+    return database.getTodayTrainingType();
+  }
+
   // Get runs completed
   static Future<int> getRunsDone() {
     return database.getRunsDone();
