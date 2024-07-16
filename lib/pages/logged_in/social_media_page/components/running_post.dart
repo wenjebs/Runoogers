@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievement.dart';
@@ -33,7 +34,7 @@ class RunningPost extends ConsumerWidget {
           post.achievementPoints!);
     } else if (post.isRunPost) {
       debugPrint('Building run post');
-      content = _buildRunPost(post.runImageUrl!);
+      content = _buildRunPost(context, post.runImageUrl!);
     } else if (post.isLeaderboardPost) {
       debugPrint("Building leaderboard post");
       content = _buildLeaderboardPost(
@@ -41,6 +42,24 @@ class RunningPost extends ConsumerWidget {
     } else {
       debugPrint('Building caption post');
       content = _buildCaptionPost(post);
+    }
+
+    String formattedTimestamp;
+
+    DateTime today = DateTime.now();
+    DateTime yesterday = today.subtract(const Duration(days: 1));
+    DateTime postDate = post.timestamp.toDate().add(const Duration(hours: 8));
+
+    if (DateFormat('yyyy-MM-dd').format(today) ==
+        DateFormat('yyyy-MM-dd').format(postDate)) {
+      formattedTimestamp = 'Today at ${DateFormat('h:mma').format(postDate)}';
+    } else if (DateFormat('yyyy-MM-dd').format(yesterday) ==
+        DateFormat('yyyy-MM-dd').format(postDate)) {
+      formattedTimestamp =
+          'Yesterday at ${DateFormat('h:mma').format(postDate)}';
+    } else {
+      formattedTimestamp =
+          '${DateFormat('d MMMM').format(postDate)} at ${DateFormat('h:mma').format(postDate)}';
     }
 
     return Card(
@@ -79,7 +98,17 @@ class RunningPost extends ConsumerWidget {
                     ),
                 loading: () => const Text('Loading...'),
                 error: (error, _) => const Text('Error!')),
-            subtitle: Text(post.caption),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(post.caption),
+                Text(formattedTimestamp,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    )),
+              ],
+            ),
           ),
           content,
           Row(
@@ -144,12 +173,34 @@ class RunningPost extends ConsumerWidget {
         points: points);
   }
 
-  Widget _buildRunPost(String runImageUrl) {
-    return Image.network(
-      runImageUrl,
-      height: 200,
-      width: double.infinity,
-      fit: BoxFit.cover,
+  Widget _buildRunPost(BuildContext context, String runImageUrl) {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: InteractiveViewer(
+                // Allows pinch-to-zoom
+                panEnabled: false, // Set it to false to prevent panning.
+                boundaryMargin: const EdgeInsets.all(80),
+                minScale: 0.5,
+                maxScale: 4,
+                child: Image.network(
+                  runImageUrl,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: Image.network(
+        runImageUrl,
+        height: 200,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      ),
     );
   }
 

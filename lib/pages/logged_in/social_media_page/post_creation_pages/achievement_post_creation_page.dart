@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievement.dart';
 
 class AchievementPostCreationPage extends StatefulWidget {
@@ -67,12 +70,17 @@ class AchievementPostCreationPageState
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
+                      'timestamp': FieldValue.serverTimestamp(),
                       'achievementDescription': description,
                       'achievementTitle': name,
                       'achievementImageUrl': picture,
                       'achievementPoints': points,
                     });
-                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),

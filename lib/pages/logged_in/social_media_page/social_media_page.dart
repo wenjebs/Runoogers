@@ -34,6 +34,7 @@ class SocialMediaPage extends ConsumerWidget {
                   userId: data['userId'] ?? '',
                   caption: data['caption'] ?? '',
                   likes: data['likes'] ?? 0,
+                  timestamp: data['timestamp'] ?? Timestamp.now(),
                   achievementDescription: data[
                       'achievementDescription'], // No need for ??, null is acceptable
                   achievementTitle: data[

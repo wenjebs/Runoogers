@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 
 class LeaderboardPostCreationPage extends StatefulWidget {
   final int leaderboardPoints;
@@ -104,11 +107,16 @@ class AchievementPostCreationPageState
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
+                      'timestamp': FieldValue.serverTimestamp(),
                       'rank': leaderboardRank,
                       'points': leaderboardPoints,
                       'username': username,
                     });
-                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),
