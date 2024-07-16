@@ -62,6 +62,8 @@ class LeaderboardsPage extends StatelessWidget {
                                     child: ListView.builder(
                                       itemCount: globalLeaderboard.length,
                                       itemBuilder: (context, index) {
+                                        debugPrint(globalLeaderboard[index]
+                                            .toString());
                                         return LeaderboardCard(
                                           shareable: false,
                                           isCurrentUser: FirebaseAuth

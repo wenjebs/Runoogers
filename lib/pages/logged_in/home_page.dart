@@ -15,7 +15,7 @@ import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.d
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
-import 'package:runningapp/pages/logged_in/user_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
@@ -34,13 +34,13 @@ class _HomePageState extends State<HomePage> {
   bool trainingOnboarded = false;
 
   final List<Widget> _pages = [
-    UserPage(),
+    const UserPage(),
     const RunPage(
       title: "",
       storyRun: false,
     ),
-    const SocialMediaPage(),
     const ProfilePage(),
+    const SocialMediaPage(),
     const StoryPage(),
     const TrainingPage(),
     const RunStatsPage(),
@@ -56,9 +56,9 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return "Run";
       case 2:
-        return "Social";
-      case 3:
         return "Profile";
+      case 3:
+        return "My Feed";
       case 4:
         return "Story";
       case 5:
@@ -119,31 +119,21 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         final isRunning = ref.watch(timerProvider);
         return Scaffold(
-          drawer: isRunning
-              ? const SizedBox()
-              : SideDrawer(
-                  onTap: (index) {
-                    debugPrint("Index: $index");
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                ),
           appBar: isRunning
               ? null
               : AppBar(
+                  automaticallyImplyLeading: false,
                   centerTitle: true,
-                  actions: _selectedIndex == 3
+                  actions: _selectedIndex == 2
                       ? [
                           IconButton(
                               onPressed: Authenticator().logOut,
                               icon: const Icon(Icons.logout)),
                         ]
-                      : _selectedIndex == 2 // Check if selectedIndex is 2
+                      : _selectedIndex == 3
                           ? [
                               IconButton(
                                   onPressed: () {
-                                    // Navigate to AddFriendPage
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -170,12 +160,12 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   color: Theme.of(context).colorScheme.onPrimary,
                   activeColor: Theme.of(context).colorScheme.primary,
-                  gap: 6,
-                  selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
+                  gap: 2,
+                  selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
                   tabs: const [
                     GButton(icon: Icons.home, text: "Home"),
                     GButton(icon: Icons.adjust, text: "Run"),
-                    GButton(icon: Icons.groups, text: "Social"),
+                    // GButton(icon: Icons.groups, text: "Social"),
                     GButton(
                         icon: Icons.account_circle_rounded, text: "Profile"),
                   ],

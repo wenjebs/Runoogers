@@ -47,6 +47,7 @@ class SocialMediaPage extends ConsumerWidget {
                 );
               }).toList();
               return ListView.builder(
+                shrinkWrap: true,
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index];
