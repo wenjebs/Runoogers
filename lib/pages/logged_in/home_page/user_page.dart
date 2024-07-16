@@ -3,12 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
-import 'package:runningapp/pages/logged_in/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/normal_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
+import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 // Import your user data model and data fetching service
 // import 'path_to_your_user_data_model.dart';
@@ -63,101 +64,103 @@ class UserPageState extends State<UserPage> {
                         color: Colors.black,
                       ),
                     ),
-                    Card(
-                      margin: const EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT9LQk2qPdPE0IK_35wLlAkh8-5Xsg-6NaIQ&s'), // Background image
-                                  fit: BoxFit
-                                      .cover, // Cover the entire container space
-                                ),
-                              ),
-                              height: MediaQuery.of(context).size.height *
-                                  0.2, // 20% of screen height
-                              width: double
-                                  .infinity, // Take up full width available
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.fitness_center,
-                                        size: 50), // Example icon
-                                    Text(
-                                      'No training plan found.',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  // Navigate based on trainingOnboarded boolean
-                                  if (trainingOnboarded) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => TrainingPage()),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TrainingOnboardingPage()),
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(
-                                            0.5), // Semi-transparent blue overlay
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(
-                                          10), // Rounded corner for aesthetic
-                                    ),
-                                  ),
-                                  child: const Row(
-                                    children: [
-                                      Text(
-                                        "Start a training plan",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: Colors.black,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    TrainingCard(trainingOnboarded: trainingOnboarded),
+                    // Card(
+                    //   margin: const EdgeInsets.all(10),
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //   ),
+                    //   child: ClipRRect(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //     child: Stack(
+                    //       children: [
+                    //         Container(
+                    //           decoration: const BoxDecoration(
+                    //             image: DecorationImage(
+                    //               image: NetworkImage(
+                    //                   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT9LQk2qPdPE0IK_35wLlAkh8-5Xsg-6NaIQ&s'), // Background image
+                    //               fit: BoxFit
+                    //                   .cover, // Cover the entire container space
+                    //             ),
+                    //           ),
+                    //           height: MediaQuery.of(context).size.height *
+                    //               0.2, // 20% of screen height
+                    //           width: double
+                    //               .infinity, // Take up full width available
+                    //           child: const Padding(
+                    //             padding: EdgeInsets.all(8.0),
+                    //             child: Column(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: [
+                    //                 Icon(Icons.fitness_center,
+                    //                     size: 50), // Example icon
+                    //                 Text(
+                    //                   'No training plan found.',
+                    //                   style: TextStyle(
+                    //                     fontSize: 18,
+                    //                     fontWeight: FontWeight.bold,
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         Positioned(
+                    //           bottom: 0,
+                    //           right: 0,
+                    //           child: GestureDetector(
+                    //             onTap: () {
+                    //               // Navigate based on trainingOnboarded boolean
+                    //               if (trainingOnboarded) {
+                    //                 Navigator.push(
+                    //                   context,
+                    //                   MaterialPageRoute(
+                    //                       builder: (context) =>
+                    //                           const HomePage(initialIndex: 5)),
+                    //                 );
+                    //               } else {
+                    //                 Navigator.push(
+                    //                   context,
+                    //                   MaterialPageRoute(
+                    //                       builder: (context) =>
+                    //                           const TrainingOnboardingPage()),
+                    //                 );
+                    //               }
+                    //             },
+                    //             child: Container(
+                    //               padding: const EdgeInsets.all(8),
+                    //               decoration: BoxDecoration(
+                    //                 color: Theme.of(context)
+                    //                     .primaryColor
+                    //                     .withOpacity(
+                    //                         0.5), // Semi-transparent blue overlay
+                    //                 borderRadius: BorderRadius.only(
+                    //                   topLeft: Radius.circular(
+                    //                       10), // Rounded corner for aesthetic
+                    //                 ),
+                    //               ),
+                    //               child: const Row(
+                    //                 children: [
+                    //                   Text(
+                    //                     "Start a training plan",
+                    //                     style: TextStyle(
+                    //                       color: Colors.black,
+                    //                       fontWeight: FontWeight.bold,
+                    //                     ),
+                    //                   ),
+                    //                   const Icon(
+                    //                     Icons.arrow_forward_ios,
+                    //                     color: Colors.black,
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     Container(
                       height: 150,
                       padding: const EdgeInsets.all(20),

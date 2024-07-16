@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:runningapp/pages/logged_in/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class TrainingSchedule extends StatelessWidget {
   final List<dynamic> runningPlan;
