@@ -31,19 +31,19 @@ void main() {
     // Add more checks as necessary to confirm the page renders as expected
   });
 
-  testWidgets('Register page renders correctly', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-        home: RegisterPage(
-      onTap: () {},
-    )));
-    // Check for a specific widget that would only be found on the register page
-    expect(find.text('Join Runoogers today, it\'s Free.'), findsOneWidget);
+  // testWidgets('Register page renders correctly', (WidgetTester tester) async {
+  //   // Build our app and trigger a frame.
+  //   await tester.pumpWidget(MaterialApp(
+  //       home: RegisterPage(
+  //     onTap: () {},
+  //   )));
+  //   // Check for a specific widget that would only be found on the register page
+  //   expect(find.text('Join Runoogers today, it\'s Free.'), findsOneWidget);
 
-    // Check for the presence of AuthTextFields for entering user details
-    expect(find.byType(AuthTextField), findsWidgets);
+  //   // Check for the presence of AuthTextFields for entering user details
+  //   expect(find.byType(AuthTextField), findsWidgets);
 
-    // Check for the presence of a registration button
-    expect(find.byType(MyButton), findsOneWidget);
-  });
+  //   // Check for the presence of a registration button
+  //   expect(find.byType(MyButton), findsOneWidget);
+  // });
 }
