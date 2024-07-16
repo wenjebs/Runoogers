@@ -200,54 +200,55 @@ class TrainingCard extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: GestureDetector(
-                onTap: () {
-                  // Navigate based on trainingOnboarded boolean
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const HomePage(initialIndex: 1)));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+            if (planType != 'Rest day')
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate based on trainingOnboarded boolean
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(initialIndex: 1)));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
                     ),
-                  ),
-                  child: const Row(
-                    children: [
-                      Text(
-                        "Go running",
-                        style: TextStyle(
-                          color:
-                              Colors.black, // White color for better contrast
-                          fontWeight: FontWeight.bold,
-                          shadows: <Shadow>[
-                            Shadow(
-                              offset: Offset(0, 1), // Shadow position
-                              blurRadius: 3, // Shadow blur radius
-                              color: Color.fromARGB(
-                                  150, 0, 0, 0), // Black shadow for depth
-                            ),
-                          ],
+                    child: const Row(
+                      children: [
+                        Text(
+                          "Go running",
+                          style: TextStyle(
+                            color:
+                                Colors.black, // White color for better contrast
+                            fontWeight: FontWeight.bold,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(0, 1), // Shadow position
+                                blurRadius: 3, // Shadow blur radius
+                                color: Color.fromARGB(
+                                    150, 0, 0, 0), // Black shadow for depth
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black,
-                      ),
-                    ],
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
