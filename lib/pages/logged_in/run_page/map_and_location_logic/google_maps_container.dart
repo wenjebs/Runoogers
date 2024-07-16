@@ -15,10 +15,29 @@ class GoogleMapsContainer {
 
   // Methods
   // take snapshot
-  Future<Uint8List?> takeSnapshot() async {
+  Future<Uint8List?> takeSnapshot(List<LatLng> list) async {
     final GoogleMapController controller = await _controller.future;
+    final LatLngBounds bounds = boundsFromLatLngList(list);
+    CameraUpdate update = CameraUpdate.newLatLngBounds(bounds, 50);
+    await controller.animateCamera(update);
+    await Future.delayed(const Duration(milliseconds: 500));
     final result = await controller.takeSnapshot();
     return result;
+  }
+
+  LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+    assert(list.isNotEmpty);
+    double x0 = 999;
+    double x1 = -999;
+    double y0 = 999;
+    double y1 = -999;
+    for (LatLng latLng in list) {
+      if (latLng.latitude > x1) x1 = latLng.latitude;
+      if (latLng.latitude < x0) x0 = latLng.latitude;
+      if (latLng.longitude > y1) y1 = latLng.longitude;
+      if (latLng.longitude < y0) y0 = latLng.longitude;
+    }
+    return LatLngBounds(southwest: LatLng(x0, y0), northeast: LatLng(x1, y1));
   }
 
   void complete(GoogleMapController controller) {

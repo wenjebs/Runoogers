@@ -402,8 +402,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         await Repository.fetchName(FirebaseAuth.instance.currentUser!.uid);
     final int runsDone = await Repository.getRunsDone();
 
+    // stop tracking
+    LocationService.stopListeningToLocationChanges();
     //take screenshot of current run and upload to fb
-    final screenshot = await widget.mapContainer.takeSnapshot();
+    final screenshot = await widget.mapContainer
+        .takeSnapshot(MapLineDrawer.polylineCoordinates);
     if (screenshot != null) {
       final Directory tempDir = await getTemporaryDirectory();
 
