@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _getAppBarActions(int selectedIndex, BuildContext context) {
     switch (selectedIndex) {
-      case 2:
+      case 3:
         return [
           IconButton(
             onPressed: () {
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.person_add),
           ),
         ];
-      case 3:
+      case 2:
         return [
           IconButton(
             onPressed: Authenticator().logOut,
@@ -127,7 +127,9 @@ class _HomePageState extends State<HomePage> {
                   actions: _selectedIndex == 2
                       ? [
                           IconButton(
-                              onPressed: Authenticator().logOut,
+                              onPressed: () async {
+                                await Repository.logoutAndRedirect(context);
+                              },
                               icon: const Icon(Icons.logout)),
                         ]
                       : _selectedIndex == 3

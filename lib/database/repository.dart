@@ -24,6 +24,10 @@ class Repository {
     return database.streamCollection(collection);
   }
 
+  static Future<void> logoutAndRedirect(BuildContext context) {
+    return database.logoutAndRedirect(context);
+  }
+
   // Add user
   static Future<void> addUser(String collection, Map<String, dynamic> data) {
     return database.addUser(collection, data);

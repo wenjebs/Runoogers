@@ -6,6 +6,7 @@ import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
+import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class Database {
@@ -22,7 +23,17 @@ class Database {
     return firestore.collection(collection).snapshots();
   }
 
-  // Add other methods for update, delete, etc.
+  Future<void> logoutAndRedirect(BuildContext context) async {
+    try {
+      await Authenticator().logOut();
+
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const AuthPage()));
+    } catch (error) {
+      // Handle logout error, e.g., show an error message.
+      print("Logout failed: $error");
+    }
+  }
 
   // Add user
   Future<void> addUser(String collection, Map<String, dynamic> data) async {
