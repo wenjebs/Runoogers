@@ -78,8 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
-                        _user =
-                            snapshot.data; // Set _user with the fetched data
+                        _user = snapshot.data;
                         return Flexible(
                           child: Form(
                             key: _formKey,
@@ -142,8 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
-                        _user =
-                            snapshot.data; // Set _user with the fetched data
+                        _user = snapshot.data;
                         return Flexible(
                           child: Form(
                             key: _formKeyTwo,
