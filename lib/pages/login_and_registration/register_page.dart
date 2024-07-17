@@ -5,8 +5,7 @@ import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
 
 class RegisterPage extends StatefulWidget {
-  final Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -262,7 +261,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: widget.onTap,
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                           child: const Text(
                             'Login now',
                             style: TextStyle(

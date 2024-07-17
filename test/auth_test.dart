@@ -41,7 +41,6 @@ void main() {
       // Build our app and trigger a frame.
       await tester.pumpWidget(MaterialApp(
           home: LoginPage(
-        onTap: () {},
         authenticator: authenticator,
       )));
 
@@ -58,7 +57,6 @@ void main() {
     testWidgets('Invalid email test', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -94,7 +92,6 @@ void main() {
     testWidgets('No password test', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -132,7 +129,6 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -165,7 +161,6 @@ void main() {
     testWidgets('Valid email but not registered', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -198,7 +193,6 @@ void main() {
     testWidgets('Google sign in works', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -207,7 +201,6 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
-          onTap: () {},
           authenticator: authenticator,
         ),
       ));
@@ -237,16 +230,21 @@ void main() {
     //     (WidgetTester tester) async {
     //   await tester.pumpWidget(MaterialApp(
     //     home: LoginPage(
-    //       onTap: () {},
     //       authenticator: authenticator,
     //     ),
     //   ));
 
     //   // Tap the register button
-    //   await tester.tap(find.byKey(const Key('registerNow')));
+    //   await tester.tap(
+    //     find.byWidgetPredicate(
+    //       (Widget widget) =>
+    //           widget is GestureDetector &&
+    //           widget.key == const Key('registerNow'),
+    //     ),
+    //   );
     //   await tester.pumpAndSettle();
 
-    //   await tester.pump(const Duration(seconds: 5));
+    //   // await tester.pump(const Duration(seconds: 5));
     //   // Check if the Register page is shown after tapping the register button
     //   expect(find.byType(RegisterPage), findsOneWidget);
     // });
@@ -255,7 +253,7 @@ void main() {
   group("Register page tests", () {
     testWidgets('Welcome text is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage(onTap: () {})));
+      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
 
       // Check for the welcome text
       expect(find.text('Join Runoogers today, it\'s Free.'), findsOneWidget);
@@ -263,7 +261,7 @@ void main() {
 
     testWidgets('Email textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage(onTap: () {})));
+      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
 
       // Check for the email textfield
       expect(find.widgetWithText(AuthTextField, 'Email'), findsOneWidget);
@@ -271,7 +269,7 @@ void main() {
 
     testWidgets('Password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage(onTap: () {})));
+      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
 
       // Check for the password textfield
       expect(find.widgetWithText(AuthTextField, 'Password'), findsOneWidget);
@@ -279,7 +277,7 @@ void main() {
 
     testWidgets('Confirm password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage(onTap: () {})));
+      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
 
       // Check for the confirm password textfield
       expect(find.widgetWithText(AuthTextField, 'Confirm Password'),

@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
+import 'package:runningapp/pages/login_and_registration/register_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function()? onTap;
-
   final Authenticator authenticator;
   const LoginPage({
     super.key,
-    required this.onTap,
     required this.authenticator,
   });
 
@@ -303,9 +301,16 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(width: 4),
-                        GestureDetector(
+                        InkWell(
                           key: const Key('registerNow'),
-                          onTap: widget.onTap,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
+                          },
                           child: const Text(
                             'Register now',
                             style: TextStyle(
