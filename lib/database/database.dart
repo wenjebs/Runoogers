@@ -31,8 +31,7 @@ class Database {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const AuthPage()));
     } catch (error) {
-      // Handle logout error, e.g., show an error message.
-      print("Logout failed: $error");
+      debugPrint("Error logging out: $error");
     }
   }
 

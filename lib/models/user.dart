@@ -18,6 +18,7 @@ class User {
   final bool trainingOnboarded;
   final String uid;
   final String username;
+  final double averageDifficulty;
 
   User({
     this.id = '',
@@ -37,6 +38,7 @@ class User {
     required this.trainingOnboarded,
     required this.uid,
     required this.username,
+    required this.averageDifficulty,
   });
 
   // Constructor to create a User instance from a Firestore document
@@ -58,7 +60,8 @@ class User {
         totalTime = (doc.data()?['totalTime']?.toDouble() ?? 0.0),
         trainingOnboarded = doc.data()?['trainingOnboarded'] ?? false,
         uid = doc.data()?['uid'] ?? '',
-        username = doc.data()?['username'] ?? '';
+        username = doc.data()?['username'] ?? '',
+        averageDifficulty = doc.data()?['averageDifficulty']?.toDouble() ?? 0.0;
 
   // Method to convert a User instance into a Map for uploading to Firestore
   Map<String, dynamic> toFirestore() {
@@ -79,6 +82,7 @@ class User {
       'trainingOnboarded': trainingOnboarded,
       'uid': uid,
       'username': username,
+      'averageDifficulty': averageDifficulty,
     };
   }
 
@@ -100,6 +104,7 @@ class User {
     bool? trainingOnboarded,
     String? uid,
     String? username,
+    double? averageDifficulty,
   }) {
     return User(
       id: id ?? this.id,
@@ -117,9 +122,9 @@ class User {
       totalRuns: totalRuns ?? this.totalRuns,
       totalTime: totalTime ?? this.totalTime,
       trainingOnboarded: trainingOnboarded ?? this.trainingOnboarded,
-      uid: uid ??
-          this.uid, // Assuming uid should be copied as well, even though it's not in the provided method signature
+      uid: uid ?? this.uid,
       username: username ?? this.username,
+      averageDifficulty: averageDifficulty ?? this.averageDifficulty,
     );
   }
 }

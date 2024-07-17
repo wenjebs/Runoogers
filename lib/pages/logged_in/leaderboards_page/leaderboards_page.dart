@@ -88,15 +88,15 @@ class LeaderboardsPage extends StatelessWidget {
                                     userId:
                                         globalLeaderboard[currentUserPlace! - 1]
                                             ['uid'],
-                                    index: currentUserPlace!,
+                                    index: currentUserPlace,
                                     name:
-                                        globalLeaderboard[currentUserPlace! - 1]
+                                        globalLeaderboard[currentUserPlace - 1]
                                             ['name'],
                                     username:
-                                        globalLeaderboard[currentUserPlace! - 1]
+                                        globalLeaderboard[currentUserPlace - 1]
                                             ['username'],
                                     points:
-                                        globalLeaderboard[currentUserPlace! - 1]
+                                        globalLeaderboard[currentUserPlace - 1]
                                             ['points'],
                                   )
                                 ],

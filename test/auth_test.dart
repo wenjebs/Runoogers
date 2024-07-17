@@ -2,12 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/login_page.dart';
-import 'package:runningapp/pages/login_and_registration/register_page.dart';
-import 'package:runningapp/state/backend/authenticator.dart'; // Replace with your actual import
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 

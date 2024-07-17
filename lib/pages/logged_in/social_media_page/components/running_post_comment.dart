@@ -126,10 +126,10 @@ class LikesCountDisplay extends StatelessWidget {
   final String commentId;
 
   const LikesCountDisplay({
-    Key? key,
+    super.key,
     required this.postId,
     required this.commentId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

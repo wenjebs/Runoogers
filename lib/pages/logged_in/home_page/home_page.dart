@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:runningapp/components/side_drawer.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
@@ -17,7 +16,6 @@ import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onb
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 import 'package:runningapp/providers.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
 
 class HomePage extends StatefulWidget {
   final int initialIndex;
@@ -73,32 +71,6 @@ class _HomePageState extends State<HomePage> {
         return "Routes";
       default:
         return "Home";
-    }
-  }
-
-  List<Widget> _getAppBarActions(int selectedIndex, BuildContext context) {
-    switch (selectedIndex) {
-      case 3:
-        return [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddFriendsPage()),
-              );
-            },
-            icon: const Icon(Icons.person_add),
-          ),
-        ];
-      case 2:
-        return [
-          IconButton(
-            onPressed: Authenticator().logOut,
-            icon: const Icon(Icons.logout),
-          ),
-        ];
-      default:
-        return [];
     }
   }
 
