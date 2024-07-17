@@ -19,19 +19,16 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
   void initState() {
     super.initState();
     debugPrint('before create');
-    createAnonymousUser();
-    // .then((value) {
-    //   token = value;
-    //   debugPrint('after create');
-    //   fetchTemplates().catchError((error) {
-    //     debugPrint("Error fetching templates: $error");
-    //   });
-    // }).catchError((error) {
-    //   debugPrint("Error creating anonymous user: $error");
-    // });
+    initializeAsyncOperations();
   }
 
-  Future<void> createAnonymousUser() async {
+  Future<void> initializeAsyncOperations() async {
+    await createAnonymousUser();
+    debugPrint(token);
+    await fetchTemplates();
+  }
+
+  Future<bool> createAnonymousUser() async {
     var request = http.Request(
         'POST', Uri.parse('https://goorunners.readyplayer.me/api/users'));
 
@@ -43,42 +40,60 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
       setState(() {
         token = decodedResponse['data']['token'];
       });
+      return true;
     } else {
       debugPrint(response.reasonPhrase);
+      return false;
     }
   }
 
   Future<void> fetchTemplates() async {
-    var headers = {'Authorization': '••••••'};
+    var headers = {'Authorization': 'Bearer $token'};
     var request = http.Request(
         'GET', Uri.parse('https://api.readyplayer.me/v2/avatars/templates'));
 
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
+    debugPrint("in function");
     if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
+      String responseBody = await response.stream.bytesToString();
+      var decodedResponse = jsonDecode(responseBody);
+      var templatesData = decodedResponse['data'];
+      setState(() {
+        debugPrint('templates ${templatesData.toString()}');
+        templates = templatesData;
+      });
     } else {
-      print(response.reasonPhrase);
+      debugPrint(response.reasonPhrase);
     }
-    setState(() {
-      // templates = jsonDecode(response.stream.bytesToString())['data'];
-    });
   }
 
   Future<void> createAndSaveAvatar(String templateId) async {
-    // Create Draft Avatar
-    final draftResponse = await http.post(
-      Uri.parse('https://api.readyplayer.me/v2/avatars/templates/$templateId'),
-      headers: {'Authorization': 'Bearer $token'},
-      body: jsonEncode({
-        'partner': partnerSubdomain,
-        'bodyType': 'fullbody',
-      }),
-    );
-    final draftData = jsonDecode(draftResponse.body);
-    final draftAvatarId = draftData['data']['id'];
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'https://api.readyplayer.me/v2/avatars/templates/645cd1cef23d0562d3f9d28d'));
+    request.body = json.encode({
+      "data": {"partner": "goorunners", "bodyType": "fullbody"}
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    var draftAvatarId = '';
+
+    if (response.statusCode == 200) {
+      String responseBody = await response.stream.bytesToString();
+      var decodedResponse = jsonDecode(responseBody);
+      debugPrint("Draft Avatar ID: ${decodedResponse['data']['id']}");
+      draftAvatarId = decodedResponse['data']['id'];
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
 
     // Save Draft Avatar
     await http.put(
