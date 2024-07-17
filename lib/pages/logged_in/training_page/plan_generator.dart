@@ -18,13 +18,13 @@ String getFormattedTodayDate() {
 }
 
 String getFormattedTomorrowDate() {
-  final tomorrow = DateTime.now().add(Duration(days: 1));
+  final tomorrow = DateTime.now().add(const Duration(days: 1));
   final formatter = DateFormat('EEEE, d MMMM');
   return formatter.format(tomorrow);
 }
 
 String getFormattedDayAfterTomorrowDate() {
-  final dayAfterTomorrow = DateTime.now().add(Duration(days: 2));
+  final dayAfterTomorrow = DateTime.now().add(const Duration(days: 2));
   final formatter = DateFormat('EEEE, d MMMM');
   return formatter.format(dayAfterTomorrow);
 }

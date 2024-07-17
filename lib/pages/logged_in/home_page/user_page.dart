@@ -1,16 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
-import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/normal_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
-import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
-import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
-import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
 // Import your user data model and data fetching service
 // import 'path_to_your_user_data_model.dart';
 // import 'path_to_your_data_fetching_service.dart';
@@ -52,7 +47,7 @@ class UserPageState extends State<UserPage> {
           User user = snapshot.data!;
           return Scaffold(
             body: SingleChildScrollView(
-              child: Container(
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
@@ -80,9 +75,9 @@ class UserPageState extends State<UserPage> {
                         ],
                       ),
                     ),
-                    Expanded(
-                        child: const SocialMediaPage(
-                            showFloatingActionButton: false)),
+                    const Expanded(
+                        child:
+                            SocialMediaPage(showFloatingActionButton: false)),
                   ],
                 ),
               ),

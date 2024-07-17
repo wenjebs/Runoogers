@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
-import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievement.dart';
 
 class AchievementPostCreationPage extends StatefulWidget {

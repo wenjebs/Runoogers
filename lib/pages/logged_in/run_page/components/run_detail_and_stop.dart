@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:runningapp/models/user.dart' as user;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +45,31 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
 
 class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   bool savingRun = false;
+  bool updateDifficulty = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndUpdateDifficulty();
+  }
+
+  Future<void> _checkAndUpdateDifficulty() async {
+    try {
+      // Fetch the user model
+      user.User model = await Repository.getUserProfile(
+          FirebaseAuth.instance.currentUser!.uid);
+      // every 3 runs prompt user to revamp their plan (rn its turned off)
+      if (model.trainingOnboarded) {
+        setState(() {
+          updateDifficulty = true;
+        });
+      }
+    } catch (e) {
+      // Handle errors or exceptions
+      print("Error fetching user model: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isHidden = ref.watch(runDetailsProvider);
@@ -257,16 +282,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RatingPage(
-                                                onRated: (rating) {
-                                                  // Handle the rating, then navigate to RunSharingPage
-                                                  Navigator.of(context).pushReplacement(
-                                                      MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              RunningPostCreationPage(
-                                                                  photoUrl:
-                                                                      downloadUrl)));
-                                                },
-                                              )),
+                                              updateDifficulty:
+                                                  updateDifficulty,
+                                              downloadUrl: downloadUrl)),
                                     );
                                   } else {
                                     debugPrint(

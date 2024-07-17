@@ -83,18 +83,18 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Form(
                             key: _formKey,
                             child: ListView(
-                              padding: EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(16),
                               children: [
                                 TextFormField(
                                   initialValue: _newName,
                                   decoration:
-                                      InputDecoration(labelText: 'Name'),
+                                      const InputDecoration(labelText: 'Name'),
                                   onSaved: (value) => _newName = value ?? '',
                                   onChanged: (value) => _newName = value,
                                 ),
                                 ElevatedButton(
                                   onPressed: _updateUserData,
-                                  child: Text('Update'),
+                                  child: const Text('Update'),
                                 ),
                               ],
                             ),
@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Form(
                             key: _formKeyTwo,
                             child: ListView(
-                              padding: EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(16),
                               children: [
                                 TextFormField(
                                   initialValue: "placeholder",
