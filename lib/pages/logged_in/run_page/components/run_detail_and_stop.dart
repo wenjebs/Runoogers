@@ -13,7 +13,6 @@ import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/googl
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/models/progress_model.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,7 +57,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       // Fetch the user model
       user.User model = await Repository.getUserProfile(
           FirebaseAuth.instance.currentUser!.uid);
-      // every 3 runs prompt user to revamp their plan (rn its turned off)
+      // TODO every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {
         setState(() {
           updateDifficulty = true;
@@ -66,7 +65,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       }
     } catch (e) {
       // Handle errors or exceptions
-      print("Error fetching user model: $e");
+      debugPrint("Error fetching user model: $e");
     }
   }
 
