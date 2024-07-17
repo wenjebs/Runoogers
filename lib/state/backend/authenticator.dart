@@ -117,4 +117,11 @@ class Authenticator {
       debugPrint(e.toString());
     }
   }
+
+  Future<void> loginWithEmailAndPassword(String text, String text2) async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: text,
+      password: text2,
+    );
+  }
 }

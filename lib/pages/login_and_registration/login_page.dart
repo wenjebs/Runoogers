@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+
+  final Authenticator authenticator;
+  const LoginPage({
+    super.key,
+    required this.onTap,
+    required this.authenticator,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -76,10 +83,8 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
+      await widget.authenticator.loginWithEmailAndPassword(
+          emailController.text, passwordController.text);
       // pop the load circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 
 import 'login_page.dart';
 import 'register_page.dart';
@@ -17,6 +18,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   // toggle between login , register
   void togglePages() {
     setState(() {
+      debugPrint('login/rgeister: Toggling pages');
       showLoginPage = !showLoginPage;
     });
   }
@@ -26,6 +28,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
     if (showLoginPage) {
       return LoginPage(
         onTap: togglePages,
+        authenticator: Authenticator(),
       );
     } else {
       return RegisterPage(
