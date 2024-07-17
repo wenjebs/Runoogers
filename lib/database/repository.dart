@@ -23,6 +23,12 @@ class Repository {
     return database.streamCollection(collection);
   }
 
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(
+      String userId) {
+    // You can add business logic here before retrieving data
+    return database.fetchUser(userId);
+  }
+
   // Add user
   static Future<void> addUser(String collection, Map<String, dynamic> data) {
     return database.addUser(collection, data);

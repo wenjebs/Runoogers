@@ -3,11 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
+import 'package:firebase_auth/firebase_auth.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i3;
-import 'package:runningapp/state/auth/models/auth_results.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:runningapp/state/auth/models/auth_results.dart' as _i6;
 import 'package:runningapp/state/backend/authenticator.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -28,6 +29,13 @@ import 'package:runningapp/state/backend/authenticator.dart' as _i2;
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthenticator extends _i1.Mock implements _i2.Authenticator {
   @override
+  _i3.Stream<_i4.User?> get authStateChanges => (super.noSuchMethod(
+        Invocation.getter(#authStateChanges),
+        returnValue: _i3.Stream<_i4.User?>.empty(),
+        returnValueForMissingStub: _i3.Stream<_i4.User?>.empty(),
+      ) as _i3.Stream<_i4.User?>);
+
+  @override
   bool get isAlreadyLoggedIn => (super.noSuchMethod(
         Invocation.getter(#isAlreadyLoggedIn),
         returnValue: false,
@@ -37,60 +45,60 @@ class MockAuthenticator extends _i1.Mock implements _i2.Authenticator {
   @override
   String get displayName => (super.noSuchMethod(
         Invocation.getter(#displayName),
-        returnValue: _i3.dummyValue<String>(
+        returnValue: _i5.dummyValue<String>(
           this,
           Invocation.getter(#displayName),
         ),
-        returnValueForMissingStub: _i3.dummyValue<String>(
+        returnValueForMissingStub: _i5.dummyValue<String>(
           this,
           Invocation.getter(#displayName),
         ),
       ) as String);
 
   @override
-  _i4.Future<void> logOut() => (super.noSuchMethod(
+  _i3.Future<void> logOut() => (super.noSuchMethod(
         Invocation.method(
           #logOut,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i4.Future<_i5.AuthResult> loginWithFacebook() => (super.noSuchMethod(
+  _i3.Future<_i6.AuthResult> loginWithFacebook() => (super.noSuchMethod(
         Invocation.method(
           #loginWithFacebook,
           [],
         ),
-        returnValue: _i4.Future<_i5.AuthResult>.value(_i5.AuthResult.aborted),
+        returnValue: _i3.Future<_i6.AuthResult>.value(_i6.AuthResult.aborted),
         returnValueForMissingStub:
-            _i4.Future<_i5.AuthResult>.value(_i5.AuthResult.aborted),
-      ) as _i4.Future<_i5.AuthResult>);
+            _i3.Future<_i6.AuthResult>.value(_i6.AuthResult.aborted),
+      ) as _i3.Future<_i6.AuthResult>);
 
   @override
-  _i4.Future<_i5.AuthResult> loginWithGoogle() => (super.noSuchMethod(
+  _i3.Future<_i6.AuthResult> loginWithGoogle() => (super.noSuchMethod(
         Invocation.method(
           #loginWithGoogle,
           [],
         ),
-        returnValue: _i4.Future<_i5.AuthResult>.value(_i5.AuthResult.aborted),
+        returnValue: _i3.Future<_i6.AuthResult>.value(_i6.AuthResult.aborted),
         returnValueForMissingStub:
-            _i4.Future<_i5.AuthResult>.value(_i5.AuthResult.aborted),
-      ) as _i4.Future<_i5.AuthResult>);
+            _i3.Future<_i6.AuthResult>.value(_i6.AuthResult.aborted),
+      ) as _i3.Future<_i6.AuthResult>);
 
   @override
-  _i4.Future<void> sendPasswordResetLink(String? email) => (super.noSuchMethod(
+  _i3.Future<void> sendPasswordResetLink(String? email) => (super.noSuchMethod(
         Invocation.method(
           #sendPasswordResetLink,
           [email],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i4.Future<void> loginWithEmailAndPassword(
+  _i3.Future<void> loginWithEmailAndPassword(
     String? text,
     String? text2,
   ) =>
@@ -102,7 +110,7 @@ class MockAuthenticator extends _i1.Mock implements _i2.Authenticator {
             text2,
           ],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }

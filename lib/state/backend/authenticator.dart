@@ -10,6 +10,8 @@ import 'package:runningapp/state/auth/typedefs.dart';
 
 class Authenticator {
   // Getters
+  Stream<User?> get authStateChanges =>
+      FirebaseAuth.instance.authStateChanges();
   UserId? get userId => FirebaseAuth.instance.currentUser?.uid;
   bool get isAlreadyLoggedIn => userId != null;
   String get displayName =>

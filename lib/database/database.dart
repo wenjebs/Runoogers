@@ -39,6 +39,13 @@ class Database {
     return doc['name'];
   }
 
+  // get entire user
+  Future<DocumentSnapshot<Map<String, dynamic>>> fetchUser(
+      String userId) async {
+    final doc = firestore.collection('users').doc(userId).get();
+    return doc;
+  }
+
   ///////////////////////////////////////
   /// RUN METHODS
   /// //////////////////////////////////

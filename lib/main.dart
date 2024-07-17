@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:runningapp/providers.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 import 'firebase_options.dart';
 
 String geminiApiKey = const String.fromEnvironment('GEMINI_API_KEY');
@@ -65,7 +66,7 @@ class MyApp extends ConsumerWidget {
       themeMode: themeb,
       title: 'Goorunners',
       debugShowCheckedModeBanner: false,
-      home: const AuthPage(),
+      home: AuthPage(authenticator: Authenticator()),
     );
   }
 }

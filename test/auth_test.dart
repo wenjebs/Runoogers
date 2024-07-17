@@ -1,9 +1,12 @@
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:runningapp/pages/logged_in/home_page.dart';
+import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
@@ -17,12 +20,37 @@ import 'auth_test.mocks.dart';
 
 void main() {
   group("Login page tests", () {
-    final MockFirebaseAuth mockFirebaseAuth = MockFirebaseAuth();
+    final user = MockUser(
+      isAnonymous: false,
+      uid: 'someuid',
+      email: 'bob@somedomain.com',
+      displayName: 'Bob',
+    );
+    final MockFirebaseAuth mockFirebaseAuth = MockFirebaseAuth(mockUser: user);
+    mockFirebaseAuth.createUserWithEmailAndPassword(
+        email: 'bob@somedomain.com', password: '123');
     final authenticator = MockAuthenticator();
     when(authenticator.userId).thenReturn('123');
     when(authenticator.isAlreadyLoggedIn).thenReturn(true);
     when(authenticator.displayName).thenReturn('John Doe');
-    when(authenticator.loginWithEmailAndPassword(any, any))
+    when(authenticator.loginWithEmailAndPassword("bob@somedomain.com", "123"))
+        .thenAnswer((_) async {
+      final UserCredential result =
+          await mockFirebaseAuth.signInWithEmailAndPassword(
+              email: "bob@somedomain.com", password: "123");
+    });
+    when(authenticator.authStateChanges).thenAnswer((_) {
+      return mockFirebaseAuth.authStateChanges();
+    });
+    when(authenticator.loginWithEmailAndPassword("test@gmail.com", "123"))
+        .thenAnswer((_) async {
+      // mockFirebaseAuth.signInWithEmailAndPassword(
+      //     email: "asd", password: "123");
+      throw FirebaseAuthException(
+        code: 'invalid-credential',
+      );
+    });
+    when(authenticator.loginWithEmailAndPassword("hehe@gmail.com", "123"))
         .thenAnswer((_) async {
       // mockFirebaseAuth.signInWithEmailAndPassword(
       //     email: "asd", password: "123");
@@ -152,9 +180,13 @@ void main() {
       await tester.tap(find.byType(MyButton));
       // Rebuild the widget with the new state
       await tester.pumpAndSettle();
-      // final AlertDialog test = tester.widget(find.byType(AlertDialog));
-      // debugPrint(test.content.toString());
-      expect(find.byWidgetPredicate((Widget widget) => widget is AlertDialog),
+      final AlertDialog test = tester.widget(find.byType(AlertDialog));
+      final Center center = test.title as Center;
+      final Text text = center.child as Text;
+      expect(
+          find.byWidgetPredicate((Widget widget) =>
+              widget is AlertDialog &&
+              text.data == 'The email address or password is not valid.'),
           findsOneWidget); // Check if an AlertDialog is shown
     });
 
@@ -185,18 +217,16 @@ void main() {
       // Rebuild the widget with the new state
       await tester.pumpAndSettle();
       final AlertDialog test = tester.widget(find.byType(AlertDialog));
-      debugPrint(test.content.toString());
-      expect(find.byWidgetPredicate((Widget widget) => widget is AlertDialog),
+      final Center center = test.title as Center;
+      final Text text = center.child as Text;
+      debugPrint(text.data.toString());
+      expect(
+          find.byWidgetPredicate((Widget widget) =>
+              widget is AlertDialog &&
+              text.data == 'The email address or password is not valid.'),
           findsOneWidget); // Check if an AlertDialog is shown
     });
 
-    testWidgets('Google sign in works', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: LoginPage(
-          authenticator: authenticator,
-        ),
-      ));
-    });
     testWidgets('Forget password button redirects to forgot password page',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
@@ -226,6 +256,34 @@ void main() {
       expect(find.byType(ForgotPassword), findsOneWidget);
     });
 
+    testWidgets('Sign in redirects to homepage', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: LoginPage(
+          authenticator: authenticator,
+        ),
+      ));
+
+      // Enter a valid email address in the email input field
+      await tester.enterText(
+          find.byWidgetPredicate((Widget widget) =>
+              widget is AuthTextField && widget.hintText == "Email"),
+          'bob@somedomain.com');
+
+      // Enter a valid password in the password input field
+      await tester.enterText(
+          find.byWidgetPredicate((Widget widget) =>
+              widget is AuthTextField && widget.hintText == "Password"),
+          '123');
+
+      // Click the sign-in button
+      await tester.tap(find.byType(MyButton));
+      // Rebuild the widget with the new state
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+          MaterialApp(home: AuthPage(authenticator: authenticator)));
+      await tester.pumpAndSettle();
+      expect(find.byType(HomePage), findsOneWidget);
+    });
     // testWidgets('Register button redirects to register page',
     //     (WidgetTester tester) async {
     //   await tester.pumpWidget(MaterialApp(
@@ -253,7 +311,7 @@ void main() {
   group("Register page tests", () {
     testWidgets('Welcome text is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
 
       // Check for the welcome text
       expect(find.text('Join Runoogers today, it\'s Free.'), findsOneWidget);
@@ -261,7 +319,7 @@ void main() {
 
     testWidgets('Email textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
 
       // Check for the email textfield
       expect(find.widgetWithText(AuthTextField, 'Email'), findsOneWidget);
@@ -269,7 +327,7 @@ void main() {
 
     testWidgets('Password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
 
       // Check for the password textfield
       expect(find.widgetWithText(AuthTextField, 'Password'), findsOneWidget);
@@ -277,7 +335,7 @@ void main() {
 
     testWidgets('Confirm password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
 
       // Check for the confirm password textfield
       expect(find.widgetWithText(AuthTextField, 'Confirm Password'),
