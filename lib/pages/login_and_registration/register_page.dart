@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -37,26 +41,64 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
-        Repository.addUser('users', {
-          // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
-          'email': emailController.text,
-          'uid': FirebaseAuth.instance.currentUser!.uid,
-          'posts': [],
-          'friends': [],
-          'onboarded': false,
-          'trainingOnboarded': false,
-          'runstats': {
-            'totalDistance': 0,
-            'totalTime': 0,
-            'totalRuns': 0,
-            'fastestTime': 0,
-            'longestDistance': 0,
-          },
-          'points': 0,
-          'activeStory': "",
-          'achievements': [],
-        });
-        Navigator.pop(context);
+        // Repository.addUser('users', {
+        //   // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
+        //   'email': emailController.text,
+        //   'uid': FirebaseAuth.instance.currentUser!.uid,
+        //   'posts': [],
+        //   'friends': [],
+        //   'onboarded': false,
+        //   'trainingOnboarded': false,
+        //   'runstats': {
+        //     'totalDistance': 0,
+        //     'totalTime': 0,
+        //     'totalRuns': 0,
+        //     'fastestTime': 0,
+        //     'longestDistance': 0,
+        //   },
+        //   'points': 0,
+        //   'activeStory': "",
+        //   'achievements': [],
+        // });
+        final response = await http.post(
+          Uri.parse('https://goorunners.readyplayer.me/api/users'),
+        );
+
+        if (response.statusCode == 200) {
+          debugPrint('User created');
+          var decodedResponse = jsonDecode(response.body);
+          var userData = decodedResponse['data'];
+          Repository.addUser('users', {
+            // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
+            'email': emailController.text,
+            'uid': FirebaseAuth.instance.currentUser!.uid,
+            'posts': [],
+            'friends': [],
+            'onboarded': false,
+            'trainingOnboarded': false,
+            'runstats': {
+              'totalDistance': 0,
+              'totalTime': 0,
+              'totalRuns': 0,
+              'fastestTime': 0,
+              'longestDistance': 0,
+            },
+            'points': 0,
+            'activeStory': "",
+            'achievements': [],
+            'rpmUserId': userData['id'],
+            'rpmToken': userData['token'],
+          });
+        } else {
+          debugPrint('Failed to create user');
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const HomePage(
+                    initialIndex: 0,
+                  )), // Replace HomePage with your homepage widget
+        );
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords dont match!");

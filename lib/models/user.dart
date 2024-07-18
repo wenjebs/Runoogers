@@ -19,6 +19,8 @@ class User {
   final String uid;
   final String username;
   final double averageDifficulty;
+  final String rpmUserId;
+  final String rpmToken;
 
   User({
     this.id = '',
@@ -39,6 +41,8 @@ class User {
     required this.uid,
     required this.username,
     required this.averageDifficulty,
+    required this.rpmUserId,
+    required this.rpmToken,
   });
 
   // Constructor to create a User instance from a Firestore document
@@ -61,7 +65,9 @@ class User {
         trainingOnboarded = doc.data()?['trainingOnboarded'] ?? false,
         uid = doc.data()?['uid'] ?? '',
         username = doc.data()?['username'] ?? '',
-        averageDifficulty = doc.data()?['averageDifficulty']?.toDouble() ?? 0.0;
+        averageDifficulty = doc.data()?['averageDifficulty']?.toDouble() ?? 0.0,
+        rpmUserId = doc.data()?['rpmUserId'] ?? '',
+        rpmToken = doc.data()?['rpmToken'] ?? '';
 
   // Method to convert a User instance into a Map for uploading to Firestore
   Map<String, dynamic> toFirestore() {
@@ -83,6 +89,8 @@ class User {
       'uid': uid,
       'username': username,
       'averageDifficulty': averageDifficulty,
+      'rpmUserId': rpmUserId,
+      'rpmToken': rpmToken,
     };
   }
 
@@ -105,6 +113,8 @@ class User {
     String? uid,
     String? username,
     double? averageDifficulty,
+    String? rpmUserId,
+    String? rpmToken,
   }) {
     return User(
       id: id ?? this.id,
@@ -125,6 +135,8 @@ class User {
       uid: uid ?? this.uid,
       username: username ?? this.username,
       averageDifficulty: averageDifficulty ?? this.averageDifficulty,
+      rpmUserId: rpmUserId ?? this.rpmUserId,
+      rpmToken: rpmToken ?? this.rpmToken,
     );
   }
 }
