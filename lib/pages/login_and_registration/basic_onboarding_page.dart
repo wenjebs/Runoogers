@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
+import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creator.dart';
 
 final onboardingProvider =
     StateNotifierProvider<OnboardingNotifier, OnboardingState>(
@@ -157,7 +158,8 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                    builder: (context) => const AvatarCreatorWidget()),
               );
             },
           ),

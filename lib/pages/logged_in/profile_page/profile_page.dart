@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creator.dart';
+import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_customisation.dart';
 import 'package:runningapp/pages/logged_in/profile_page/inventory_page/inventory_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
-import 'package:runningapp/pages/logged_in/profile_page/webtest.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'profile_widgets/profile_hero.dart';
 
@@ -20,6 +20,10 @@ class ProfilePage extends ConsumerWidget {
 
     final name = userInfo?['name'] as String?;
     final username = userInfo?['username'] as String?;
+    final avatarUrl = userInfo?['avatarUrl'] as String?;
+    final avatarGender = userInfo?['avatarGender'] as String?;
+    final avatarId = userInfo?['avatarId'] as String?;
+    final rpmUserId = userInfo?['rpmToken'] as String?;
 
     return Scaffold(
       body: Center(
@@ -60,8 +64,20 @@ class ProfilePage extends ConsumerWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        const AvatarCreatorWidget()), // TODO replace
+                  builder: (context) => (avatarUrl != null &&
+                          avatarId != null &&
+                          avatarGender != null &&
+                          rpmUserId != null)
+                      ? AvatarDisplayWidget(
+                          finalAvatarUrl: avatarUrl,
+                          avatarId: avatarId,
+                          gender: avatarGender,
+                          userId: rpmUserId)
+                      : const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                ), // TODO replace
               );
             },
             child: const Text('3D Avatar Test'),

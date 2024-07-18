@@ -92,13 +92,14 @@ class _RegisterPageState extends State<RegisterPage> {
         } else {
           debugPrint('Failed to create user');
         }
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const HomePage(
-                    initialIndex: 0,
-                  )), // Replace HomePage with your homepage widget
-        );
+        if (mounted) {
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HomePage(initialIndex: 0)),
+          );
+        }
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords dont match!");
