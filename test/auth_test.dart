@@ -14,6 +14,7 @@ import 'package:runningapp/pages/login_and_registration/register_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 @GenerateNiceMocks([MockSpec<Authenticator>()])
+@GenerateNiceMocks([MockSpec<Repository>()])
 import 'auth_test.mocks.dart';
 
 void main() {
@@ -311,11 +312,12 @@ void main() {
   });
 
   group("Register page tests", () {
+    final MockRepository mock = MockRepository();
     testWidgets('Welcome text is rendered correctly',
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
-        repository: Repository(),
+        repository: mock,
       )));
 
       // Check for the welcome text
@@ -326,7 +328,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
-        repository: Repository(),
+        repository: mock,
       )));
 
       // Check for the email textfield
@@ -337,7 +339,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
-        repository: Repository(),
+        repository: mock,
       )));
 
       // Check for the password textfield
@@ -348,7 +350,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
-        repository: Repository(),
+        repository: mock,
       )));
 
       // Check for the confirm password textfield
