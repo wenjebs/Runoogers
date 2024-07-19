@@ -40,7 +40,7 @@ class StoryPage extends ConsumerWidget {
           ),
 
           SizedBox(
-            height: 250,
+            height: 565,
             child: FutureBuilder(
               future: Repository.getStories(),
               builder: (context, snapshot) {
@@ -53,7 +53,7 @@ class StoryPage extends ConsumerWidget {
                 final stories = snapshot.data!;
                 return ListView.builder(
                   shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
+                  scrollDirection: Axis.vertical,
                   itemCount: stories.length,
                   itemBuilder: (context, index) {
                     // debugPrint(stories[index].toString());
@@ -85,31 +85,31 @@ class StoryPage extends ConsumerWidget {
               },
             ),
           ),
-          // Short Stories
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Side quests",
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-          ),
+          // // Short Stories
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Align(
+          //     alignment: Alignment.center,
+          //     child: Text(
+          //       "Side quests",
+          //       style: Theme.of(context).textTheme.headlineMedium,
+          //     ),
+          //   ),
+          // ),
 
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: const [
-                StoryTile(color: Colors.red),
-                StoryTile(color: Colors.blue),
-                StoryTile(color: Colors.orange),
-                StoryTile(color: Colors.green),
-                StoryTile(color: Colors.yellow),
-              ],
-            ),
-          ),
+          // Expanded(
+          //   child: ListView(
+          //     shrinkWrap: true,
+          //     scrollDirection: Axis.horizontal,
+          //     children: const [
+          //       StoryTile(color: Colors.red),
+          //       StoryTile(color: Colors.blue),
+          //       StoryTile(color: Colors.orange),
+          //       StoryTile(color: Colors.green),
+          //       StoryTile(color: Colors.yellow),
+          //     ],
+          //   ),
+          // ),
 
           // view active quests
           Align(

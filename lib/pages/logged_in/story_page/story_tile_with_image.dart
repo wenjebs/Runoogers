@@ -44,7 +44,6 @@ class StoryTileWithImage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  width: 300,
                   child: image,
                 ),
                 Text(shortTitle),
@@ -52,7 +51,7 @@ class StoryTileWithImage extends StatelessWidget {
             ),
             active
                 ? Positioned(
-                    top: 20,
+                    top: 30,
                     right: 2,
                     child: Container(
                       padding:
