@@ -7,7 +7,6 @@ import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
-import 'package:runningapp/pages/logged_in/profile_page/webtest.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'profile_widgets/profile_hero.dart';
 

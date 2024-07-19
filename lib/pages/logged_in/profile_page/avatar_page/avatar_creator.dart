@@ -2,15 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:o3d/o3d.dart';
-import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/model_viewer.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/testwidget.dart';
 
