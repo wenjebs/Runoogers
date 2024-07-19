@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
 import 'package:runningapp/pages/login_and_registration/register_page.dart';
@@ -309,7 +310,9 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const RegisterPage(),
+                                builder: (context) => RegisterPage(
+                                  repository: Repository(),
+                                ),
                               ),
                             );
                           },

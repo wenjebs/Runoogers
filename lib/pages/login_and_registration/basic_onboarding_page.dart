@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 final onboardingProvider =
@@ -157,7 +158,10 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(
+                    builder: (context) => HomePage(
+                          repository: Repository(),
+                        )),
               );
             },
           ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
@@ -51,6 +52,7 @@ class RunsSection extends ConsumerWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 RunningPostCreationPage(
+                                                    repository: Repository(),
                                                     photoUrl:
                                                         doc['imageUrl'] ?? ''),
                                           ),

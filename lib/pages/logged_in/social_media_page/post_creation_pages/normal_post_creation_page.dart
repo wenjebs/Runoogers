@@ -5,7 +5,8 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class PostCreationPage extends StatefulWidget {
-  const PostCreationPage({super.key});
+  final Repository repository;
+  const PostCreationPage({super.key, required this.repository});
 
   @override
   PostCreationPageState createState() => PostCreationPageState();
@@ -43,7 +44,7 @@ class PostCreationPageState extends State<PostCreationPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    Repository.addPost('posts', {
+                    widget.repository.addPost('posts', {
                       'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
@@ -54,8 +55,9 @@ class PostCreationPageState extends State<PostCreationPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const HomePage(initialIndex: 0)));
+                            builder: (context) => HomePage(
+                                repository: widget.repository,
+                                initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),

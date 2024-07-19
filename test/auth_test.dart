@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
@@ -312,7 +313,10 @@ void main() {
   group("Register page tests", () {
     testWidgets('Welcome text is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterPage(
+        repository: Repository(),
+      )));
 
       // Check for the welcome text
       expect(find.text('Join Runoogers today, it\'s Free.'), findsOneWidget);
@@ -320,7 +324,10 @@ void main() {
 
     testWidgets('Email textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterPage(
+        repository: Repository(),
+      )));
 
       // Check for the email textfield
       expect(find.widgetWithText(AuthTextField, 'Email'), findsOneWidget);
@@ -328,7 +335,10 @@ void main() {
 
     testWidgets('Password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterPage(
+        repository: Repository(),
+      )));
 
       // Check for the password textfield
       expect(find.widgetWithText(AuthTextField, 'Password'), findsOneWidget);
@@ -336,7 +346,10 @@ void main() {
 
     testWidgets('Confirm password textfield is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(const MaterialApp(home: RegisterPage()));
+      await tester.pumpWidget(MaterialApp(
+          home: RegisterPage(
+        repository: Repository(),
+      )));
 
       // Check for the confirm password textfield
       expect(find.widgetWithText(AuthTextField, 'Confirm Password'),

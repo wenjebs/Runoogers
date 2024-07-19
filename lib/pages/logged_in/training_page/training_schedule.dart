@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class TrainingSchedule extends StatelessWidget {
@@ -78,8 +79,9 @@ class TrainingSchedule extends StatelessWidget {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HomePage(initialIndex: 1),
+                                          builder: (context) => HomePage(
+                                              repository: Repository(),
+                                              initialIndex: 1),
                                         ),
                                       );
                                     },

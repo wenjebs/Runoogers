@@ -5,7 +5,8 @@ import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  const RegisterPage({super.key, required this.repository});
+  final Repository repository;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -58,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
-        Repository.addUser('users', {
+        widget.repository.addUser('users', {
           // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
           'email': emailController.text,
           'uid': FirebaseAuth.instance.currentUser!.uid,

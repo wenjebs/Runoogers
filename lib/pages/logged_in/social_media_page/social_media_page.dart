@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
@@ -9,7 +10,9 @@ import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_p
 
 class SocialMediaPage extends ConsumerWidget {
   final bool showFloatingActionButton;
-  const SocialMediaPage({super.key, this.showFloatingActionButton = true});
+  final Repository repository;
+  const SocialMediaPage(this.repository,
+      {super.key, this.showFloatingActionButton = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,6 +56,7 @@ class SocialMediaPage extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final post = posts[index];
                   return RunningPost(
+                    repository,
                     post: post,
                   );
                 },
@@ -65,7 +69,9 @@ class SocialMediaPage extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const PostCreationPage()),
+                          builder: (context) => PostCreationPage(
+                                repository: repository,
+                              )),
                     );
                   },
                   child: const Icon(Icons.add),

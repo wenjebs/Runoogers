@@ -10,8 +10,9 @@ import 'login_or_register_page.dart';
 
 class AuthPage extends StatelessWidget {
   final Authenticator authenticator;
-
-  const AuthPage({super.key, required this.authenticator});
+  final Repository repository;
+  const AuthPage(
+      {super.key, required this.authenticator, required this.repository});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class AuthPage extends StatelessWidget {
             if (snapshot.hasData && snapshot.data != null) {
               final User? user = snapshot.data;
               return FutureBuilder<DocumentSnapshot>(
-                future: Repository.getUserData(user!.uid),
+                future: repository.getUserData(user!.uid),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -35,12 +36,16 @@ class AuthPage extends StatelessWidget {
                       final onboarded = data['onboarded'] as bool?;
                       // Proceed based on the 'onboarded' flag
                       return onboarded != null && onboarded
-                          ? const HomePage()
+                          ? HomePage(
+                              repository: repository,
+                            )
                           : const OnboardingPage();
                     }
                   }
                   // Loading or error state
-                  return const HomePage();
+                  return HomePage(
+                    repository: repository,
+                  );
                 },
               );
             }

@@ -86,7 +86,7 @@ class Authenticator {
             .get()
             .then((value) => value.docs.isNotEmpty);
         if (!userExists) {
-          Repository.addUser('users', {
+          Repository().addUser('users', {
             'email': user.email,
             'uid': user.uid,
             'posts': [],

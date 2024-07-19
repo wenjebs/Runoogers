@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 import 'login_page.dart';
@@ -30,7 +31,9 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
         authenticator: Authenticator(),
       );
     } else {
-      return RegisterPage();
+      return RegisterPage(
+        repository: Repository(),
+      );
     }
   }
 }

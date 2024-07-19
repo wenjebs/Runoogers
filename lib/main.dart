@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/global_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
@@ -66,7 +67,7 @@ class MyApp extends ConsumerWidget {
       themeMode: themeb,
       title: 'Goorunners',
       debugShowCheckedModeBanner: false,
-      home: AuthPage(authenticator: Authenticator()),
+      home: AuthPage(repository: Repository(), authenticator: Authenticator()),
     );
   }
 }

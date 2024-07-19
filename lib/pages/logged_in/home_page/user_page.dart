@@ -11,7 +11,8 @@ import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 // import 'path_to_your_data_fetching_service.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+  final Repository repository;
+  const UserPage({super.key, required this.repository});
 
   @override
   UserPageState createState() => UserPageState();
@@ -22,7 +23,7 @@ class UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
-    Repository.getTrainingOnboarded().then((value) {
+    widget.repository.getTrainingOnboarded().then((value) {
       setState(() {
         trainingOnboarded = value;
       });
@@ -32,8 +33,8 @@ class UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<User>(
-      future: Repository.getUserProfile(
-          auth.FirebaseAuth.instance.currentUser!.uid),
+      future: widget.repository
+          .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -59,7 +60,9 @@ class UserPageState extends State<UserPage> {
                         color: Colors.black,
                       ),
                     ),
-                    TrainingCard(trainingOnboarded: trainingOnboarded),
+                    TrainingCard(
+                        repository: widget.repository,
+                        trainingOnboarded: trainingOnboarded),
                     Container(
                       height: 150,
                       padding: const EdgeInsets.all(20),
@@ -75,9 +78,9 @@ class UserPageState extends State<UserPage> {
                         ],
                       ),
                     ),
-                    const Expanded(
-                        child:
-                            SocialMediaPage(showFloatingActionButton: false)),
+                    Expanded(
+                        child: SocialMediaPage(Repository(),
+                            showFloatingActionButton: false)),
                   ],
                 ),
               ),
@@ -87,7 +90,9 @@ class UserPageState extends State<UserPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const PostCreationPage()),
+                      builder: (context) => PostCreationPage(
+                            repository: widget.repository,
+                          )),
                 );
               },
               child: const Icon(Icons.add),
@@ -118,14 +123,20 @@ class ServiceIcon extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 4)),
+                builder: (context) => HomePage(
+                      initialIndex: 4,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Track Run') {
           // Navigate to TrackPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 1)),
+                builder: (context) => HomePage(
+                      initialIndex: 1,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'All') {
           // Navigate to AllPage
@@ -158,42 +169,60 @@ class ServiceIcon extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 6)),
+                builder: (context) => HomePage(
+                      initialIndex: 6,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Leaderboards') {
           // Navigate to LeaderboardsPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 7)),
+                builder: (context) => HomePage(
+                      initialIndex: 7,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Routes') {
           // Navigate to RoutesPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 9)),
+                builder: (context) => HomePage(
+                      initialIndex: 9,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Training') {
           // Navigate to TrainingPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 5)),
+                builder: (context) => HomePage(
+                      initialIndex: 5,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Settings') {
           // Navigate to SettingsPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 8)),
+                builder: (context) => HomePage(
+                      initialIndex: 8,
+                      repository: Repository(),
+                    )),
           );
         } else if (title == 'Social Feed') {
           // Navigate to SocialMediaPage
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 3)),
+                builder: (context) => HomePage(
+                      initialIndex: 3,
+                      repository: Repository(),
+                    )),
           );
         }
       },

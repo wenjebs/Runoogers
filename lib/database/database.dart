@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
@@ -29,7 +30,8 @@ class Database {
       await Authenticator().logOut();
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => AuthPage(authenticator: Authenticator())));
+          builder: (context) => AuthPage(
+              repository: Repository(), authenticator: Authenticator())));
     } catch (error) {
       debugPrint("Error logging out: $error");
     }

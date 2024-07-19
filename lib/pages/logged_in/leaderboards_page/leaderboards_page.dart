@@ -5,7 +5,8 @@ import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages
 import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.dart';
 
 class LeaderboardsPage extends StatelessWidget {
-  const LeaderboardsPage({super.key});
+  final Repository repository;
+  const LeaderboardsPage({super.key, required this.repository});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class LeaderboardsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsetsDirectional.all(30),
                           child: FutureBuilder(
-                            future: Repository.fetchTopUsersGlobal(),
+                            future: repository.fetchTopUsersGlobal(),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
@@ -108,7 +109,7 @@ class LeaderboardsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsetsDirectional.all(30),
                           child: FutureBuilder(
-                            future: Repository.fetchTopUsersFriends(),
+                            future: repository.fetchTopUsersFriends(),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
@@ -256,6 +257,7 @@ class LeaderboardCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => LeaderboardPostCreationPage(
+                              repository: Repository(),
                               username: username,
                               leaderboardPoints: points,
                               leaderboardRank: index)),
@@ -264,8 +266,8 @@ class LeaderboardCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(userId: userId)),
+                          builder: (context) => UserProfilePage(
+                              repository: Repository(), userId: userId)),
                     );
                   }
                 },

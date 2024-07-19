@@ -6,11 +6,10 @@ import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart';
 
 import 'active_quest_display_page.dart';
-import 'story_tile.dart';
 
 class StoryPage extends ConsumerWidget {
-  const StoryPage({super.key});
-
+  const StoryPage(this.repository, {super.key});
+  final Repository repository;
   final stories = null;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,7 +41,7 @@ class StoryPage extends ConsumerWidget {
           SizedBox(
             height: 565,
             child: FutureBuilder(
-              future: Repository.getStories(),
+              future: repository.getStories(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -58,6 +57,7 @@ class StoryPage extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     // debugPrint(stories[index].toString());
                     return StoryTileWithImage(
+                      repository: repository,
                       image: Image.network(stories[index].getImageURL,
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
@@ -119,7 +119,7 @@ class StoryPage extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   // debugPrint(userInfo?['activeStory']);
-                  final List<Quest> quests = await Repository.getQuests(
+                  final List<Quest> quests = await repository.getQuests(
                     userInfo?['activeStory'],
                   );
                   // debugPrint("ahh");
@@ -127,6 +127,7 @@ class StoryPage extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ActiveQuestDisplayPage(
+                        repository,
                         activeStoryTitle: userInfo?['activeStory'],
                         quests: quests,
                       ),

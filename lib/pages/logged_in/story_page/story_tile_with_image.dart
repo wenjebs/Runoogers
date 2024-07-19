@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 
 import 'story_detail_page.dart';
 
@@ -10,7 +11,7 @@ class StoryTileWithImage extends StatelessWidget {
   final bool active;
   final String id;
   final String userID;
-
+  final Repository repository;
   const StoryTileWithImage({
     super.key,
     required this.image,
@@ -20,6 +21,7 @@ class StoryTileWithImage extends StatelessWidget {
     required this.active,
     required this.id,
     required this.userID,
+    required this.repository,
   });
 
   @override
@@ -29,6 +31,7 @@ class StoryTileWithImage extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => StoryDetailPage(
+            repository: repository,
             image: image,
             title: title,
             description: description,

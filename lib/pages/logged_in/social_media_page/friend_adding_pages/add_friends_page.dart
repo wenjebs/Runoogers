@@ -5,7 +5,8 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/friend_requests_list.dart';
 
 class AddFriendsPage extends StatefulWidget {
-  const AddFriendsPage({super.key});
+  const AddFriendsPage({super.key, required this.repository});
+  final Repository repository;
 
   @override
   State<AddFriendsPage> createState() => _AddFriendsPageState();
@@ -49,7 +50,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   void initState() {
     super.initState();
     friendsList = [];
-    Repository.getFriendList().then((value) {
+    widget.repository.getFriendList().then((value) {
       friendsList = value;
     });
   }
@@ -66,7 +67,9 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const FriendRequestPage()),
+                    builder: (context) => FriendRequestPage(
+                          repository: widget.repository,
+                        )),
               );
             },
           ),
@@ -116,8 +119,8 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                               ? const Text("Added")
                               : IconButton(
                                   icon: const Icon(Icons.person_add),
-                                  onPressed: () =>
-                                      Repository.sendFriendRequest(user['uid']),
+                                  onPressed: () => widget.repository
+                                      .sendFriendRequest(user['uid']),
                                 ),
                         );
                       },

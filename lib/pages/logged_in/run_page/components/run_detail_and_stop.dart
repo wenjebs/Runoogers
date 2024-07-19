@@ -19,7 +19,8 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerStatefulWidget {
-  RunDetailsAndStop({
+  RunDetailsAndStop(
+    this.repository, {
     super.key,
     required this.paddingValue,
     required StopWatchTimer stopWatchTimer,
@@ -38,7 +39,7 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
   final String? activeStory;
   final QuestProgressModel? questProgress;
   final bool? storyRun;
-
+  final Repository repository;
   @override
   ConsumerState<RunDetailsAndStop> createState() => _RunDetailsAndStopState();
 }
@@ -56,8 +57,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   Future<void> _checkAndUpdateDifficulty() async {
     try {
       // Fetch the user model
-      user.User model = await Repository.getUserProfile(
-          FirebaseAuth.instance.currentUser!.uid);
+      user.User model = await widget.repository
+          .getUserProfile(FirebaseAuth.instance.currentUser!.uid);
       // every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {
         setState(() {
@@ -282,6 +283,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RatingPage(
+                                              widget.repository,
                                               updateDifficulty:
                                                   updateDifficulty,
                                               downloadUrl: downloadUrl)),
@@ -370,11 +372,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   }
 
   void updateStats(double distance, int time) {
-    Repository.incrementRuns();
-    Repository.incrementTotalDistanceRan(distance);
-    Repository.incrementTotalTimeRan(time);
+    widget.repository.incrementRuns();
+    widget.repository.incrementTotalDistanceRan(distance);
+    widget.repository.incrementTotalTimeRan(time);
     double totalPoints = distance / (time / 60000) * 10;
-    Repository.addPoints(totalPoints.toInt());
+    widget.repository.addPoints(totalPoints.toInt());
   }
 
   Future<String> saveRun(int time, double distance, WidgetRef ref) async {
@@ -416,9 +418,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     );
 
     // get runs done
-    final String username =
-        await Repository.fetchName(FirebaseAuth.instance.currentUser!.uid);
-    final int runsDone = await Repository.getRunsDone();
+    final String username = await widget.repository
+        .fetchName(FirebaseAuth.instance.currentUser!.uid);
+    final int runsDone = await widget.repository.getRunsDone();
 
     // stop tracking
     LocationService.stopListeningToLocationChanges();
@@ -457,7 +459,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         .getDownloadURL();
     debugPrint("after download url");
     // add run to database
-    Repository.addRun(
+    widget.repository.addRun(
       "runs",
       Run(
         id: "",
@@ -477,13 +479,13 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     // update quest progress
     if (widget.storyRun != null && widget.storyRun == true) {
-      Repository.updateQuestProgress(distance, time,
+      widget.repository.updateQuestProgress(distance, time,
           widget.questProgress!.currentQuest, widget.activeStory!, context);
     }
     // update and display achievements
     debugPrint("before update user achievements");
     List<String> newAchievements =
-        await Repository.updateUserAchievements(distance, time);
+        await widget.repository.updateUserAchievements(distance, time);
     if (newAchievements.isNotEmpty) {
       // Show dialog with the list of new achievements
       showDialog(

@@ -10,13 +10,15 @@ class AchievementPostCreationPage extends StatefulWidget {
   final String name;
   final String description;
   final int points;
+  final Repository repository;
 
   const AchievementPostCreationPage(
       {super.key,
       required this.picture,
       required this.name,
       required this.description,
-      required this.points});
+      required this.points,
+      required this.repository});
 
   @override
   AchievementPostCreationPageState createState() =>
@@ -65,7 +67,7 @@ class AchievementPostCreationPageState
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    Repository.addPost('posts', {
+                    widget.repository.addPost('posts', {
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
@@ -78,8 +80,9 @@ class AchievementPostCreationPageState
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const HomePage(initialIndex: 0)));
+                            builder: (context) => HomePage(
+                                repository: widget.repository,
+                                initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),
