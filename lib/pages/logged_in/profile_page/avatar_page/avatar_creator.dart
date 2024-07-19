@@ -30,13 +30,13 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
   @override
   void initState() {
     super.initState();
-    debugPrint('before create');
+    debugPrint('Avatar Creation: Before creation');
     initializeAsyncOperations();
   }
 
   Future<void> initializeAsyncOperations() async {
     await createAnonymousUser();
-    debugPrint(token);
+    debugPrint("avatar creator: anonymous user token: $token");
     await fetchTemplates();
   }
 
@@ -54,7 +54,7 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
       });
       return true;
     } else {
-      debugPrint(response.reasonPhrase);
+      debugPrint("Creating anon user ${response.reasonPhrase}");
       return false;
     }
   }
@@ -75,7 +75,7 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
         templates = templatesData;
       });
     } else {
-      debugPrint(response.reasonPhrase);
+      debugPrint("fetchtemplates failed: ${response.reasonPhrase}");
     }
   }
 
@@ -97,13 +97,13 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
     var draftAvatarId = '';
 
     if (response.statusCode == 201) {
-      debugPrint("yippepepepepepe");
+      debugPrint("success");
       String responseBody = response.body;
       var decodedResponse = jsonDecode(responseBody);
       debugPrint("Draft Avatar ID: ${decodedResponse['data']['id']}");
       draftAvatarId = decodedResponse['data']['id'];
     } else {
-      debugPrint(response.reasonPhrase);
+      debugPrint("create and save avatar failed: ${response.reasonPhrase}");
       debugPrint(response.statusCode.toString());
     }
 
@@ -284,7 +284,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
       setState(() {
         assets = assetsData;
       });
-      debugPrint("works");
+      debugPrint("Assets retrieved");
       return assetsData;
     } else {
       debugPrint(response.reasonPhrase);
