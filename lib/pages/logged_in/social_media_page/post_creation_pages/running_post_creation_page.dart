@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class RunningPostCreationPage extends StatefulWidget {
   final String photoUrl;
@@ -51,12 +53,17 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     Repository.addPost('posts', {
+                      'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
-                      'photoUrl': photoUrl,
+                      'runImageUrl': photoUrl,
                     });
-                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),

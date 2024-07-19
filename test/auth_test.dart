@@ -7,7 +7,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:runningapp/pages/logged_in/home_page.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
-import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';

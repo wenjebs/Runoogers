@@ -7,6 +7,7 @@ class GetUserPostService {
     return _firestore
         .collection('posts')
         .where('userId', whereIn: friendUids)
+        .orderBy('timestamp', descending: true)
         .snapshots();
   }
 }

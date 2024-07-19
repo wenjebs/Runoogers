@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:runningapp/models/user.dart' as user;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +7,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
+import 'package:runningapp/pages/logged_in/run_page/components/ratings_page.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +45,31 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
 
 class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   bool savingRun = false;
+  bool updateDifficulty = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAndUpdateDifficulty();
+  }
+
+  Future<void> _checkAndUpdateDifficulty() async {
+    try {
+      // Fetch the user model
+      user.User model = await Repository.getUserProfile(
+          FirebaseAuth.instance.currentUser!.uid);
+      // every 3 runs prompt user to revamp their plan (rn its turned off)
+      if (model.trainingOnboarded) {
+        setState(() {
+          updateDifficulty = true;
+        });
+      }
+    } catch (e) {
+      // Handle errors or exceptions
+      print("Error fetching user model: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isHidden = ref.watch(runDetailsProvider);
@@ -247,9 +274,18 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
                                   if (save) {
                                     setState(() => savingRun = true);
-                                    await saveRun(time, distance, ref);
+                                    String downloadUrl =
+                                        await saveRun(time, distance, ref);
                                     setState(() => savingRun = false);
                                     stopServices(ref);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => RatingPage(
+                                              updateDifficulty:
+                                                  updateDifficulty,
+                                              downloadUrl: downloadUrl)),
+                                    );
                                   } else {
                                     debugPrint(
                                         "run detail and stop: Run not saved");
@@ -341,7 +377,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     Repository.addPoints(totalPoints.toInt());
   }
 
-  Future<void> saveRun(int time, double distance, WidgetRef ref) async {
+  Future<String> saveRun(int time, double distance, WidgetRef ref) async {
     debugPrint("run detail and stop: Run saved");
     // get pace of run
     final double pace;
@@ -384,14 +420,19 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         await Repository.fetchName(FirebaseAuth.instance.currentUser!.uid);
     final int runsDone = await Repository.getRunsDone();
 
+    // stop tracking
+    LocationService.stopListeningToLocationChanges();
     //take screenshot of current run and upload to fb
-    final screenshot = await widget.mapContainer.takeSnapshot();
+    final screenshot = await widget.mapContainer
+        .takeSnapshot(MapLineDrawer.polylineCoordinates);
     if (screenshot != null) {
       final Directory tempDir = await getTemporaryDirectory();
+
       final path = tempDir.path;
       final imageFile = File('$path/$username$runsDone.png');
       // Write the screenshot data to the file
-      await imageFile.writeAsBytes(screenshot);
+      // TODO this seems problematic
+      imageFile.writeAsBytes(screenshot);
       // Ensure the file has been created and contains data
       if (await imageFile.exists()) {
         try {
@@ -402,6 +443,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
           // Upload the file
           await imagesRef.putFile(imageFile);
+
           debugPrint('run detail and stop: Screenshot uploaded successfully');
         } catch (e) {
           debugPrint('Error uploading screenshot: $e');
@@ -410,11 +452,10 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         debugPrint('Failed to save screenshot to file.');
       }
     }
-
     final downloadUrl = await FirebaseStorage.instance
         .ref('images/$username$runsDone.png')
         .getDownloadURL();
-
+    debugPrint("after download url");
     // add run to database
     Repository.addRun(
       "runs",
@@ -430,18 +471,18 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         pace: pace,
       ),
     );
-
+    debugPrint("after add run");
     //update stats
     updateStats(distance, time);
 
     // update quest progress
     if (widget.storyRun != null && widget.storyRun == true) {
       Repository.updateQuestProgress(distance, time,
-          widget.questProgress!.currentQuest, widget.activeStory!);
+          widget.questProgress!.currentQuest, widget.activeStory!, context);
     }
     // update and display achievements
+    debugPrint("before update user achievements");
     List<String> newAchievements =
-        //TODO IMPROVE, THIS IS HELLA SLOW
         await Repository.updateUserAchievements(distance, time);
     if (newAchievements.isNotEmpty) {
       // Show dialog with the list of new achievements
@@ -461,7 +502,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
               TextButton(
                 child: const Text('Yay!'),
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -469,6 +510,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         },
       );
     }
+    return downloadUrl;
   }
 }
 

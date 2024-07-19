@@ -5,6 +5,7 @@ import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
+import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 
 Database db = Database(firestore: FirebaseFirestore.instance);
@@ -21,6 +22,10 @@ class Repository {
   static Stream<QuerySnapshot> getData(String collection) {
     // You can add business logic here before retrieving data
     return database.streamCollection(collection);
+  }
+
+  static Future<void> logoutAndRedirect(BuildContext context) {
+    return database.logoutAndRedirect(context);
   }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(
@@ -92,6 +97,11 @@ class Repository {
     return database.getFriendList();
   }
 
+  // Get user profile
+  static Future<User> getUserProfile(String userId) {
+    return database.getUserProfile(userId);
+  }
+
   // Get training related data
   static Future<bool> getTrainingOnboarded() {
     return database.getTrainingOnboarded();
@@ -100,6 +110,10 @@ class Repository {
   // Set training related data
   static Future<List<dynamic>> getTrainingPlans() {
     return database.getTrainingPlans();
+  }
+
+  static Future<String> getTodayTrainingType() {
+    return database.getTodayTrainingType();
   }
 
   // Get runs completed
@@ -123,8 +137,9 @@ class Repository {
   }
 
   // Get all unlocked achievements
-  static Future<List<Map<String, dynamic>>> fetchUserAchievements() {
-    return database.fetchUserAchievements();
+  static Future<List<Map<String, dynamic>>> fetchUserAchievements(
+      {String? uid}) {
+    return database.fetchUserAchievements(uid: uid);
   }
 
   // Update user achievements
@@ -173,13 +188,9 @@ class Repository {
     return database.getQuestProgress(storyId);
   }
 
-  static void updateQuestProgress(
-    double distance,
-    int time,
-    int currQuestID,
-    String storyId,
-  ) {
-    database.updateQuestProgress(distance, time, currQuestID, storyId);
+  static void updateQuestProgress(double distance, int time, int currQuestID,
+      String storyId, BuildContext context) {
+    database.updateQuestProgress(distance, time, currQuestID, storyId, context);
   }
 
   static Future<void> resetQuestsProgress(

@@ -148,6 +148,11 @@ class LocationService {
     // debugPrint("location_service:  Listening before start done...");
   }
 
+  static void stopListeningToLocationChanges() {
+    // Cancel Stream subscription
+    _positionSubscription?.cancel();
+  }
+
   void listenToLocationChanges(
     updateRunPage,
     Completer<GoogleMapController> controller,

@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
+import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
+import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class Database {
@@ -21,7 +24,16 @@ class Database {
     return firestore.collection(collection).snapshots();
   }
 
-  // Add other methods for update, delete, etc.
+  Future<void> logoutAndRedirect(BuildContext context) async {
+    try {
+      await Authenticator().logOut();
+
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const AuthPage()));
+    } catch (error) {
+      debugPrint("Error logging out: $error");
+    }
+  }
 
   // Add user
   Future<void> addUser(String collection, Map<String, dynamic> data) async {
@@ -252,6 +264,18 @@ class Database {
     });
   }
 
+  Future<User> getUserProfile(String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+    if (docSnapshot.exists) {
+      User user = User.fromFirestore(docSnapshot);
+      return user;
+    } else {
+      throw Exception("User not found");
+    }
+  }
+
   ///////////////////////////////////////
   /// TRAINING METHODS
   ///////////////////////////////////////
@@ -288,6 +312,33 @@ class Database {
     } else {
       // Handle the case where the collection does not exist or has no documents
       return [];
+    }
+  }
+
+  Future<String> getTodayTrainingType() async {
+    // Format today's date
+    final String todayFormatted =
+        DateFormat('EEEE, d MMMM').format(DateTime.now());
+
+    try {
+      // Retrieve the training plans
+      List<dynamic> trainingPlans = await getTrainingPlans();
+
+      // Search for today's date in the training plans
+      for (var week in trainingPlans) {
+        for (var day in week['daily_schedule']) {
+          if (day['day_of_week'] == todayFormatted) {
+            // Return the type of day if found
+            return day['type'];
+          }
+        }
+      }
+
+      // Return a default value if today's date is not found
+      return "Training plan expired";
+    } catch (e) {
+      // Handle errors, e.g., user not logged in or no training plans found
+      return "Error: ${e.toString()}";
     }
   }
 
@@ -375,19 +426,56 @@ class Database {
   /// GAMIFICATION / ACHIEVEMENT RELATED
   ///////////////////////////////////////
 
-  Future<List<Map<String, dynamic>>> fetchUserAchievements() async {
-    final userId = auth.userId;
-    if (userId == null) {
-      throw Exception("User not logged in");
-    }
+  Future<List<Map<String, dynamic>>> fetchUserAchievements(
+      {String? uid}) async {
+    if (uid == null) {
+      final userId = auth.userId;
+      if (userId == null) {
+        throw Exception("User not logged in");
+      }
 
-    final userAchievementsRef =
-        firestore.collection('users').doc(userId).collection('achievements');
-    final querySnapshot = await userAchievementsRef.get();
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
+      final userRef = firestore.collection('users').doc(userId);
+      final userDoc = await userRef.get();
+
+      List<String> current =
+          List<String>.from(userDoc.data()?['achievements'] ?? []);
+
+      if (current.isEmpty) {
+        debugPrint("empty");
+        return [];
+      }
+
+      final achievementsRef = firestore.collection('achievements');
+      final querySnapshot =
+          await achievementsRef.where('id', whereIn: current).get();
+      for (var doc in querySnapshot.docs) {
+        debugPrint(doc.data().toString());
+      }
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } else {
+      final userRef = firestore.collection('users').doc(uid);
+      final userDoc = await userRef.get();
+
+      List<String> current =
+          List<String>.from(userDoc.data()?['achievements'] ?? []);
+
+      if (current.isEmpty) {
+        debugPrint("empty");
+        return [];
+      }
+
+      final achievementsRef = firestore.collection('achievements');
+      final querySnapshot =
+          await achievementsRef.where('id', whereIn: current).get();
+      for (var doc in querySnapshot.docs) {
+        debugPrint(doc.data().toString());
+      }
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    }
   }
 
   Future<List<String>> updateUserAchievements(double distance, int time) async {
+    debugPrint("achiegemnt start");
     final userId = auth.userId;
     List<String> unlocked = [];
 
@@ -396,61 +484,25 @@ class Database {
     }
 
     final userRef = firestore.collection('users').doc(userId);
+    final userDoc = await userRef.get();
 
-    if (distance > 5) {
-      // 5km achievement
-      final achievementRef = firestore
-          .collection('users')
-          .doc(userId)
-          .collection('achievements')
-          .doc('5km');
+    List<String> current = List<String>.from(userDoc.data()!['achievements']);
 
-      await firestore.runTransaction((transaction) async {
-        final doc = await transaction.get(achievementRef);
-        final userDoc = await transaction.get(userRef);
-
-        if (!doc.exists && userDoc.exists) {
-          transaction.set(achievementRef, {
-            'name': 'Seasoned Runner',
-            'description': 'Run your first 5km run!',
-            'points': 5000,
-            'picture':
-                'https://img.freepik.com/free-vector/award-medal-realistic-composition-with-isolated-image-medal-with-laurel-wreath-blank-background-vector-illustration_1284-66109.jpg?size=626&ext=jpg&ga=GA1.1.1141335507.1719273600&semt=ais_user',
-          });
-
-          final userPoints = userDoc.data()!['points'];
-          transaction.update(userRef, {'points': userPoints + 5000});
-
-          unlocked.add('Seasoned Runner');
-        }
+    if (distance > 5 && !current.contains('seasonedRunner')) {
+      unlocked.add("Seasoned Runner");
+      await userRef.update({
+        'achievements': FieldValue.arrayUnion(['seasonedRunner']),
       });
     }
 
-    if ((time / 60000) / distance < 5) {
+    if ((time / 60000) / distance < 5 && !current.contains('speedyGonzales')) {
       // 1km under 5 minutes achievement
-      final achievementRef = firestore
-          .collection('users')
-          .doc(userId)
-          .collection('achievements')
-          .doc('1kmUnder5Minutes');
-
-      await firestore.runTransaction((transaction) async {
-        final doc = await transaction.get(achievementRef);
-        final userDoc = await transaction.get(userRef);
-        if (!doc.exists && userDoc.exists) {
-          transaction.set(achievementRef, {
-            'name': 'Speedy Gonzales',
-            'description': 'Run 1km under 5 minutes!',
-            'points': 3000,
-            'picture': 'https://m.media-amazon.com/images/I/71wRDvtAJLL.jpg',
-          });
-
-          final userPoints = userDoc.data()!['points'];
-          transaction.update(userRef, {'points': userPoints + 3000});
-          unlocked.add('Speedy Gonzales');
-        }
+      unlocked.add('Speedy Gonzales');
+      await userRef.update({
+        'achievements': FieldValue.arrayUnion(['speedyGonzales']),
       });
     }
+    debugPrint("achivement done");
 
     return unlocked;
   }
@@ -488,6 +540,8 @@ class Database {
     }
 
     final List<String> friendIds = await getFriendList();
+
+    friendIds.add(userId);
 
     final List<Map<String, dynamic>> friendsData = [];
     for (String friendId in friendIds) {
@@ -590,12 +644,8 @@ class Database {
     }
   }
 
-  Future<void> updateQuestProgress(
-    double distance,
-    int time,
-    int currQuestID,
-    String storyId,
-  ) async {
+  void updateQuestProgress(double distance, int time, int currQuestID,
+      String storyId, BuildContext context) async {
     debugPrint("Repository: updating quest progress");
     final userId = auth.userId;
     if (userId == null) {
@@ -628,12 +678,14 @@ class Database {
       final currentQuestCompletionStatus = data['questsCompleted'];
       // Update current quest progress
       double tracker = distance;
+      int storiesCompleted = 0;
       while (tracker >= 0 && currentQuest < quests.length) {
         if (tracker + currentQuestProgress[currentQuest] >=
             quests[currentQuest].distance) {
           double temp = currentQuestProgress[currentQuest].toDouble();
           currentQuestProgress[currentQuest] = quests[currentQuest].distance;
           currentQuestCompletionStatus[currentQuest] = true;
+          storiesCompleted += 1;
           tracker -= (quests[currentQuest].distance - temp);
           currentQuest++;
         } else {
@@ -653,6 +705,11 @@ class Database {
         },
       );
 
+      if (storiesCompleted != 0) {
+        await addPoints(storiesCompleted * 2000);
+        await showCompletionPopup(context, storiesCompleted);
+      }
+
       // // Update quest progress
       // for (int i = 0; i < currentQuestProgress.length; i++) {
       //   if (!currentQuestCompletionStatus[i]) {
@@ -663,6 +720,38 @@ class Database {
       //   }
       // }
     });
+  }
+
+  Future<void> showCompletionPopup(
+      BuildContext context, int storiesCompleted) async {
+    int pointsEarned =
+        storiesCompleted * 2000; // Assuming each story awards 2000 points
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button to close the dialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Congratulations!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'You have completed $storiesCompleted ${storiesCompleted == 1 ? "story" : "stories"}!'),
+                Text('You have earned $pointsEarned points!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> resetQuestsProgress(

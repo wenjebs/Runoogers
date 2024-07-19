@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:runningapp/components/side_drawer.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
@@ -10,14 +9,13 @@ import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats
 import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/add_friends_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/add_friends_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/story_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onboarding_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_page.dart';
-import 'package:runningapp/pages/logged_in/user_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/user_page.dart';
 import 'package:runningapp/providers.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
 
 class HomePage extends StatefulWidget {
   final int initialIndex;
@@ -39,8 +37,8 @@ class _HomePageState extends State<HomePage> {
       title: "",
       storyRun: false,
     ),
-    const SocialMediaPage(),
     const ProfilePage(),
+    const SocialMediaPage(),
     const StoryPage(),
     const TrainingPage(),
     const RunStatsPage(),
@@ -56,9 +54,9 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return "Run";
       case 2:
-        return "Social";
-      case 3:
         return "Profile";
+      case 3:
+        return "My Feed";
       case 4:
         return "Story";
       case 5:
@@ -73,32 +71,6 @@ class _HomePageState extends State<HomePage> {
         return "Routes";
       default:
         return "Home";
-    }
-  }
-
-  List<Widget> _getAppBarActions(int selectedIndex, BuildContext context) {
-    switch (selectedIndex) {
-      case 2:
-        return [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddFriendsPage()),
-              );
-            },
-            icon: const Icon(Icons.person_add),
-          ),
-        ];
-      case 3:
-        return [
-          IconButton(
-            onPressed: Authenticator().logOut,
-            icon: const Icon(Icons.logout),
-          ),
-        ];
-      default:
-        return [];
     }
   }
 
@@ -119,31 +91,23 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         final isRunning = ref.watch(timerProvider);
         return Scaffold(
-          drawer: isRunning
-              ? const SizedBox()
-              : SideDrawer(
-                  onTap: (index) {
-                    debugPrint("Index: $index");
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                ),
           appBar: isRunning
               ? null
               : AppBar(
+                  automaticallyImplyLeading: false,
                   centerTitle: true,
-                  actions: _selectedIndex == 3
+                  actions: _selectedIndex == 2
                       ? [
                           IconButton(
-                              onPressed: Authenticator().logOut,
+                              onPressed: () async {
+                                await Repository.logoutAndRedirect(context);
+                              },
                               icon: const Icon(Icons.logout)),
                         ]
-                      : _selectedIndex == 2 // Check if selectedIndex is 2
+                      : _selectedIndex == 3
                           ? [
                               IconButton(
                                   onPressed: () {
-                                    // Navigate to AddFriendPage
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -170,12 +134,12 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   color: Theme.of(context).colorScheme.onPrimary,
                   activeColor: Theme.of(context).colorScheme.primary,
-                  gap: 6,
-                  selectedIndex: _selectedIndex <= 3 ? _selectedIndex : -1,
+                  gap: 2,
+                  selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
                   tabs: const [
                     GButton(icon: Icons.home, text: "Home"),
                     GButton(icon: Icons.adjust, text: "Run"),
-                    GButton(icon: Icons.groups, text: "Social"),
+                    // GButton(icon: Icons.groups, text: "Social"),
                     GButton(
                         icon: Icons.account_circle_rounded, text: "Profile"),
                   ],

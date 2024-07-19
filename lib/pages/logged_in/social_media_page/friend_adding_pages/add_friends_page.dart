@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/friend_requests_list.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/friend_requests_list.dart';
 
 class AddFriendsPage extends StatefulWidget {
   const AddFriendsPage({super.key});

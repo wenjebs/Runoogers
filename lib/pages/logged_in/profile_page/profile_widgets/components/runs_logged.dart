@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/running_post_creation_page.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
 
 class RunsSection extends ConsumerWidget {
-  const RunsSection({super.key});
+  final String? userId;
+  const RunsSection({super.key, this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final runs = ref.watch(getRunsProvider(Authenticator().userId!));
+    final runs = ref.watch(getRunsProvider(userId ?? Authenticator().userId!));
     return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.max,

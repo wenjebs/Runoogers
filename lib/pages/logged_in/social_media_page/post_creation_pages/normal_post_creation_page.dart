@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class PostCreationPage extends StatefulWidget {
   const PostCreationPage({super.key});
@@ -42,13 +44,18 @@ class PostCreationPageState extends State<PostCreationPage> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     Repository.addPost('posts', {
+                      'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
                       'photoUrl':
                           'https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg',
                     });
-                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const HomePage(initialIndex: 0)));
                   }
                 },
                 child: const Text('Submit'),

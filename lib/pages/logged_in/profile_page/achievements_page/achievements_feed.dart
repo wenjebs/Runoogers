@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievement.dart';
+import 'package:runningapp/pages/logged_in/profile_page/achievements_page/shareable_achievement.dart';
 
 class AchievementsFeed extends StatefulWidget {
-  const AchievementsFeed({super.key});
+  final String? userId;
+
+  const AchievementsFeed({super.key, this.userId});
 
   @override
   AchievementsFeedState createState() => AchievementsFeedState();
@@ -13,7 +15,7 @@ class AchievementsFeedState extends State<AchievementsFeed> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: Repository.fetchUserAchievements().asStream(),
+      stream: Repository.fetchUserAchievements(uid: widget.userId).asStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Padding(
@@ -34,15 +36,11 @@ class AchievementsFeedState extends State<AchievementsFeed> {
                       final achievement = achievements[index];
                       return Padding(
                         padding: const EdgeInsets.all(30.0),
-                        child: Achievement(
-                          picture: achievement[
-                              'picture'], // Adjust according to your data structure
-                          name: achievement[
-                              'name'], // Adjust according to your data structure
-                          description: achievement[
-                              'description'], // Adjust according to your data structure
-                          points: achievement[
-                              'points'], // Adjust according to your data structure
+                        child: ShareableAchievement(
+                          picture: achievement['picture'],
+                          name: achievement['name'],
+                          description: achievement['description'],
+                          points: achievement['points'],
                         ),
                       );
                     },
