@@ -28,8 +28,8 @@ class Database {
     try {
       await Authenticator().logOut();
 
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AuthPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => AuthPage(authenticator: Authenticator())));
     } catch (error) {
       debugPrint("Error logging out: $error");
     }
