@@ -221,6 +221,8 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
     with TickerProviderStateMixin {
   O3DController controller = O3DController();
   List<dynamic> assets = [];
+
+  // for fetching assets
   List<String> categories = [
     'bottom',
     'eye',
@@ -280,11 +282,12 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
     if (response.statusCode == 200) {
       String responseBody = response.body;
       var decodedResponse = jsonDecode(responseBody);
-      var assetsData = decodedResponse['data'];
+      // debugPrint(decodedResponse['data'].toString());
+      final List<dynamic> assetsData = decodedResponse['data'];
       setState(() {
         assets = assetsData;
       });
-      debugPrint("Assets retrieved");
+      debugPrint("getUsableAssets: Assets retrieved");
       return assetsData;
     } else {
       debugPrint(response.reasonPhrase);
@@ -293,7 +296,8 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
   }
 
   Future<void> equipAsset(String assetId, String category) async {
-    debugPrint("avatar ID: ${widget.avatarId}, asset ID: $assetId");
+    debugPrint(
+        "avatar ID: ${widget.avatarId}, asset ID: $assetId category: $category");
     final response = await http.patch(
         Uri.parse('https://api.readyplayer.me/v2/avatars/${widget.avatarId}'),
         headers: {
@@ -302,10 +306,9 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
         },
         body: json.encode({
           "data": {
-            "assets": {category: assetId}
+            "assets": {convertToAvatarAttribute(category): assetId}
           }
         }));
-
     if (response.statusCode == 200) {
       debugPrint(response.body.toString());
       setState(() {
@@ -328,6 +331,39 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
       debugPrint("Avatar Saved");
     } else {
       debugPrint(response.reasonPhrase);
+    }
+  }
+
+  String convertToAvatarAttribute(String category) {
+    switch (category) {
+      case 'beard':
+        return "beardStyle"; // Assuming beardStyle is the correct mapping
+      case 'eye':
+        return "eyeColor"; // Assuming eyeColor is the correct mapping
+      case 'eyebrows':
+        return "eyebrowStyle";
+      case 'eyeshape':
+        return "eyeShape";
+      case 'facemask':
+        return "faceMask";
+      case 'faceshape':
+        return "faceShape";
+      case 'glasses':
+        return "glasses";
+      case 'hair':
+        return "hairStyle";
+      case 'headwear':
+        return "headwear";
+      case 'lipshape':
+        return "lipShape";
+      case 'noseshape':
+        return "noseShape";
+      case 'outfit':
+        return "outfit";
+      case 'shirt':
+        return "shirt";
+      default:
+        return category; // Default case for unmapped categories
     }
   }
 
@@ -363,6 +399,8 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
         return FontAwesomeIcons.shirt;
       case 'costume':
         return FontAwesomeIcons.mask;
+      case 'bottom':
+        return FontAwesomeIcons.tableColumns;
       default:
         return FontAwesomeIcons.circleQuestion;
     }
