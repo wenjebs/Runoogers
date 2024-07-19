@@ -82,7 +82,9 @@ class _LoginPageState extends State<LoginPage> {
     );
     try {
       await widget.authenticator.loginWithEmailAndPassword(
-          emailController.text, passwordController.text);
+        emailController.text,
+        passwordController.text,
+      );
       // pop the load circle
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {

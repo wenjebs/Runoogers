@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:runningapp/pages/logged_in/home_page.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';
+import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
@@ -38,21 +39,23 @@ void main() {
           await mockFirebaseAuth.signInWithEmailAndPassword(
               email: "bob@somedomain.com", password: "123");
     });
+    when(authenticator.loginWithEmailAndPassword("test@gmail.com", "123"))
+        .thenAnswer((_) async {
+      throw FirebaseAuthException(
+        code: 'invalid-credential',
+      );
+    });
     when(authenticator.authStateChanges).thenAnswer((_) {
       return mockFirebaseAuth.authStateChanges();
     });
     when(authenticator.loginWithEmailAndPassword("test@gmail.com", "123"))
         .thenAnswer((_) async {
-      // mockFirebaseAuth.signInWithEmailAndPassword(
-      //     email: "asd", password: "123");
       throw FirebaseAuthException(
         code: 'invalid-credential',
       );
     });
     when(authenticator.loginWithEmailAndPassword("hehe@gmail.com", "123"))
         .thenAnswer((_) async {
-      // mockFirebaseAuth.signInWithEmailAndPassword(
-      //     email: "asd", password: "123");
       throw FirebaseAuthException(
         code: 'invalid-credential',
       );
@@ -215,15 +218,17 @@ void main() {
       await tester.tap(find.byType(MyButton));
       // Rebuild the widget with the new state
       await tester.pumpAndSettle();
-      final AlertDialog test = tester.widget(find.byType(AlertDialog));
-      final Center center = test.title as Center;
-      final Text text = center.child as Text;
-      debugPrint(text.data.toString());
-      expect(
-          find.byWidgetPredicate((Widget widget) =>
-              widget is AlertDialog &&
-              text.data == 'The email address or password is not valid.'),
-          findsOneWidget); // Check if an AlertDialog is shown
+      // Check if an AlertDialog is shown
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      // If AlertDialog is present, then access its properties
+      if (find.byType(AlertDialog).evaluate().isNotEmpty) {
+        final AlertDialog alertDialog = tester.widget(find.byType(AlertDialog));
+        final Center center = alertDialog.title as Center;
+        final Text text = center.child as Text;
+        debugPrint(text.data.toString());
+        expect(text.data, 'The email address or password is not valid.');
+      }
     });
 
     testWidgets('Forget password button redirects to forgot password page',
