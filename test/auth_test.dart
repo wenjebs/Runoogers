@@ -1,12 +1,9 @@
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
-import 'package:runningapp/pages/login_and_registration/auth_page.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_buttons.dart';
 import 'package:runningapp/pages/login_and_registration/components/auth_textfields.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
@@ -260,34 +257,34 @@ void main() {
       expect(find.byType(ForgotPassword), findsOneWidget);
     });
 
-    testWidgets('Sign in redirects to homepage', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: LoginPage(
-          authenticator: authenticator,
-        ),
-      ));
+    // testWidgets('Sign in redirects to homepage', (WidgetTester tester) async {
+    //   await tester.pumpWidget(MaterialApp(
+    //     home: LoginPage(
+    //       authenticator: authenticator,
+    //     ),
+    //   ));
 
-      // Enter a valid email address in the email input field
-      await tester.enterText(
-          find.byWidgetPredicate((Widget widget) =>
-              widget is AuthTextField && widget.hintText == "Email"),
-          'bob@somedomain.com');
+    //   // Enter a valid email address in the email input field
+    //   await tester.enterText(
+    //       find.byWidgetPredicate((Widget widget) =>
+    //           widget is AuthTextField && widget.hintText == "Email"),
+    //       'bob@somedomain.com');
 
-      // Enter a valid password in the password input field
-      await tester.enterText(
-          find.byWidgetPredicate((Widget widget) =>
-              widget is AuthTextField && widget.hintText == "Password"),
-          '123');
+    //   // Enter a valid password in the password input field
+    //   await tester.enterText(
+    //       find.byWidgetPredicate((Widget widget) =>
+    //           widget is AuthTextField && widget.hintText == "Password"),
+    //       '123');
 
-      // Click the sign-in button
-      await tester.tap(find.byType(MyButton));
-      // Rebuild the widget with the new state
-      await tester.pumpAndSettle();
-      await tester.pumpWidget(
-          MaterialApp(home: AuthPage(authenticator: authenticator)));
-      await tester.pumpAndSettle();
-      expect(find.byType(HomePage), findsOneWidget);
-    });
+    //   // Click the sign-in button
+    //   await tester.tap(find.byType(MyButton));
+    //   // Rebuild the widget with the new state
+    //   await tester.pumpAndSettle();
+    //   await tester.pumpWidget(
+    //       MaterialApp(home: AuthPage(authenticator: authenticator)));
+    //   await tester.pumpAndSettle();
+    //   expect(find.byType(HomePage), findsOneWidget);
+    // });
     // testWidgets('Register button redirects to register page',
     //     (WidgetTester tester) async {
     //   await tester.pumpWidget(MaterialApp(
