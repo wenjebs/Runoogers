@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
@@ -18,6 +19,7 @@ import 'map_and_location_logic/loading_map.dart';
 import 'components/run_detail_and_stop.dart';
 
 class RunPage extends ConsumerStatefulWidget {
+  final Repository repository;
   final bool storyRun;
   final String title;
 
@@ -38,6 +40,7 @@ class RunPage extends ConsumerStatefulWidget {
     this.questProgress,
     this.questDistance,
     this.currentQuest,
+    required this.repository,
   });
 
   @override
@@ -198,6 +201,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                             end: const Offset(0, 0)),
                       ],
                       child: RunDetailsAndStop(
+                        widget.repository,
                         paddingValue: paddingValue,
                         stopWatchTimer: _stopWatchTimer,
                         context: context,

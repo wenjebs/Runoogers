@@ -12,8 +12,10 @@ class RunningPost extends ConsumerWidget {
   final Post
       post; // TODO eventually make more posts for leaderboard rankings, achievements, etc
   final bool disableCommentButton;
+  final Repository repository;
 
-  const RunningPost({
+  const RunningPost(
+    this.repository, {
     super.key,
     required this.post,
     this.disableCommentButton = false,
@@ -72,8 +74,9 @@ class RunningPost extends ConsumerWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  UserProfilePage(userId: post.userId)),
+                              builder: (context) => UserProfilePage(
+                                  repository: Repository(),
+                                  userId: post.userId)),
                         );
                       },
                       child: Row(
@@ -116,7 +119,7 @@ class RunningPost extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {
-                  Repository.addLikeToPost(post.id, post.userId);
+                  repository.addLikeToPost(post.id, post.userId);
                 },
               ),
               likes.when(
@@ -140,6 +143,7 @@ class RunningPost extends ConsumerWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PostCommentFeed(
+                            Repository(),
                             post: post,
                           ),
                         ));

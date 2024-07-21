@@ -3,6 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/database/repository.dart';
 
 class StoryDetailPage extends StatefulWidget {
+  final Repository repository;
   final Image image;
   final String title;
   final String description;
@@ -16,6 +17,7 @@ class StoryDetailPage extends StatefulWidget {
     required this.description,
     required this.userID,
     required this.id,
+    required this.repository,
   });
 
   @override
@@ -82,7 +84,8 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
             onPressed: active
                 ? () {}
                 : () {
-                    Repository.setUserActiveStory(widget.userID, widget.id);
+                    widget.repository
+                        .setUserActiveStory(widget.userID, widget.id);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         dismissDirection: DismissDirection.up,

@@ -20,7 +20,9 @@ import 'package:runningapp/providers.dart';
 class HomePage extends StatefulWidget {
   final int initialIndex;
 
-  const HomePage({super.key, this.initialIndex = 0});
+  final Repository repository;
+  get getRepository => repository;
+  const HomePage({super.key, this.initialIndex = 0, required this.repository});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -30,21 +32,29 @@ class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   late int _selectedIndex = 0;
   bool trainingOnboarded = false;
-
   final List<Widget> _pages = [
-    const UserPage(),
-    const RunPage(
+    UserPage(repository: Repository()),
+    RunPage(
+      repository: Repository(),
       title: "",
       storyRun: false,
     ),
     const ProfilePage(),
-    const SocialMediaPage(),
-    const StoryPage(),
-    const TrainingPage(),
+    SocialMediaPage(Repository()),
+    StoryPage(Repository()),
+    TrainingPage(
+      repository: Repository(),
+    ),
     const RunStatsPage(),
-    const LeaderboardsPage(),
-    const SettingsPage(),
-    const RoutesView(),
+    LeaderboardsPage(
+      repository: Repository(),
+    ),
+    SettingsPage(
+      repository: Repository(),
+    ),
+    RoutesView(
+      repository: Repository(),
+    ),
   ];
 
   String getTitle(int index) {
@@ -77,7 +87,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Repository.getTrainingOnboarded().then((value) {
+    widget.repository.getTrainingOnboarded().then((value) {
       setState(() {
         trainingOnboarded = value;
       });
@@ -100,7 +110,8 @@ class _HomePageState extends State<HomePage> {
                       ? [
                           IconButton(
                               onPressed: () async {
-                                await Repository.logoutAndRedirect(context);
+                                await widget.repository
+                                    .logoutAndRedirect(context);
                               },
                               icon: const Icon(Icons.logout)),
                         ]
@@ -111,8 +122,9 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AddFriendsPage()),
+                                          builder: (context) => AddFriendsPage(
+                                                repository: Repository(),
+                                              )),
                                     );
                                   },
                                   icon: const Icon(

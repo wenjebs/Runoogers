@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$questProgressHash() => r'0ff047ca3c9ff3d2bc6d4daf12a2dc7cbf5dfcb9';
+String _$questProgressHash() => r'2bb64333693bd88a67792925711e2a8c52d0e439';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -41,9 +41,11 @@ class QuestProgressFamily extends Family<AsyncValue<QuestProgressModel>> {
   /// See also [questProgress].
   QuestProgressProvider call(
     String storyId,
+    Repository repository,
   ) {
     return QuestProgressProvider(
       storyId,
+      repository,
     );
   }
 
@@ -53,6 +55,7 @@ class QuestProgressFamily extends Family<AsyncValue<QuestProgressModel>> {
   ) {
     return call(
       provider.storyId,
+      provider.repository,
     );
   }
 
@@ -77,10 +80,12 @@ class QuestProgressProvider
   /// See also [questProgress].
   QuestProgressProvider(
     String storyId,
+    Repository repository,
   ) : this._internal(
           (ref) => questProgress(
             ref as QuestProgressRef,
             storyId,
+            repository,
           ),
           from: questProgressProvider,
           name: r'questProgressProvider',
@@ -92,6 +97,7 @@ class QuestProgressProvider
           allTransitiveDependencies:
               QuestProgressFamily._allTransitiveDependencies,
           storyId: storyId,
+          repository: repository,
         );
 
   QuestProgressProvider._internal(
@@ -102,9 +108,11 @@ class QuestProgressProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.storyId,
+    required this.repository,
   }) : super.internal();
 
   final String storyId;
+  final Repository repository;
 
   @override
   Override overrideWith(
@@ -120,6 +128,7 @@ class QuestProgressProvider
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         storyId: storyId,
+        repository: repository,
       ),
     );
   }
@@ -131,13 +140,16 @@ class QuestProgressProvider
 
   @override
   bool operator ==(Object other) {
-    return other is QuestProgressProvider && other.storyId == storyId;
+    return other is QuestProgressProvider &&
+        other.storyId == storyId &&
+        other.repository == repository;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, storyId.hashCode);
+    hash = _SystemHash.combine(hash, repository.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -146,6 +158,9 @@ class QuestProgressProvider
 mixin QuestProgressRef on AutoDisposeFutureProviderRef<QuestProgressModel> {
   /// The parameter `storyId` of this provider.
   String get storyId;
+
+  /// The parameter `repository` of this provider.
+  Repository get repository;
 }
 
 class _QuestProgressProviderElement
@@ -155,6 +170,8 @@ class _QuestProgressProviderElement
 
   @override
   String get storyId => (origin as QuestProgressProvider).storyId;
+  @override
+  Repository get repository => (origin as QuestProgressProvider).repository;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

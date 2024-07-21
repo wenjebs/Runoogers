@@ -9,8 +9,9 @@ import 'package:runningapp/pages/logged_in/story_page/providers/providers.dart';
 class ActiveQuestDisplayPage extends ConsumerWidget {
   final List<Quest> quests;
   final String activeStoryTitle;
-
-  const ActiveQuestDisplayPage({
+  final Repository repository;
+  const ActiveQuestDisplayPage(
+    this.repository, {
     super.key,
     required this.quests,
     required this.activeStoryTitle,
@@ -18,7 +19,8 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questProgress = ref.watch(questProgressProvider(activeStoryTitle));
+    final questProgress =
+        ref.watch(questProgressProvider(activeStoryTitle, repository));
     // debugPrint(questProgress.toString());
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +30,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
         AsyncData(:final value) => RefreshIndicator(
             onRefresh: () {
               // ignore: unused_result
-              ref.refresh(questProgressProvider(activeStoryTitle));
+              ref.refresh(questProgressProvider(activeStoryTitle, repository));
               return Future.value();
             },
             child: Column(
@@ -71,9 +73,10 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                   onPressed: () async {
                     bool confirm = await showConfirmationDialog(context);
                     if (confirm) {
-                      await Repository.resetQuestsProgress(activeStoryTitle);
+                      await repository.resetQuestsProgress(activeStoryTitle);
                       // ignore: unused_result
-                      ref.refresh(questProgressProvider(activeStoryTitle));
+                      ref.refresh(
+                          questProgressProvider(activeStoryTitle, repository));
                     }
                   },
                   child: const Text("Reset quests progress"),
@@ -135,6 +138,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => RunPage(
+          repository: repository,
           title: quest.getTitle,
           storyRun: true,
           activeStoryTitle: activeStoryTitle,
@@ -145,7 +149,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
       ),
     );
     // ignore: unused_result
-    ref.refresh(questProgressProvider(activeStoryTitle));
+    ref.refresh(questProgressProvider(activeStoryTitle, repository));
   }
 }
 

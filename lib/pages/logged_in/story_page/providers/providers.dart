@@ -10,8 +10,9 @@ part 'providers.g.dart';
 Future<QuestProgressModel> questProgress(
   QuestProgressRef ref,
   String storyId,
+  Repository repository,
 ) async {
-  final output = await Repository.getQuestProgress(storyId);
+  final output = await repository.getQuestProgress(storyId);
   debugPrint(output.toString());
   return output;
 }

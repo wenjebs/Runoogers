@@ -1,14 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
 import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
+import 'package:runningapp/pages/login_and_registration/register_page.dart';
+import 'package:runningapp/state/backend/authenticator.dart';
 import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  final Authenticator authenticator;
+  const LoginPage({
+    super.key,
+    required this.authenticator,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -76,9 +82,9 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+      await widget.authenticator.loginWithEmailAndPassword(
+        emailController.text,
+        passwordController.text,
       );
       // pop the load circle
       Navigator.pop(context);
@@ -214,6 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
+                            key: const Key('forgotPassword'),
                             onTap: () {
                               debugPrint("forgot password");
                               Navigator.push(
@@ -235,6 +242,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     // sign in button
                     MyButton(
+                      text: 'Sign In',
                       onTap: signUserIn,
                     ),
 
@@ -296,8 +304,18 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(width: 4),
-                        GestureDetector(
-                          onTap: widget.onTap,
+                        InkWell(
+                          key: const Key('registerNow'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterPage(
+                                  repository: Repository(),
+                                ),
+                              ),
+                            );
+                          },
                           child: const Text(
                             'Register now',
                             style: TextStyle(
