@@ -28,6 +28,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   Widget build(BuildContext context) {
     if (showLoginPage) {
       return LoginPage(
+        repository: Repository(),
         authenticator: Authenticator(),
       );
     } else {

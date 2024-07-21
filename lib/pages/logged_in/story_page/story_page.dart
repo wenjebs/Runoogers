@@ -124,7 +124,7 @@ class StoryPage extends ConsumerWidget {
                     final List<Quest> quests = await repository.getQuests(
                       userInfo?['activeStory'],
                     );
-                    // debugPrint("ahh");
+                    debugPrint("Active Quests Pressed");
                     Navigator.push(
                       context,
                       MaterialPageRoute(

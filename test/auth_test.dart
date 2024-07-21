@@ -70,6 +70,7 @@ void main() {
       // Build our app and trigger a frame.
       await tester.pumpWidget(MaterialApp(
           home: LoginPage(
+        repository: MockRepository(),
         authenticator: authenticator,
       )));
 
@@ -86,6 +87,7 @@ void main() {
     testWidgets('Invalid email test', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
+          repository: MockRepository(),
           authenticator: authenticator,
         ),
       ));
@@ -121,6 +123,7 @@ void main() {
     testWidgets('No password test', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
+          repository: MockRepository(),
           authenticator: authenticator,
         ),
       ));
@@ -158,6 +161,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
+          repository: MockRepository(),
           authenticator: authenticator,
         ),
       ));
@@ -194,6 +198,7 @@ void main() {
     testWidgets('Valid email but not registered', (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
+          repository: MockRepository(),
           authenticator: authenticator,
         ),
       ));
@@ -234,6 +239,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
         home: LoginPage(
+          repository: MockRepository(),
           authenticator: authenticator,
         ),
       ));
@@ -287,28 +293,26 @@ void main() {
     //   await tester.pumpAndSettle();
     //   expect(find.byType(HomePage), findsOneWidget);
     // });
-    // testWidgets('Register button redirects to register page',
-    //     (WidgetTester tester) async {
-    //   await tester.pumpWidget(MaterialApp(
-    //     home: LoginPage(
-    //       authenticator: authenticator,
-    //     ),
-    //   ));
+    testWidgets('Register button redirects to register page',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: LoginPage(
+          repository: MockRepository(),
+          authenticator: authenticator,
+        ),
+      ));
 
-    //   // Tap the register button
-    //   await tester.tap(
-    //     find.byWidgetPredicate(
-    //       (Widget widget) =>
-    //           widget is GestureDetector &&
-    //           widget.key == const Key('registerNow'),
-    //     ),
-    //   );
-    //   await tester.pumpAndSettle();
+      // Tap the register button
 
-    //   // await tester.pump(const Duration(seconds: 5));
-    //   // Check if the Register page is shown after tapping the register button
-    //   expect(find.byType(RegisterPage), findsOneWidget);
-    // });
+      await tester.ensureVisible(find.byKey(const Key('registerNow')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('registerNow')),
+      );
+      await tester.pumpAndSettle();
+      // Check if the Register page is shown after tapping the register button
+      expect(find.byType(RegisterPage), findsOneWidget);
+    });
   });
 
   group("Register page tests", () {
