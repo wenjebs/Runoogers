@@ -29,7 +29,7 @@ void main() {
 
   Widget createTestWidget(Widget child) {
     return ProviderScope(
-      overrides: [],
+      overrides: const [],
       child: MaterialApp(home: child),
     );
   }

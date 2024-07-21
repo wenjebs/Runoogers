@@ -45,7 +45,7 @@ final updatePlanProvider = FutureProvider<void>((ref) async {
         await gemini.text(newPrompt, modelName: 'models/gemini-pro');
     debugPrint(textResponse!.output!);
     final newPlanJson =
-        jsonDecode(textResponse!.output!) as Map<String, dynamic>;
+        jsonDecode(textResponse.output!) as Map<String, dynamic>;
 
     debugPrint(newPlanJson.toString());
 

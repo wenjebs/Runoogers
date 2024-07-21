@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:runningapp/models/quests_model.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/story_page/active_quest_display_page.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
