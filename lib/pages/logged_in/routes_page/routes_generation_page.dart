@@ -45,8 +45,14 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
 
   @override
   Widget build(BuildContext context) {
-    route = ref
-        .watch(routeProvider(seed, distance, currentLocation, _selectedPoints));
+    route = ref.watch(
+      routeProvider(
+        seed,
+        distance,
+        currentLocation,
+        _selectedPoints,
+      ),
+    );
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();

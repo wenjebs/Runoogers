@@ -16,7 +16,7 @@ class RoutesDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Route Details'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
