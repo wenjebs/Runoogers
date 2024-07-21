@@ -3,9 +3,12 @@ import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/locat
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class PausedPage extends StatelessWidget {
+  final LocationService locationService;
+
   const PausedPage({
     super.key,
     required StopWatchTimer stopWatchTimer,
+    required this.locationService,
   }) : _stopWatchTimer = stopWatchTimer;
 
   final StopWatchTimer _stopWatchTimer;
@@ -24,7 +27,7 @@ class PausedPage extends StatelessWidget {
             Column(
               children: <Widget>[
                 Text(
-                  'Distance: ${LocationService.distanceTravelled.toStringAsFixed(2)} KM',
+                  'Distance: ${locationService.distanceTravelled.toStringAsFixed(2)} KM',
                   style: const TextStyle(fontSize: 20),
                 ),
                 Text(
@@ -32,7 +35,7 @@ class PausedPage extends StatelessWidget {
                   style: const TextStyle(fontSize: 20),
                 ),
                 Text(
-                  'Pace: ${LocationService.distanceTravelled == 0 ? 0 : ((_stopWatchTimer.rawTime.value / 60000) / LocationService.distanceTravelled).toStringAsFixed(2)} min/km',
+                  'Pace: ${locationService.distanceTravelled == 0 ? 0 : ((_stopWatchTimer.rawTime.value / 60000) / locationService.distanceTravelled).toStringAsFixed(2)} min/km',
                   style: const TextStyle(fontSize: 20),
                 ),
               ],

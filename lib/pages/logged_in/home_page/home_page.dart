@@ -7,6 +7,7 @@ import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.d
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/pages/logged_in/settings_page/settings_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/add_friends_page.dart';
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     UserPage(repository: Repository()),
     RunPage(
+      locationService: LocationService(),
       repository: Repository(),
       title: "",
       storyRun: false,
@@ -149,11 +151,22 @@ class _HomePageState extends State<HomePage> {
                   gap: 2,
                   selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
                   tabs: const [
-                    GButton(icon: Icons.home, text: "Home"),
-                    GButton(icon: Icons.adjust, text: "Run"),
+                    GButton(
+                      icon: Icons.home,
+                      text: "Home",
+                      key: Key("homeButton"),
+                    ),
+                    GButton(
+                      icon: Icons.adjust,
+                      text: "Run",
+                      key: Key("runButton"),
+                    ),
                     // GButton(icon: Icons.groups, text: "Social"),
                     GButton(
-                        icon: Icons.account_circle_rounded, text: "Profile"),
+                      icon: Icons.account_circle_rounded,
+                      text: "Profile",
+                      key: Key("profileButton"),
+                    ),
                   ],
                   onTabChange: (index) {
                     setState(() {

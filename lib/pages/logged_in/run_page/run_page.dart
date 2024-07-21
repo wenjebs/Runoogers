@@ -31,6 +31,10 @@ class RunPage extends ConsumerStatefulWidget {
   final QuestProgressModel? questProgress;
   final int? currentQuest;
 
+  final LocationService locationService;
+
+  final Position? currPos;
+
   const RunPage({
     super.key,
     this.route,
@@ -41,6 +45,8 @@ class RunPage extends ConsumerStatefulWidget {
     this.questDistance,
     this.currentQuest,
     required this.repository,
+    required this.locationService,
+    this.currPos,
   });
 
   @override
@@ -54,10 +60,6 @@ class _RunPageState extends ConsumerState<RunPage> {
   bool storyRun = false;
   // Current Position
   Position? currPos;
-
-  // Initialise location services
-  final LocationService locationService = LocationService();
-
   // Intiaise Google Map Container
   final GoogleMapsContainer googleMapsContainer = GoogleMapsContainer();
 
@@ -80,10 +82,13 @@ class _RunPageState extends ConsumerState<RunPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.currPos != null) {
+      currPos = widget.currPos;
+    }
     LocationService.initialize();
     storyRun = widget.storyRun;
     checkPermission();
-    locationService.listenToLocationChangesBeforeStart(
+    widget.locationService.listenToLocationChangesBeforeStart(
       (newPos) => {
         if (mounted)
           {
@@ -99,7 +104,7 @@ class _RunPageState extends ConsumerState<RunPage> {
   }
 
   Future<void> checkPermission() async {
-    await locationService.checkPermission();
+    await widget.locationService.checkPermission();
   }
 
   init() async {
@@ -126,13 +131,14 @@ class _RunPageState extends ConsumerState<RunPage> {
                   ))
           : null,
       body: currPos == null
-          ? LocationService.locationServiceEnabled
-              ? LocationService.connectivity.contains(ConnectivityResult.none)
+          ? widget.locationService.locationServiceEnabled
+              ? widget.locationService.connectivity
+                      .contains(ConnectivityResult.none)
                   ? const Text("NO internet!") // TODO make nicer
                   : const LoadingMap()
               : DisabledLocationWidget(
                   callback: setState,
-                  locationService: locationService,
+                  locationService: widget.locationService,
                 )
           : SafeArea(
               child: Builder(builder: (context) {
@@ -201,6 +207,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                             end: const Offset(0, 0)),
                       ],
                       child: RunDetailsAndStop(
+                        locationService: widget.locationService,
                         widget.repository,
                         paddingValue: paddingValue,
                         stopWatchTimer: _stopWatchTimer,
@@ -222,7 +229,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                         // start location tracking
                         LocationService.reset();
                         LocationService.initialize();
-                        locationService.listenToLocationChanges(
+                        widget.locationService.listenToLocationChanges(
                           (Position newPos) => setState(() {
                             currPos = newPos;
                           }),
@@ -244,6 +251,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                         }
                       },
                       shape: const CircleBorder(),
+                      key: const Key('startButton'),
                       child: const Text(
                         "Start",
                         style: TextStyle(

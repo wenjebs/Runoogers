@@ -19,7 +19,9 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerStatefulWidget {
-  RunDetailsAndStop(
+  final LocationService locationService;
+
+  const RunDetailsAndStop(
     this.repository, {
     super.key,
     required this.paddingValue,
@@ -29,9 +31,9 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
     this.activeStory,
     this.questProgress,
     this.storyRun,
+    required this.locationService,
   }) : _stopWatchTimer = stopWatchTimer;
 
-  final imagesRef = FirebaseStorage.instance.ref().child('images');
   final double paddingValue;
   final StopWatchTimer _stopWatchTimer;
   final GoogleMapsContainer mapContainer;
@@ -150,7 +152,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                             Padding(
                               padding: const EdgeInsets.all(12),
                               child: Text(
-                                '${LocationService.distanceTravelled.toStringAsFixed(2)} km',
+                                '${widget.locationService.distanceTravelled.toStringAsFixed(2)} km',
                                 style: const TextStyle(
                                   fontSize: 40,
                                   fontFamily: 'Helvetica',
@@ -183,7 +185,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                             ),
                             // Display pace
                             PaceDisplayWidget(
-                                stopWatchTimer: widget._stopWatchTimer),
+                              stopWatchTimer: widget._stopWatchTimer,
+                              locationService: widget.locationService,
+                            ),
                           ],
                         ),
                         ///////////////////////////////////
@@ -218,7 +222,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
                                   // get distance travelled in KM
                                   final double distance =
-                                      LocationService.distanceTravelled;
+                                      widget.locationService.distanceTravelled;
 
                                   // if travelled less than 20 metres, ask user if sure they want to save run
                                   if (distance < 0.02) {
@@ -294,6 +298,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     stopServices(ref);
                                   }
                                 },
+                                key: const Key("stopRunButton"),
                                 child: const Text("Stop Run"),
                               ),
                             ),
@@ -322,6 +327,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     MaterialPageRoute(
                                       builder: (context) => PausedPage(
                                         stopWatchTimer: widget._stopWatchTimer,
+                                        locationService: widget.locationService,
                                       ),
                                     ),
                                   );
@@ -574,9 +580,12 @@ class TimeDisplayWidget extends StatelessWidget {
 }
 
 class PaceDisplayWidget extends StatelessWidget {
+  final LocationService locationService;
+
   const PaceDisplayWidget({
     super.key,
     required StopWatchTimer stopWatchTimer,
+    required this.locationService,
   }) : _stopWatchTimer = stopWatchTimer;
 
   final StopWatchTimer _stopWatchTimer;
@@ -600,7 +609,10 @@ class PaceDisplayWidget extends StatelessWidget {
                 // debugPrint((snap.data! / 1000).toString());
                 final value = snap.data!;
                 final currentTime = value;
-                return PaceWidget(currentTime: currentTime);
+                return PaceWidget(
+                  locationService: locationService,
+                  currentTime: currentTime,
+                );
               }),
         ],
       ),
@@ -609,9 +621,12 @@ class PaceDisplayWidget extends StatelessWidget {
 }
 
 class PaceWidget extends StatelessWidget {
+  final LocationService locationService;
+
   const PaceWidget({
     super.key,
     required this.currentTime,
+    required this.locationService,
   });
 
   final int currentTime;
@@ -625,10 +640,10 @@ class PaceWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                LocationService.distanceTravelled == 0
+                locationService.distanceTravelled == 0
                     ? '0'
                     // minutes
-                    : "${((currentTime / 60000) / LocationService.distanceTravelled).toStringAsFixed(0)}:",
+                    : "${((currentTime / 60000) / locationService.distanceTravelled).toStringAsFixed(0)}:",
                 style: const TextStyle(
                   fontSize: 40,
                   fontFamily: 'Helvetica',
@@ -636,13 +651,13 @@ class PaceWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                LocationService.distanceTravelled == 0
+                locationService.distanceTravelled == 0
                     ? '0'
                     // minutes
                     : ((((currentTime / 60000) /
-                                    LocationService.distanceTravelled) -
+                                    locationService.distanceTravelled) -
                                 ((currentTime / 60000) /
-                                        LocationService.distanceTravelled)
+                                        locationService.distanceTravelled)
                                     .floor()) *
                             60)
                         .toStringAsFixed(0),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
@@ -138,6 +139,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => RunPage(
+          locationService: LocationService(),
           repository: repository,
           title: quest.getTitle,
           storyRun: true,

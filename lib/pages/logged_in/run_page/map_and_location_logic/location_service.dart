@@ -34,10 +34,10 @@ class LocationService {
   // getters
   StreamSubscription? get positionSubscription => _positionSubscription;
   Position? get currentPosition => _currentPosition;
-  static double get distanceTravelled => distance;
+  double get distanceTravelled => distance;
   static double get tracker => distanceTracker; // in km
-  static List<ConnectivityResult> get connectivity => connectivityResult;
-  static bool get locationServiceEnabled => serviceEnabled;
+  List<ConnectivityResult> get connectivity => connectivityResult;
+  bool get locationServiceEnabled => serviceEnabled;
 
   // for story run audios
   int idx = 1;
