@@ -122,7 +122,12 @@ class _RunPageState extends ConsumerState<RunPage> {
     return Scaffold(
       appBar: storyRun
           ? isRunning
-              ? null
+              ? AppBar(
+                  centerTitle: true,
+                  title: const Text(
+                    "Running",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ))
               : AppBar(
                   centerTitle: true,
                   title: Text(

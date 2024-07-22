@@ -71,10 +71,18 @@ class UserPageState extends State<UserPage> {
                         padding: const EdgeInsets.all(20),
                         crossAxisCount: 3,
                         children: const <Widget>[
-                          ServiceIcon(title: 'Story', icon: Icons.book),
                           ServiceIcon(
-                              title: 'Track Run', icon: Icons.directions_run),
-                          ServiceIcon(title: 'All', icon: Icons.all_inclusive),
+                            title: 'Story',
+                            icon: Icons.book,
+                          ),
+                          ServiceIcon(
+                            title: 'Track Run',
+                            icon: Icons.directions_run,
+                          ),
+                          ServiceIcon(
+                            title: 'All',
+                            icon: Icons.all_inclusive_outlined,
+                          ),
                         ],
                       ),
                     ),
@@ -112,7 +120,11 @@ class ServiceIcon extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const ServiceIcon({super.key, required this.title, required this.icon});
+  const ServiceIcon({
+    super.key,
+    required this.title,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -230,14 +242,19 @@ class ServiceIcon extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.3),
+            backgroundColor:
+                Theme.of(context).colorScheme.primary.withOpacity(0.3),
             radius: 30,
-            child: Icon(icon,
-                size: 40,
-                color: Theme.of(context).primaryColor.withOpacity(0.7)),
+            child: Icon(
+              icon,
+              size: 40,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            ),
           ),
           const SizedBox(height: 8),
-          Text(title, style: const TextStyle(color: Colors.black)),
+          Text(
+            title,
+          ),
         ],
       ),
     );

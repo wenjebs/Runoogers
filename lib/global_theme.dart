@@ -16,17 +16,16 @@ class GlobalThemeData {
       focusColor: focusColor,
       secondaryHeaderColor: Colors.white,
       textTheme: TextTheme(
-        displayLarge: const TextStyle(
-          fontSize: 72,
-          fontWeight: FontWeight.bold,
-        ),
-        titleLarge: GoogleFonts.oswald(
-          fontSize: 30,
-          fontStyle: FontStyle.italic,
+        displayLarge: GoogleFonts.roboto(
+          fontSize: 40,
           color: colorScheme.secondary,
         ),
-        bodyMedium: GoogleFonts.merriweather(),
-        displaySmall: GoogleFonts.pacifico(),
+        titleLarge: GoogleFonts.roboto(
+          fontSize: 30,
+          color: colorScheme.secondary,
+        ),
+        bodyMedium: GoogleFonts.roboto(),
+        displaySmall: GoogleFonts.roboto(),
       ),
     );
   }
@@ -43,8 +42,8 @@ class GlobalThemeData {
     brightness: Brightness.light,
   );
   static const ColorScheme darkColorScheme = ColorScheme(
-    primary: Color.fromARGB(255, 90, 8, 8),
-    secondary: Color(0xFF4D1F7C),
+    primary: Color.fromARGB(255, 252, 76, 2),
+    secondary: Color.fromARGB(255, 255, 255, 255),
     surface: Color.fromARGB(255, 0, 0, 0),
     error: Colors.redAccent,
     onError: Colors.white,

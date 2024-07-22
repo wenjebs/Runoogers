@@ -10,7 +10,7 @@ class RunStatsPage extends ConsumerWidget {
     final userInfoAsyncValue = ref.watch(userInformationProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface.withAlpha(240),
       body: userInfoAsyncValue.when(
         data: (snapshot) {
           if (snapshot != null) {
@@ -90,10 +90,20 @@ class StatCard extends StatelessWidget {
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        tileColor: Theme.of(context).colorScheme.secondary,
         leading: Icon(icon, color: Theme.of(context).primaryColor),
         title: Text(title, style: const TextStyle(color: Colors.black)),
-        trailing: Text(value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        trailing: Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
       ),
     );
   }
