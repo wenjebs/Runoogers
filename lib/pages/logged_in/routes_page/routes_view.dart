@@ -19,9 +19,6 @@ class _RoutesViewState extends State<RoutesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved Routes'),
-      ),
       body: FutureBuilder(
         future: widget.repository.getSavedRoutes(),
         builder: (context, snapshot) {
@@ -31,6 +28,11 @@ class _RoutesViewState extends State<RoutesView> {
             );
           } else {
             List<RouteModel> routes = snapshot.data!;
+            if (routes.isEmpty) {
+              return const Center(
+                child: Text("No routes saved yet."),
+              );
+            }
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
