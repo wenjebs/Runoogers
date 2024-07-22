@@ -65,12 +65,24 @@ class StoryTileWithImage extends StatelessWidget {
                 SizedBox(
                   child: image,
                 ),
+
+                // TODO change this description
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    description,
+                    style: GoogleFonts.roboto(
+                      fontSize: 13,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
               ],
             ),
             active
                 ? Positioned(
-                    bottom: 50,
-                    right: 3,
+                    bottom: 10,
+                    left: 10,
                     child: Container(
                       padding:
                           const EdgeInsets.all(2), // Adjust padding as needed
@@ -80,7 +92,7 @@ class StoryTileWithImage extends StatelessWidget {
                       ),
                       child: const Padding(
                         padding: EdgeInsets.all(4.0),
-                        child: Text("Active quest"),
+                        child: Text("This quest is currently active!"),
                       ),
                     ),
                   )
