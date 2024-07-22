@@ -87,8 +87,11 @@ class UserPageState extends State<UserPage> {
                       ),
                     ),
                     Expanded(
-                        child: SocialMediaPage(Repository(),
-                            showFloatingActionButton: false)),
+                      child: SocialMediaPage(
+                        Repository(),
+                        showFloatingActionButton: false,
+                      ),
+                    ),
                   ],
                 ),
               ),

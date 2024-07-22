@@ -37,116 +37,126 @@ class SocialMediaPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            floating: true,
-            pinned: false,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _captionController,
-                          decoration: const InputDecoration(
-                            hintText: "What's on your mind?",
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 40),
+      body: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              floating: true,
+              pinned: false,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _captionController,
+                            decoration: const InputDecoration(
+                              hintText: "What's on your mind?",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 40,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.send,
-                          color: Theme.of(context).colorScheme.primary,
+                        IconButton(
+                          icon: Icon(
+                            Icons.send,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          onPressed: addPost,
                         ),
-                        onPressed: addPost,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
+              expandedHeight: 120.0,
             ),
-            expandedHeight: 120.0,
-          ),
-          friendUids.when(
-            data: (friendUids) => SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return StreamBuilder<QuerySnapshot>(
-                    stream: GetUserPostService().getPosts(friendUids),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      final posts = snapshot.data!.docs.map((doc) {
-                        final data = doc.data() as Map<String, dynamic>;
-                        return Post(
-                          id: data['id'] ?? '',
-                          userId: data['userId'] ?? '',
-                          caption: data['caption'] ?? '',
-                          likes: data['likes'] ?? 0,
-                          timestamp: data['timestamp'] ?? Timestamp.now(),
-                          achievementDescription: data[
-                              'achievementDescription'], // No need for ??, null is acceptable
-                          achievementTitle: data[
-                              'achievementTitle'], // Assuming these can also be null
-                          achievementImageUrl: data['achievementImageUrl'],
-                          achievementPoints: data['achievementPoints'],
-                          runImageUrl: data['runImageUrl'],
-                          rank: data['rank'],
-                          leaderboardPoints: data['points'],
-                          username: data['username'],
-                        );
-                      }).toList();
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index];
-                          return RunningPost(
-                            repository,
-                            post: post,
+            friendUids.when(
+              data: (friendUids) => SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: GetUserPostService().getPosts(friendUids),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
-                        },
-                      );
-                    },
-                  );
-                },
-                childCount: 1,
+                        }
+                        final posts = snapshot.data!.docs.map((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          return Post(
+                            id: data['id'] ?? '',
+                            userId: data['userId'] ?? '',
+                            caption: data['caption'] ?? '',
+                            likes: data['likes'] ?? 0,
+                            timestamp: data['timestamp'] ?? Timestamp.now(),
+                            achievementDescription: data[
+                                'achievementDescription'], // No need for ??, null is acceptable
+                            achievementTitle: data[
+                                'achievementTitle'], // Assuming these can also be null
+                            achievementImageUrl: data['achievementImageUrl'],
+                            achievementPoints: data['achievementPoints'],
+                            runImageUrl: data['runImageUrl'],
+                            rank: data['rank'],
+                            leaderboardPoints: data['points'],
+                            username: data['username'],
+                          );
+                        }).toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index];
+                            return RunningPost(
+                              repository,
+                              post: post,
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  childCount: 1,
+                ),
+              ),
+              loading: () => const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, stackTrace) => SliverFillRemaining(
+                child: Center(child: Text('Error: $error')),
               ),
             ),
-            loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (error, stackTrace) => SliverFillRemaining(
-              child: Center(child: Text('Error: $error')),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
