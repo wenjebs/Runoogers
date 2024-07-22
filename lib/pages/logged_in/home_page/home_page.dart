@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       case 3:
         return "My Feed";
       case 4:
-        return "Story";
+        return "Stories";
       case 5:
         return "Training";
       case 6:
