@@ -136,9 +136,12 @@ class StoryPage extends ConsumerWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    "Active Quests",
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  child: Icon(
+                    Icons.directions_run,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),

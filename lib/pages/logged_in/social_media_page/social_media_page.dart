@@ -41,7 +41,7 @@ class SocialMediaPage extends ConsumerWidget {
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             floating: true,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
@@ -49,7 +49,8 @@ class SocialMediaPage extends ConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color:
+                        Theme.of(context).colorScheme.surface.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(20.0),
                     boxShadow: [
                       BoxShadow(
@@ -75,7 +76,10 @@ class SocialMediaPage extends ConsumerWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.send, color: Colors.blue),
+                        icon: Icon(
+                          Icons.send,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         onPressed: addPost,
                       ),
                     ],

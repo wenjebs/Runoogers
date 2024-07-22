@@ -26,7 +26,10 @@ class PausedPage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           automaticallyImplyLeading: false,
-          title: const Text('Run Paused'),
+          title: Text(
+            'Run Paused',
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         ),
         body: Center(
           child: Column(
@@ -40,11 +43,11 @@ class PausedPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       PausedDistanceDisplay(locationService: locationService),
-                      const SizedBox(
+                      SizedBox(
                         height: 100,
                         child: VerticalDivider(
                           thickness: 2,
-                          color: Color.fromARGB(32, 0, 0, 0),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       PausedPaceDisplay(
@@ -56,6 +59,9 @@ class PausedPage extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
                 onPressed: () {
                   // Resume Stopwatch
                   _stopWatchTimer.onStartTimer();
@@ -65,7 +71,10 @@ class PausedPage extends StatelessWidget {
 
                   Navigator.of(context).pop();
                 },
-                child: const Text('Resume'),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.play_arrow),
+                ),
               ),
             ],
           ),
@@ -88,7 +97,11 @@ class PausedPaceDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
+      padding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 8.0,
+        right: 32.0,
+      ),
       child: Column(
         children: [
           const Text('Pace'),

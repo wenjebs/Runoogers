@@ -81,7 +81,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
             width: 200,
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Center(
@@ -124,7 +124,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                     width: MediaQuery.of(context).size.width -
                         (widget.paddingValue * 2),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     ////////////////////////////////////////
@@ -149,10 +149,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                             ////////////////////
                             Column(
                               children: [
-                                const Text(
+                                Text(
                                   'Distance',
                                   style: TextStyle(
-                                    color: Color.fromARGB(92, 0, 0, 0),
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontSize: 15,
                                     fontFamily: 'Helvetica',
                                     fontWeight: FontWeight.bold,
@@ -181,10 +182,13 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                               ],
                             ),
 
-                            const SizedBox(
+                            SizedBox(
                               height: 80,
                               child: VerticalDivider(
-                                color: Color.fromARGB(25, 0, 0, 0),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withAlpha(100),
                                 thickness: 2,
                               ),
                             ),
@@ -329,7 +333,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                   // Show a new page of current stats
                                   showModalBottomSheet(
                                     clipBehavior: Clip.antiAlias,
-                                    shape: RoundedRectangleBorder(
+                                    shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(20),
                                         topRight: Radius.circular(20),
@@ -567,10 +571,12 @@ class TimeDisplayWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           child: Text(
                             displayTime,
-                            style: const TextStyle(
-                                fontSize: 70,
-                                fontFamily: 'Helvetica',
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 70,
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         ),
                       ],
@@ -599,10 +605,10 @@ class PaceDisplayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
+        Text(
           'Pace',
           style: TextStyle(
-            color: Color.fromARGB(92, 0, 0, 0),
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 15,
             fontFamily: 'Helvetica',
             fontWeight: FontWeight.bold,

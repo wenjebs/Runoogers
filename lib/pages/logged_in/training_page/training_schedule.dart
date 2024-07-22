@@ -20,12 +20,20 @@ class TrainingSchedule extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Week ${week['week_number']}',
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Week ${week['week_number']}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    Text('Total distance: ${week['total_distance_km']} km',
-                        style: const TextStyle(fontSize: 18)),
+                    Text(
+                      'Total distance: ${week['total_distance_km']} km',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 4),
                     // Text(
                     //     'Running days: ${week['running_days']}',
@@ -56,6 +64,8 @@ class TrainingSchedule extends StatelessWidget {
                             break;
                         }
                         return Card(
+                          elevation: 2,
+                          color: Theme.of(context).colorScheme.surface,
                           margin: const EdgeInsets.only(bottom: 8),
                           child: ListTile(
                             leading: Icon(icon),
