@@ -95,20 +95,18 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
             ),
           )
         : isHidden
-            ? FilledButton(
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.paddingValue / 4,
-                      ),
-                    ),
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: FloatingActionButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
                   ),
+                  key: const Key("showRunDetailsButton"),
+                  onPressed: () {
+                    ref.read(runDetailsProvider.notifier).showHideRunDetails();
+                  },
+                  child: const Icon(Icons.keyboard_arrow_up),
                 ),
-                onPressed: () {
-                  ref.read(runDetailsProvider.notifier).showHideRunDetails();
-                },
-                child: const Text("Show Details"),
               )
             : Animate(
                 effects: [
@@ -127,8 +125,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                         (widget.paddingValue * 2),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(widget.paddingValue / 2),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     ////////////////////////////////////////
                     // DISPLAY DISTANCE TIME AND PACE
@@ -138,47 +135,56 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ////////////////////
-                        // DISPLAY DISTANCE
+                        // Display time
                         ////////////////////
-                        Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 20.0),
-                              child: Text(
-                                'DISTANCE',
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Text(
-                                '${widget.locationService.distanceTravelled.toStringAsFixed(2)} km',
-                                style: const TextStyle(
-                                  fontSize: 40,
-                                  fontFamily: 'Helvetica',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                        TimeDisplayWidget(
+                          stopWatchTimer: widget._stopWatchTimer,
                         ),
+                        ////////////////////
 
-                        const Divider(
-                          color: Colors.black,
-                          thickness: 2,
-                          endIndent: 50,
-                          indent: 50,
-                        ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            // DISPLAY DISTANCE
                             ////////////////////
-                            // Display time
-                            ////////////////////
-                            TimeDisplayWidget(
-                                stopWatchTimer: widget._stopWatchTimer),
+                            Column(
+                              children: [
+                                const Text(
+                                  'Distance',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(92, 0, 0, 0),
+                                    fontSize: 15,
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        widget.locationService.distanceTravelled
+                                            .toStringAsFixed(2),
+                                        style: const TextStyle(
+                                          fontSize: 40,
+                                          fontFamily: 'Helvetica',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Text(
+                                        " km",
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
                             const SizedBox(
-                              height: 60,
+                              height: 80,
                               child: VerticalDivider(
-                                color: Colors.black,
+                                color: Color.fromARGB(25, 0, 0, 0),
                                 thickness: 2,
                               ),
                             ),
@@ -298,7 +304,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                   }
                                 },
                                 key: const Key("stopRunButton"),
-                                child: const Text("Stop Run"),
+                                child: const Icon(Icons.stop),
                               ),
                             ),
 
@@ -321,17 +327,24 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                   // Pause Location Tracking
                                   LocationService.pauseLocationTracking();
                                   // Show a new page of current stats
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PausedPage(
-                                        stopWatchTimer: widget._stopWatchTimer,
-                                        locationService: widget.locationService,
+                                  showModalBottomSheet(
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
                                       ),
                                     ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return PausedPage(
+                                        stopWatchTimer: widget._stopWatchTimer,
+                                        locationService: widget.locationService,
+                                      );
+                                    },
                                   );
                                 },
-                                child: const Text("Pause"),
+                                child: const Icon(Icons.pause),
                               ),
                             ),
 
@@ -353,7 +366,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                       .read(runDetailsProvider.notifier)
                                       .showHideRunDetails();
                                 },
-                                child: const Text("Hide Details"),
+                                child: const Icon(Icons.keyboard_arrow_down),
                               ),
                             ),
                           ],
@@ -532,16 +545,9 @@ class TimeDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 30.0,
-        top: 20,
-        right: 10,
-      ),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const Text(
-            'TIME',
-          ),
           Column(
             children: [
               /// Display stop watch time
@@ -562,7 +568,7 @@ class TimeDisplayWidget extends StatelessWidget {
                           child: Text(
                             displayTime,
                             style: const TextStyle(
-                                fontSize: 40,
+                                fontSize: 70,
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.bold),
                           ),
@@ -591,30 +597,30 @@ class PaceDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 20,
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'PACE',
+    return Column(
+      children: [
+        const Text(
+          'Pace',
+          style: TextStyle(
+            color: Color.fromARGB(92, 0, 0, 0),
+            fontSize: 15,
+            fontFamily: 'Helvetica',
+            fontWeight: FontWeight.bold,
           ),
-          StreamBuilder<int>(
-              stream: _stopWatchTimer.rawTime,
-              initialData: _stopWatchTimer.rawTime.value,
-              builder: (context, snap) {
-                // debugPrint((snap.data! / 1000).toString());
-                final value = snap.data!;
-                final currentTime = value;
-                return PaceWidget(
-                  locationService: locationService,
-                  currentTime: currentTime,
-                );
-              }),
-        ],
-      ),
+        ),
+        StreamBuilder<int>(
+            stream: _stopWatchTimer.rawTime,
+            initialData: _stopWatchTimer.rawTime.value,
+            builder: (context, snap) {
+              // debugPrint((snap.data! / 1000).toString());
+              final value = snap.data!;
+              final currentTime = value;
+              return PaceWidget(
+                locationService: locationService,
+                currentTime: currentTime,
+              );
+            }),
+      ],
     );
   }
 }

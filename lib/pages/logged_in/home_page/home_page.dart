@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
               ? null
               : AppBar(
                   automaticallyImplyLeading: false,
-                  centerTitle: true,
+                  centerTitle: false,
                   actions: _selectedIndex == 2
                       ? [
                           IconButton(
@@ -120,21 +121,26 @@ class _HomePageState extends State<HomePage> {
                       : _selectedIndex == 3
                           ? [
                               IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddFriendsPage(
-                                                repository: Repository(),
-                                              )),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                      Icons.person_add)), // Add Friend Icon
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddFriendsPage(
+                                        repository: Repository(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.person_add),
+                              ), // Add Friend Icon
                             ]
                           : [],
                   title: Text(
                     getTitle(_selectedIndex),
+                    style: GoogleFonts.roboto(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
