@@ -1,189 +1,319 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:runningapp/pages/logged_in/run_page/location_service.dart';
+import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/route_model.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/draw_poly_line.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/google_maps_container.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
+import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/providers.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class RunPage extends StatefulWidget {
-  const RunPage({super.key});
+import 'map_and_location_logic/loading_map.dart';
+import 'components/run_detail_and_stop.dart';
+
+class RunPage extends ConsumerStatefulWidget {
+  final Repository repository;
+  final bool storyRun;
+  final String title;
+
+// possible route
+  final RouteModel? route;
+  // quest fields
+  final double? questDistance;
+  final String? activeStoryTitle;
+  final QuestProgressModel? questProgress;
+  final int? currentQuest;
+
+  final LocationService locationService;
+
+  final Position? currPos;
+
+  const RunPage({
+    super.key,
+    this.route,
+    required this.storyRun,
+    required this.title,
+    this.activeStoryTitle,
+    this.questProgress,
+    this.questDistance,
+    this.currentQuest,
+    required this.repository,
+    required this.locationService,
+    this.currPos,
+  });
 
   @override
-  State<RunPage> createState() {
+  ConsumerState<RunPage> createState() {
     return _RunPageState();
   }
 }
 
-class _RunPageState extends State<RunPage> {
-  final Completer<GoogleMapController> _controller = Completer();
-  final LocationService locationService = LocationService();
-  Position? currentPosition;
-  StreamSubscription? _positionSubscription;
-  List<LatLng> polylineCoordinates = [];
+class _RunPageState extends ConsumerState<RunPage> {
+  // Is this a run initiated from story page?
+  bool storyRun = false;
+  // Current Position
+  Position? currPos;
+  // Intiaise Google Map Container
+  final GoogleMapsContainer googleMapsContainer = GoogleMapsContainer();
 
+  // Initialise stopwatch
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer(
+    mode: StopWatchMode.countUp,
+  );
+
+  // icons for start, end, current
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon =
       BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure);
 
-  PointLatLng starttest =
-      const PointLatLng(1.38421039476496, 103.7428801911649);
-  PointLatLng startend =
-      const PointLatLng(1.3847101970640396, 103.75290227627711);
-
-  void getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        dotenv.env['MAPS_API_KEY']!, starttest, startend);
-
-    if (result.points.isNotEmpty) {
-      for (PointLatLng point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      }
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void getCurrentLocation() async {
-    Position newPosition = await Geolocator.getCurrentPosition();
-    currentPosition = newPosition;
-    if (mounted) {
-      setState(() {});
-    }
-    GoogleMapController mapController = await _controller.future;
-
-    const LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
-
-    _positionSubscription =
-        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-      (newPosition) {
-        currentPosition = newPosition;
-        CameraPosition newCameraPosition = CameraPosition(
-            zoom: 18,
-            target: LatLng(newPosition.latitude, newPosition.longitude));
-        mapController
-            .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
-        if (mounted) {
-          setState(() {});
-        }
-      },
-    );
-  }
+  // Constants
+  static const double zoomLevel = 18;
+  static const int polylineWidth = 6;
+  static const double paddingValue = 24;
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
-    getPolyPoints();
+    if (widget.currPos != null) {
+      currPos = widget.currPos;
+    }
+    LocationService.initialize();
+    storyRun = widget.storyRun;
+    checkPermission();
+    widget.locationService.listenToLocationChangesBeforeStart(
+      (newPos) => {
+        if (mounted)
+          {
+            setState(
+              () {
+                currPos = newPos;
+              },
+            )
+          }
+      },
+    );
+    init();
   }
 
-  void printLocation() {
-    locationService.getUserLocation().then((value) async {
-      if (kDebugMode) {
-        print('My Location');
-        print('${value.latitude} ${value.longitude}');
-      }
+  Future<void> checkPermission() async {
+    await widget.locationService.checkPermission();
+  }
+
+  init() async {
+    // debugPrint("run_page : getting initial position");
+    Position? initialPosition = await Geolocator.getLastKnownPosition();
+    setState(() {
+      // debugPrint("run_page : getting initial position done");
+      currPos = initialPosition;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isRunning = ref.watch(timerProvider);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Track run",
-            style: TextStyle(color: Colors.black, fontSize: 16)),
-      ),
-      body: currentPosition == null
-          ? const Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text("Loading"),
-                  ),
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )
-          : SafeArea(
-              child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentPosition!.latitude, currentPosition!.longitude),
-                zoom: 14,
-              ),
-              polylines: {
-                Polyline(
-                  polylineId: const PolylineId("route"),
-                  points: polylineCoordinates,
-                  color: Colors.red,
-                  width: 6,
+      appBar: storyRun
+          ? isRunning
+              ? AppBar(
+                  centerTitle: true,
+                  title: const Text(
+                    "Running",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ))
+              : AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    widget.title,
+                    style: const TextStyle(color: Colors.black, fontSize: 16),
+                  ))
+          : null,
+      body: currPos == null
+          ? widget.locationService.locationServiceEnabled
+              ? widget.locationService.connectivity
+                      .contains(ConnectivityResult.none)
+                  ? const Text("NO internet!") // TODO make nicer
+                  : const LoadingMap()
+              : DisabledLocationWidget(
+                  callback: setState,
+                  locationService: widget.locationService,
                 )
-              },
-              mapType: MapType.normal,
-              markers: {
-                Marker(
-                    icon: sourceIcon,
-                    markerId: const MarkerId("start"),
-                    position: LatLng(starttest.latitude, starttest.longitude)),
-                Marker(
-                    icon: destinationIcon,
-                    markerId: const MarkerId("end"),
-                    position: LatLng(startend.latitude, startend.longitude)),
-                Marker(
-                  icon: currentIcon,
-                  markerId: const MarkerId("current"),
-                  position: LatLng(
-                      currentPosition!.latitude, currentPosition!.longitude),
-                ),
-              },
-              onMapCreated: (GoogleMapController controller) {
-                if (mounted) {
-                  setState(() {
-                    _controller.complete(controller);
-                  });
-                }
-              },
-            )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("pressed");
-          printLocation();
+          : SafeArea(
+              child: Builder(builder: (context) {
+                return GoogleMap(
+                  myLocationEnabled: true,
+                  zoomControlsEnabled: false,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(currPos!.latitude, currPos!.longitude),
+                    zoom: zoomLevel,
+                  ),
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId("draw"),
+                      points: MapLineDrawer.polylineCoordinates,
+                      color: Colors.red,
+                      width: polylineWidth,
+                    ),
+                    widget.route != null
+                        ? Polyline(
+                            polylineId: const PolylineId("route"),
+                            points: widget.route!.getPolylinePoints.toList(),
+                            color: Colors.blue,
+                            width: 2,
+                          )
+                        : const Polyline(
+                            polylineId: PolylineId("route"),
+                            color: Colors.blue,
+                            width: 2,
+                          ),
+                  },
+                  mapType: MapType.normal,
+                  markers: {
+                    Marker(
+                      icon: currentIcon,
+                      markerId: const MarkerId("current"),
+                      position: LatLng(currPos!.latitude, currPos!.longitude),
+                    ),
+                  },
+                  onMapCreated: (GoogleMapController controller) {
+                    if (mounted) {
+                      setState(() {
+                        Completer<GoogleMapController> mapCompleter =
+                            GoogleMapsContainer.controller;
+                        if (!mapCompleter.isCompleted) {
+                          googleMapsContainer.complete(controller);
+                        }
+                        // googleMapsContainer.complete(controller);
+                      });
+                    }
+                  },
+                );
+              }),
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Consumer(
+        builder: (context, ref, child) {
+          final isRunning = ref.watch(timerProvider);
+          return currPos == null
+              ? const SizedBox()
+              : isRunning
+                  ? Animate(
+                      effects: [
+                        SlideEffect(
+                            duration: 500.ms,
+                            begin: const Offset(0, 1),
+                            end: const Offset(0, 0)),
+                      ],
+                      child: RunDetailsAndStop(
+                        locationService: widget.locationService,
+                        widget.repository,
+                        paddingValue: paddingValue,
+                        stopWatchTimer: _stopWatchTimer,
+                        context: context,
+                        mapContainer: googleMapsContainer,
+                        questProgress: widget.questProgress,
+                        activeStory: widget.activeStoryTitle,
+                        storyRun: storyRun,
+                      ),
+                    )
+                  : FloatingActionButton.large(
+                      onPressed: () {
+                        // update the state of running
+                        ref.read(timerProvider.notifier).startStopTimer();
+
+                        // start the timer
+                        _stopWatchTimer.onStartTimer();
+
+                        // start location tracking
+                        LocationService.reset();
+                        LocationService.initialize();
+                        widget.locationService.listenToLocationChanges(
+                          (Position newPos) => setState(() {
+                            currPos = newPos;
+                          }),
+                          GoogleMapsContainer.controller,
+                          true,
+                          storyRun,
+                          widget.questDistance,
+                          widget.activeStoryTitle,
+                          widget.currentQuest,
+                        );
+
+                        if (storyRun) {
+                          LocationService.playBGMusic(
+                            widget.activeStoryTitle,
+                            widget.currentQuest,
+                          );
+                          LocationService.playEventAudio(
+                              "lib/assets/audio/${widget.activeStoryTitle}${widget.currentQuest! + 1}/${widget.activeStoryTitle}start.mp3");
+                        }
+                      },
+                      shape: const CircleBorder(),
+                      key: const Key('startButton'),
+                      child: const Text(
+                        "Start",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
         },
-        child: const Icon((Icons.radio_button_off)),
       ),
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const Scaffold(
-  //     body: Text("Hey!"),
-  //   );
-  // }
-
   @override
   void dispose() {
+    super.dispose();
+    // reset location services
+    LocationService.reset();
+
     // Release Google Map Controller
-    _controller.future.then((controller) {
-      controller.dispose();
-    });
+    googleMapsContainer.dispose();
 
     // Clear polylines and markers
-    polylineCoordinates.clear();
+    MapLineDrawer.clear();
 
-// Cancel Stream subscription
-    _positionSubscription?.cancel();
-    super.dispose();
+    _stopWatchTimer.dispose();
+  }
+}
+
+class DisabledLocationWidget extends StatelessWidget {
+  final Function callback;
+  final LocationService locationService;
+
+  const DisabledLocationWidget({
+    super.key,
+    required this.callback,
+    required this.locationService,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Location services are disabled!"),
+          const Text("Please enable location services to continue."),
+          ElevatedButton(
+              onPressed: () {
+                locationService.openLocationSettings();
+                // locationService.checkPermission();
+                debugPrint("setstate of run page after enable pressed");
+                callback(() {});
+              },
+              child: const Text("Enable Location Services")),
+        ],
+      ),
+    );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProfileDetails extends StatelessWidget {
-  const ProfileDetails({
-    super.key,
-  });
+  final String name;
+  final String username;
+  const ProfileDetails({super.key, required this.name, required this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -12,59 +12,23 @@ class ProfileDetails extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
               children: [
-                Text("Total Progress"),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 24,
+                Text(
+                  name,
+                  style: Theme.of(context).textTheme.headlineLarge,
                 ),
+                Text(
+                  "@$username",
+                )
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(),
-                child: const Text(
-                    "Distance: 100km"), // TODO : MAKE IT FROM DATABASE!!!!!
-              ),
-              const SizedBox(
-                height: 30,
-                child: VerticalDivider(
-                    width: 20, thickness: 1, color: Colors.teal),
-              ),
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: const Text(
-                    "Calories: 1.5kcal"), // TODO : MAKE IT FROM DATABASE!!!!!
-              ),
-              const SizedBox(
-                height: 30,
-                child: VerticalDivider(
-                    width: 20, thickness: 1, color: Colors.teal),
-              ),
-              Container(
-                padding: const EdgeInsets.all(2.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: const Text(
-                    "Time: 121hrs"), // TODO : MAKE IT FROM DATABASE!!!!!
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
