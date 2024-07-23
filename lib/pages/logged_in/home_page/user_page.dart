@@ -96,18 +96,6 @@ class UserPageState extends State<UserPage> {
                 ),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PostCreationPage(
-                            repository: widget.repository,
-                          )),
-                );
-              },
-              child: const Icon(Icons.add),
-            ),
           );
         } else {
           return const Scaffold(

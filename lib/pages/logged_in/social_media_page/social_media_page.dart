@@ -37,16 +37,12 @@ class SocialMediaPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      body: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: CustomScrollView(
-          slivers: [
+      body: CustomScrollView(
+        slivers: [
+          if (showFloatingActionButton) ...[
             SliverAppBar(
               automaticallyImplyLeading: false,
-              backgroundColor: Theme.of(context).colorScheme.surface,
+              backgroundColor: Colors.white,
               floating: true,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -54,17 +50,14 @@ class SocialMediaPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surface
-                          .withOpacity(0.5),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 5,
-                          offset: const Offset(0, 3),
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -78,17 +71,12 @@ class SocialMediaPage extends ConsumerWidget {
                               hintStyle: TextStyle(color: Colors.grey),
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 40,
-                              ),
+                                  horizontal: 20, vertical: 40),
                             ),
                           ),
                         ),
                         IconButton(
-                          icon: Icon(
-                            Icons.send,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          icon: const Icon(Icons.send, color: Colors.blue),
                           onPressed: addPost,
                         ),
                       ],
@@ -98,65 +86,65 @@ class SocialMediaPage extends ConsumerWidget {
               ),
               expandedHeight: 120.0,
             ),
-            friendUids.when(
-              data: (friendUids) => SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return StreamBuilder<QuerySnapshot>(
-                      stream: GetUserPostService().getPosts(friendUids),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        final posts = snapshot.data!.docs.map((doc) {
-                          final data = doc.data() as Map<String, dynamic>;
-                          return Post(
-                            id: data['id'] ?? '',
-                            userId: data['userId'] ?? '',
-                            caption: data['caption'] ?? '',
-                            likes: data['likes'] ?? 0,
-                            timestamp: data['timestamp'] ?? Timestamp.now(),
-                            achievementDescription: data[
-                                'achievementDescription'], // No need for ??, null is acceptable
-                            achievementTitle: data[
-                                'achievementTitle'], // Assuming these can also be null
-                            achievementImageUrl: data['achievementImageUrl'],
-                            achievementPoints: data['achievementPoints'],
-                            runImageUrl: data['runImageUrl'],
-                            rank: data['rank'],
-                            leaderboardPoints: data['points'],
-                            username: data['username'],
-                          );
-                        }).toList();
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            final post = posts[index];
-                            return RunningPost(
-                              repository,
-                              post: post,
-                            );
-                          },
+          ],
+          friendUids.when(
+            data: (friendUids) => SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: GetUserPostService().getPosts(friendUids),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    );
-                  },
-                  childCount: 1,
-                ),
-              ),
-              loading: () => const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (error, stackTrace) => SliverFillRemaining(
-                child: Center(child: Text('Error: $error')),
+                      }
+                      final posts = snapshot.data!.docs.map((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return Post(
+                          id: data['id'] ?? '',
+                          userId: data['userId'] ?? '',
+                          caption: data['caption'] ?? '',
+                          likes: data['likes'] ?? 0,
+                          timestamp: data['timestamp'] ?? Timestamp.now(),
+                          achievementDescription: data[
+                              'achievementDescription'], // No need for ??, null is acceptable
+                          achievementTitle: data[
+                              'achievementTitle'], // Assuming these can also be null
+                          achievementImageUrl: data['achievementImageUrl'],
+                          achievementPoints: data['achievementPoints'],
+                          runImageUrl: data['runImageUrl'],
+                          rank: data['rank'],
+                          leaderboardPoints: data['points'],
+                          username: data['username'],
+                        );
+                      }).toList();
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return RunningPost(
+                            repository,
+                            post: post,
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                childCount: 1,
               ),
             ),
-          ],
-        ),
+            loading: () => const SliverFillRemaining(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (error, stackTrace) => SliverFillRemaining(
+              child: Center(child: Text('Error: $error')),
+            ),
+          ),
+        ],
       ),
     );
   }
