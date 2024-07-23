@@ -59,7 +59,7 @@ class ProfilePage extends ConsumerWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -101,7 +101,12 @@ class ProfilePage extends ConsumerWidget {
 
           // Button to alternate run or achievement section
           const RunAchievementButton(),
-
+          Divider(
+            color: Theme.of(context).colorScheme.brightness == Brightness.light
+                ? const Color.fromARGB(255, 236, 236, 236)
+                : const Color.fromARGB(255, 15, 15, 15),
+            thickness: 2,
+          ),
           // Run or Achievement section
 
           Consumer(builder: (context, ref, child) {
