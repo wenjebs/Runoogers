@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerWidget {
     int runsCount = 0;
 
     if (runsSnapshot is AsyncData<QuerySnapshot<Object?>>) {
-      runsCount = runsSnapshot.value!.docs.length;
+      runsCount = runsSnapshot.value.docs.length;
     } else {}
     final friendsCount = (userInfo?['friends'] as List?)?.length ?? 69;
 
@@ -35,13 +35,16 @@ class ProfilePage extends ConsumerWidget {
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           // Profile hero
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+          Material(
+            elevation: 10,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: const ProfileHero(),
             ),
-            child: const ProfileHero(),
           ),
 
           // Profile details
