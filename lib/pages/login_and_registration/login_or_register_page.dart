@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
 
 import 'login_page.dart';
 import 'register_page.dart';
@@ -19,7 +17,6 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   // toggle between login , register
   void togglePages() {
     setState(() {
-      debugPrint('login/rgeister: Toggling pages');
       showLoginPage = !showLoginPage;
     });
   }
@@ -28,12 +25,11 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   Widget build(BuildContext context) {
     if (showLoginPage) {
       return LoginPage(
-        repository: Repository(),
-        authenticator: Authenticator(),
+        onTap: togglePages,
       );
     } else {
       return RegisterPage(
-        repository: Repository(),
+        onTap: togglePages,
       );
     }
   }

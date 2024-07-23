@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runningapp/pages/logged_in/profile_page/activities_page/runs_logged_page.dart';
 
 class ProfileSettings extends StatelessWidget {
   const ProfileSettings({
@@ -37,19 +36,10 @@ class ProfileSettings extends StatelessWidget {
                     indent: 20,
                     endIndent: 20,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RunsLoggedPage()),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(),
-                      child: const Text("Runs"),
-                    ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: const BoxDecoration(),
+                    child: const Text("????"),
                   ),
                   Divider(
                     color: Colors.black.withOpacity(0.2),

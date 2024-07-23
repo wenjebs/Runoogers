@@ -1,23 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/login_and_registration/components/login_tiles.dart';
-import 'package:runningapp/pages/login_and_registration/forgot_password.dart';
-import 'package:runningapp/pages/login_and_registration/register_page.dart';
-import 'package:runningapp/state/backend/authenticator.dart';
-import 'components/auth_buttons.dart';
-import 'components/auth_textfields.dart';
+import '../../components/my_button.dart';
+import '../../components/my_textfield.dart';
 
 class LoginPage extends StatefulWidget {
-  final Authenticator authenticator;
-
-  final Repository repository;
-  const LoginPage({
-    super.key,
-    required this.authenticator,
-    required this.repository,
-  });
+  final Function()? onTap;
+  const LoginPage({super.key, required this.onTap});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -25,108 +14,46 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
-  final emailRegex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
 
   void signUserIn() async {
-    // Check if the email matches the regex pattern
-    if (!emailRegex.hasMatch(emailController.text)) {
-      // If the email format is invalid, show an error message
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Invalid Email'),
-            content: const Text('Please enter a valid email address.'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return; // Do not proceed with the sign-in process
-    }
-
-    if (passwordController.text.isEmpty) {
-      // If the email format is invalid, show an error message
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('No password!'),
-            content: const Text('Please enter a password'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return; // Do not proceed with the sign-in process
-    }
-
     //loading circle
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return const Center(
           child: CircularProgressIndicator(),
         );
       },
     );
     try {
-      await widget.authenticator.loginWithEmailAndPassword(
-        emailController.text,
-        passwordController.text,
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
       );
       // pop the load circle
+      // if (mounted) {
       Navigator.pop(context);
+      // }
     } on FirebaseAuthException catch (e) {
       // pop the load circle
+      // if (mounted) {
       Navigator.pop(context);
+      // }
       // show error message
-      String message = getErrorMessage(e.code);
-      showErrorMessage(message);
+      showErrorMessage(e.code);
     } on PlatformException catch (e) {
       // pop the load circle
+      // if (mounted) {
       Navigator.pop(context);
+      // }
       // show error message
-      showErrorMessage(e.message!);
-      // print("sike im here");
+      showErrorMessage(e.code);
+      print("sike im here");
+    } catch (e) {
+      print("im here");
     }
-  }
-
-  String getErrorMessage(String errorCode) {
-    String errorMessage;
-
-    switch (errorCode) {
-      case 'invalid-credential':
-        errorMessage = 'The email address or password is not valid.';
-      case 'invalid-email':
-        errorMessage = 'The email address is not valid.';
-      case 'user-disabled':
-        errorMessage = 'This user has been disabled.';
-      case 'user-not-found':
-        errorMessage = 'No user found with this email.';
-      case 'wrong-password':
-        errorMessage = 'Wrong password provided.';
-      case 'network-request-failed':
-        errorMessage = 'Check your internet connection and try again.';
-      default:
-        errorMessage = 'An unexpected error occurred. Please try again.';
-    }
-
-    return errorMessage;
   }
 
   // error message
@@ -149,188 +76,150 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Container(
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage("lib/assets/images/running.jpg"),
-          fit: BoxFit.cover,
-        )),
-        child: Scaffold(
-          backgroundColor: Colors.white.withOpacity(0.8),
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 50),
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage("lib/images/running.jpg"),
+        fit: BoxFit.cover,
+      )),
+      child: Scaffold(
+        backgroundColor: const Color(0xC9EEF7FF),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 50),
 
-                    // logo
-                    const Icon(
-                      Icons.directions_run,
-                      size: 100,
+                  // logo
+                  const Icon(
+                    Icons.directions_run,
+                    size: 100,
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // welcome back, you've been missed!
+                  Text(
+                    'Welcome back!',
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 16,
                     ),
+                  ),
 
-                    const SizedBox(height: 50),
+                  const SizedBox(height: 25),
 
-                    // welcome back, you've been missed!
-                    Text(
-                      'Welcome back!',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 16,
-                      ),
-                    ),
+                  // email textfield
+                  MyTextField(
+                    controller: emailController,
+                    hintText: 'Email',
+                    obscureText: false,
+                  ),
 
-                    const SizedBox(height: 25),
+                  const SizedBox(height: 10),
 
-                    // email textfield
-                    AuthTextField(
-                      controller: emailController,
-                      hintText: 'Email',
-                      obscureText: false,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
+                  // password textfield
+                  MyTextField(
+                    controller: passwordController,
+                    hintText: 'Password',
+                    obscureText: true,
+                  ),
 
-                    const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                    // password textfield
-                    AuthTextField(
-                      controller: passwordController,
-                      hintText: 'Password',
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // forgot password?
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            key: const Key('forgotPassword'),
-                            onTap: () {
-                              debugPrint("forgot password");
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ForgotPassword()));
-                            },
-                            child: Text(
-                              'Forgot Password?',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    // sign in button
-                    MyButton(
-                      text: 'Sign In',
-                      onTap: signUserIn,
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    // or continue with
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              thickness: 0.5,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text(
-                              'Or continue with',
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              thickness: 0.5,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    // google + apple sign in buttons
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // google button
-                        SquareTile(imagePath: 'lib/assets/images/google.png'),
-
-                        SizedBox(width: 25),
-
-                        // apple button
-                        SquareTile(imagePath: 'lib/assets/images/apple.png')
-                      ],
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    // not a member? register now
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  // forgot password?
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Not a member?',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                        const SizedBox(width: 4),
-                        InkWell(
-                          key: const Key('registerNow'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterPage(
-                                  repository: widget.repository,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Register now',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          'Forgot Password?',
+                          style: TextStyle(color: Colors.grey[600]),
                         ),
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // sign in button
+                  MyButton(
+                    onTap: signUserIn,
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // or continue with
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  //   child: Row(
+                  //     children: [
+                  //       Expanded(
+                  //         child: Divider(
+                  //           thickness: 0.5,
+                  //           color: Colors.grey[400],
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  //         child: Text(
+                  //           'Or continue with',
+                  //           style: TextStyle(color: Colors.grey[700]),
+                  //         ),
+                  //       ),
+                  //       Expanded(
+                  //         child: Divider(
+                  //           thickness: 0.5,
+                  //           color: Colors.grey[400],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  const SizedBox(height: 50),
+
+                  // google + apple sign in buttons
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: const [
+                  //     // google button
+                  //     SquareTile(imagePath: 'lib/images/google.png'),
+
+                  //     SizedBox(width: 25),
+
+                  //     // apple button
+                  //     SquareTile(imagePath: 'lib/images/apple.png')
+                  //   ],
+                  // ),
+
+                  const SizedBox(height: 50),
+
+                  // not a member? register now
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Not a member?',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: const Text(
+                          'Register now',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
