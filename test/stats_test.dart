@@ -8,11 +8,11 @@ void main() {
   // Define test values
   final testSnapshot = {
     'fastestTime': '5:00',
-    'totalTime': '10:00',
+    'totalTime': 10.0,
     'longestDistance': '10 km',
     'totalRuns': '5',
     'totalDistance': '50 km',
-    'totalDistanceRan': '45 km',
+    'totalDistanceRan': 45.0,
     'points': '100',
   };
   group('RunStatsPage', () {
