@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/normal_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 // Import your user data model and data fetching service
@@ -61,8 +60,16 @@ class UserPageState extends State<UserPage> {
                       ),
                     ),
                     TrainingCard(
-                        repository: widget.repository,
-                        trainingOnboarded: trainingOnboarded),
+                      repository: widget.repository,
+                      trainingOnboarded: trainingOnboarded,
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.brightness ==
+                              Brightness.light
+                          ? const Color.fromARGB(255, 236, 236, 236)
+                          : const Color.fromARGB(255, 15, 15, 15),
+                      thickness: 2,
+                    ),
                     Container(
                       height: 150,
                       padding: const EdgeInsets.all(20),
@@ -85,6 +92,13 @@ class UserPageState extends State<UserPage> {
                           ),
                         ],
                       ),
+                    ),
+                    Divider(
+                      color: Theme.of(context).colorScheme.brightness ==
+                              Brightness.light
+                          ? const Color.fromARGB(255, 236, 236, 236)
+                          : const Color.fromARGB(255, 15, 15, 15),
+                      thickness: 2,
                     ),
                     Expanded(
                       child: SocialMediaPage(

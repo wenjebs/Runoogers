@@ -6,7 +6,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
-import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
+import 'package:runningapp/pages/logged_in/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
@@ -153,40 +153,52 @@ class _HomePageState extends State<HomePage> {
               : Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      height: 1,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    GNav(
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      gap: 2,
-                      selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
-                      tabs: const [
-                        GButton(
-                          icon: Icons.home,
-                          text: "Home",
-                          key: Key("homeButton"),
+                    Material(
+                      elevation: 30.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        GButton(
-                          icon: Icons.adjust,
-                          text: "Run",
-                          key: Key("runButton"),
+                        child: GNav(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondaryFixed,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          gap: 2,
+                          selectedIndex:
+                              _selectedIndex <= 2 ? _selectedIndex : -1,
+                          tabs: const [
+                            GButton(
+                              icon: Icons.home,
+                              text: "Home",
+                              key: Key("homeButton"),
+                            ),
+                            GButton(
+                              icon: Icons.adjust,
+                              text: "Run",
+                              key: Key("runButton"),
+                            ),
+                            // GButton(icon: Icons.groups, text: "Social"),
+                            GButton(
+                              icon: Icons.account_circle_rounded,
+                              text: "Profile",
+                              key: Key("profileButton"),
+                            ),
+                          ],
+                          onTabChange: (index) {
+                            setState(() {
+                              _selectedIndex = index;
+                            });
+                          },
                         ),
-                        // GButton(icon: Icons.groups, text: "Social"),
-                        GButton(
-                          icon: Icons.account_circle_rounded,
-                          text: "Profile",
-                          key: Key("profileButton"),
-                        ),
-                      ],
-                      onTabChange: (index) {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
+                      ),
                     ),
                   ],
                 ),

@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerWidget {
     int runsCount = 0;
 
     if (runsSnapshot is AsyncData<QuerySnapshot<Object?>>) {
-      runsCount = runsSnapshot.value!.docs.length;
+      runsCount = runsSnapshot.value.docs.length;
     } else {}
     final friendsCount = (userInfo?['friends'] as List?)?.length ?? 69;
 
@@ -35,13 +35,16 @@ class ProfilePage extends ConsumerWidget {
       body: Center(
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           // Profile hero
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 200,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+          Material(
+            elevation: 10,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: const ProfileHero(),
             ),
-            child: const ProfileHero(),
           ),
 
           // Profile details
@@ -56,7 +59,7 @@ class ProfilePage extends ConsumerWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -98,7 +101,12 @@ class ProfilePage extends ConsumerWidget {
 
           // Button to alternate run or achievement section
           const RunAchievementButton(),
-
+          Divider(
+            color: Theme.of(context).colorScheme.brightness == Brightness.light
+                ? const Color.fromARGB(255, 236, 236, 236)
+                : const Color.fromARGB(255, 15, 15, 15),
+            thickness: 2,
+          ),
           // Run or Achievement section
 
           Consumer(builder: (context, ref, child) {

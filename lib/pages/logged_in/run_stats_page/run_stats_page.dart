@@ -15,11 +15,14 @@ class RunStatsPage extends ConsumerWidget {
         data: (snapshot) {
           if (snapshot != null) {
             final fastestTime = snapshot['fastestTime'] ?? 0;
-            final totalTime = snapshot['totalTime'] ?? 0;
+            final double totalTime = snapshot['totalTime'] ?? 0; // in ms
+            final double hours = totalTime / 3600000;
+            final double minutes = (totalTime % 3600000) / 60000;
+            final double seconds = ((totalTime % 3600000) % 60000) / 1000;
             final longestDistance = snapshot['longestDistance'] ?? 0;
             final totalRuns = snapshot['totalRuns'] ?? 0;
             final totalDistance = snapshot['totalDistance'] ?? 0;
-            final totalDistanceRan = snapshot['totalDistanceRan'] ?? 0;
+            final double totalDistanceRan = snapshot['totalDistanceRan'] ?? 0;
             final points = snapshot['points'] ?? 0;
             return SingleChildScrollView(
               child: Padding(
@@ -33,7 +36,8 @@ class RunStatsPage extends ConsumerWidget {
                         icon: Icons.timer),
                     StatCard(
                         title: 'Total Time',
-                        value: '$totalTime',
+                        value:
+                            '${hours.toStringAsFixed(0)} hrs\n${minutes.toStringAsFixed(0)} mins\n${seconds.toStringAsFixed(0)} seconds',
                         icon: Icons.hourglass_bottom),
                     StatCard(
                         title: 'Longest Distance',
@@ -49,7 +53,8 @@ class RunStatsPage extends ConsumerWidget {
                         icon: Icons.map),
                     StatCard(
                         title: 'Total Distance Ran',
-                        value: '$totalDistanceRan',
+                        value:
+                            '${(totalDistanceRan / 1000).toStringAsFixed(2)} km',
                         icon: Icons.terrain),
                     StatCard(
                         title: 'Points', value: '$points', icon: Icons.star),
@@ -90,8 +95,9 @@ class StatCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:
-            Colors.white, // Apple widgets often use a white or light background
+        color: Theme.of(context)
+            .colorScheme
+            .surface, // Apple widgets often use a white or light background
         borderRadius: BorderRadius.circular(20), // Rounded corners
         boxShadow: [
           BoxShadow(
@@ -104,25 +110,28 @@ class StatCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: Theme.of(context).primaryColor, size: 30),
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 30),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.black, // High contrast for readability
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface, // High contrast for readability
               ),
             ),
           ),
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 19,
               fontWeight: FontWeight.bold,
               color: Theme.of(context)
-                  .primaryColor, // Use the primary color for emphasis
+                  .colorScheme
+                  .onPrimary, // Use the primary color for emphasis
             ),
           ),
         ],

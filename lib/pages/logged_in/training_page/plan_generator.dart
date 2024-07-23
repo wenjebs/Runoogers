@@ -67,7 +67,8 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       if (!json.containsKey('weeks')) {
         throw const FormatException("JSON is null or missing 'weeks' key");
       }
-      List<dynamic> weeks = json['weeks'];
+
+      List<dynamic> weeks = json['running_plan']['weeks'];
       for (int i = 0; i < weeks.length; i++) {
         var week = weeks[i];
         if (week == null || (i >= 1 && week.length != 7)) {
@@ -81,7 +82,8 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
           .collection('trainingPlans')
           .add(json);
       return json;
-    } on FormatException {
+    } on FormatException catch (e) {
+      debugPrint("Failed to generate plan $e");
       attempts++;
       if (attempts >= maxAttempts) {
         throw Exception("Failed to generate plan");
