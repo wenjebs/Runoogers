@@ -224,16 +224,15 @@ class LeaderboardCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300], // Lighter grey for a softer look
+                    color: Colors.grey[300],
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.grey[400]!, // Softer border color
+                      color: Colors.grey[400]!,
                       width: 2,
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                        22), // Ensure the image is also rounded
+                    borderRadius: BorderRadius.circular(22),
                     child: Image.network(
                       'https://picsum.photos/seed/183/600',
                       width: 44,
@@ -252,11 +251,8 @@ class LeaderboardCard extends StatelessWidget {
                     Text(
                       '$name (@$username)',
                       style: const TextStyle(
-                        fontFamily: 'Readex Pro',
-                        letterSpacing:
-                            0.5, // Slightly increased letter spacing for readability
-                        fontWeight: FontWeight
-                            .w500, // Medium weight for a softer appearance
+                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -272,7 +268,6 @@ class LeaderboardCard extends StatelessWidget {
                         Text(
                           '$points',
                           style: TextStyle(
-                            fontFamily: 'Readex Pro',
                             letterSpacing: 0.5, //
                             color: Colors.grey[600],
                           ),
@@ -285,11 +280,33 @@ class LeaderboardCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   shareable ? Icons.share : Icons.chevron_right_rounded,
-                  color: Colors.grey[800], // Softer icon color
+                  color: Colors.grey[800],
                   size: 24,
                 ),
                 onPressed: () {
-                  // Navigator logic remains the same
+                  if (shareable) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LeaderboardPostCreationPage(
+                          repository: Repository(),
+                          leaderboardPoints: points,
+                          leaderboardRank: index,
+                          username: username,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserProfilePage(
+                          repository: Repository(),
+                          userId: userId,
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ],

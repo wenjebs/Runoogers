@@ -245,6 +245,7 @@ class ServiceIcon extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
           ),
         ],
       ),
