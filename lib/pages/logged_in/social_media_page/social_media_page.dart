@@ -50,14 +50,17 @@ class SocialMediaPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(20.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 5,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -66,17 +69,21 @@ class SocialMediaPage extends ConsumerWidget {
                         Expanded(
                           child: TextField(
                             controller: _captionController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: "What's on your mind?",
-                              hintStyle: TextStyle(color: Colors.grey),
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondary),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 40),
                             ),
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.send, color: Colors.blue),
+                          icon: Icon(Icons.send,
+                              color: Theme.of(context).colorScheme.primary),
                           onPressed: addPost,
                         ),
                       ],
