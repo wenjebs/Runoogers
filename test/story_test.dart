@@ -30,7 +30,6 @@ void main() {
       when(mockRepository.getStories()).thenAnswer((_) async => <Story>[]);
       await tester.pumpWidget(
           ProviderScope(child: MaterialApp(home: StoryPage(mockRepository))));
-      expect(find.text("Main Campaigns"), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
@@ -40,7 +39,7 @@ void main() {
       await tester.pumpWidget(
           ProviderScope(child: MaterialApp(home: StoryPage(mockRepository))));
       await tester.pumpAndSettle();
-      expect(find.byType(ListView), findsWidgets);
+      expect(find.byType(PageView), findsWidgets);
     });
 
     testWidgets(
@@ -125,9 +124,9 @@ void main() {
         })
       ], child: MaterialApp(home: StoryPage(mockRepository))));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.byType(ElevatedButton));
+      await tester.ensureVisible(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(ElevatedButton));
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
       expect(find.byType(ActiveQuestDisplayPage), findsOneWidget);
     });

@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       case 3:
         return "My Feed";
       case 4:
-        return "Story";
+        return "Stories";
       case 5:
         return "Training";
       case 6:
@@ -150,35 +150,45 @@ class _HomePageState extends State<HomePage> {
               : _pages[_selectedIndex],
           bottomNavigationBar: isRunning
               ? const SizedBox()
-              : GNav(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  gap: 2,
-                  selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
-                  tabs: const [
-                    GButton(
-                      icon: Icons.home,
-                      text: "Home",
-                      key: Key("homeButton"),
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 1,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
-                    GButton(
-                      icon: Icons.adjust,
-                      text: "Run",
-                      key: Key("runButton"),
-                    ),
-                    // GButton(icon: Icons.groups, text: "Social"),
-                    GButton(
-                      icon: Icons.account_circle_rounded,
-                      text: "Profile",
-                      key: Key("profileButton"),
+                    GNav(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      gap: 2,
+                      selectedIndex: _selectedIndex <= 2 ? _selectedIndex : -1,
+                      tabs: const [
+                        GButton(
+                          icon: Icons.home,
+                          text: "Home",
+                          key: Key("homeButton"),
+                        ),
+                        GButton(
+                          icon: Icons.adjust,
+                          text: "Run",
+                          key: Key("runButton"),
+                        ),
+                        // GButton(icon: Icons.groups, text: "Social"),
+                        GButton(
+                          icon: Icons.account_circle_rounded,
+                          text: "Profile",
+                          key: Key("profileButton"),
+                        ),
+                      ],
+                      onTabChange: (index) {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
                     ),
                   ],
-                  onTabChange: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
                 ),
         );
       },

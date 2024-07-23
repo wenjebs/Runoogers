@@ -26,6 +26,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Active Quests"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: switch (questProgress) {
         AsyncData(:final value) => RefreshIndicator(
@@ -41,6 +42,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                     itemCount: quests.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
+                        elevation: 5,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),

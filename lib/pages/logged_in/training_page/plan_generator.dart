@@ -64,16 +64,17 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       debugPrint("generating $attempts");
       final text = await gemini.text(prompt, modelName: 'models/gemini-pro');
       final json = jsonDecode(text!.output!) as Map<String, dynamic>;
-      // if (!json.containsKey('weeks')) {
-      //   throw const FormatException("JSON is null or missing 'weeks' key");
-      // }
-      // List<dynamic> weeks = json['weeks'];
-      // for (var week in weeks) {
-      //   if (week == null || week.length < 7) {
-      //     throw const FormatException(
-      //         "Week has less than 7 entries or contains null");
-      //   }
-      // }
+      if (!json.containsKey('weeks')) {
+        throw const FormatException("JSON is null or missing 'weeks' key");
+      }
+      List<dynamic> weeks = json['weeks'];
+      for (int i = 0; i < weeks.length; i++) {
+        var week = weeks[i];
+        if (week == null || (i >= 1 && week.length != 7)) {
+          throw FormatException(
+              "Week ${i + 1} has less than 7 entries, contains null, or is missing");
+        }
+      }
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)

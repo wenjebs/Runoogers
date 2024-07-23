@@ -86,24 +86,46 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        shape: BeveledRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        tileColor: Theme.of(context).colorScheme.secondary,
-        leading: Icon(icon, color: Theme.of(context).primaryColor),
-        title: Text(title, style: const TextStyle(color: Colors.black)),
-        trailing: Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onPrimary,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color:
+            Colors.white, // Apple widgets often use a white or light background
+        borderRadius: BorderRadius.circular(20), // Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3), // Subtle shadow
+            spreadRadius: 1,
+            blurRadius: 15,
+            offset: const Offset(0, 5), // changes position of shadow
           ),
-        ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: Theme.of(context).primaryColor, size: 30),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black, // High contrast for readability
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context)
+                  .primaryColor, // Use the primary color for emphasis
+            ),
+          ),
+        ],
       ),
     );
   }

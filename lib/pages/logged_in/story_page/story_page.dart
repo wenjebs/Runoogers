@@ -26,21 +26,8 @@ class StoryPage extends ConsumerWidget {
             //     leading: Icon(Icons.search),
             //   ),
             // ),
-
-            // Main Stories
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Main Campaigns",
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              ),
-            ),
-
             SizedBox(
-              height: 565,
+              height: MediaQuery.of(context).size.height - 175,
               child: FutureBuilder(
                 future: repository.getStories(),
                 builder: (context, snapshot) {
@@ -51,17 +38,17 @@ class StoryPage extends ConsumerWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   final stories = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
+                  return PageView.builder(
                     itemCount: stories.length,
                     itemBuilder: (context, index) {
-                      // debugPrint(stories[index].toString());
                       return StoryTileWithImage(
                         repository: repository,
                         image: Image.network(stories[index].getImageURL,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
+                            loadingBuilder: (
+                          BuildContext context,
+                          Widget child,
+                          ImageChunkEvent? loadingProgress,
+                        ) {
                           if (loadingProgress == null) {
                             return child; // Image has finished loading
                           }
@@ -84,6 +71,75 @@ class StoryPage extends ConsumerWidget {
                       );
                     },
                   );
+                  // return CardSwiper(
+                  //     maxAngle: 0,
+                  //     numberOfCardsDisplayed: 2,
+                  //     cardsCount: stories.length,
+                  //     cardBuilder: (context, index, horizontalOffsetPercentage,
+                  //         verticalOffsetPercentage) {
+                  //       return StoryTileWithImage(
+                  //         repository: repository,
+                  //         image: Image.network(stories[index].getImageURL,
+                  //             loadingBuilder: (
+                  //           BuildContext context,
+                  //           Widget child,
+                  //           ImageChunkEvent? loadingProgress,
+                  //         ) {
+                  //           if (loadingProgress == null) {
+                  //             return child; // Image has finished loading
+                  //           }
+                  //           return Center(
+                  //             child: CircularProgressIndicator(
+                  //               value: loadingProgress.expectedTotalBytes !=
+                  //                       null
+                  //                   ? loadingProgress.cumulativeBytesLoaded /
+                  //                       loadingProgress.expectedTotalBytes!
+                  //                   : null, // Display the loading progress
+                  //             ),
+                  //           );
+                  //         }),
+                  //         shortTitle: stories[index].getShortTitle,
+                  //         title: stories[index].getTitle,
+                  //         description: stories[index].getDescription,
+                  //         active:
+                  //             userInfo?['activeStory'] == stories[index].getId,
+                  //         id: stories[index].getId,
+                  //         userID: userInfo?['uid'],
+                  //       );
+                  //     });
+                  //  ListView.builder(
+                  //   shrinkWrap: true,
+                  //   scrollDirection: Axis.vertical,
+                  //   itemCount: stories.length,
+                  //   itemBuilder: (context, index) {
+                  //     // debugPrint(stories[index].toString());
+                  //     return StoryTileWithImage(
+                  //       repository: repository,
+                  //       image: Image.network(stories[index].getImageURL,
+                  //           loadingBuilder: (BuildContext context, Widget child,
+                  //               ImageChunkEvent? loadingProgress) {
+                  //         if (loadingProgress == null) {
+                  //           return child; // Image has finished loading
+                  //         }
+                  //         return Center(
+                  //           child: CircularProgressIndicator(
+                  //             value: loadingProgress.expectedTotalBytes != null
+                  //                 ? loadingProgress.cumulativeBytesLoaded /
+                  //                     loadingProgress.expectedTotalBytes!
+                  //                 : null, // Display the loading progress
+                  //           ),
+                  //         );
+                  //       }),
+                  //       shortTitle: stories[index].getShortTitle,
+                  //       title: stories[index].getTitle,
+                  //       description: stories[index].getDescription,
+                  //       active:
+                  //           userInfo?['activeStory'] == stories[index].getId,
+                  //       id: stories[index].getId,
+                  //       userID: userInfo?['uid'],
+                  //     );
+                  //   },
+                  // );
                 },
               ),
             ),
@@ -112,41 +168,31 @@ class StoryPage extends ConsumerWidget {
             //     ],
             //   ),
             // ),
-
-            // view active quests
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 40.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // debugPrint(userInfo?['activeStory']);
-                    final List<Quest> quests = await repository.getQuests(
-                      userInfo?['activeStory'],
-                    );
-                    debugPrint("Active Quests Pressed");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ActiveQuestDisplayPage(
-                          repository,
-                          activeStoryTitle: userInfo?['activeStory'],
-                          quests: quests,
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  child: Icon(
-                    Icons.directions_run,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ),
-            )
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        onPressed: () async {
+          // debugPrint(userInfo?['activeStory']);
+          final List<Quest> quests = await repository.getQuests(
+            userInfo?['activeStory'],
+          );
+          debugPrint("Active Quests Pressed");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActiveQuestDisplayPage(
+                repository,
+                activeStoryTitle: userInfo?['activeStory'],
+                quests: quests,
+              ),
+            ),
+          );
+        },
+        child: Icon(
+          Icons.book_rounded,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );

@@ -14,8 +14,8 @@ class RunAchievementButton extends ConsumerWidget {
         height: 52,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Theme.of(context).colorScheme.onSecondary,
-            width: 2,
+            color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.5),
+            width: 3,
           ),
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(90),
@@ -44,7 +44,7 @@ class RunAchievementButton extends ConsumerWidget {
         ref.read(selectedIndexProvider.notifier).state = index,
       },
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.43,
+        width: MediaQuery.of(context).size.width * 0.44,
         height: MediaQuery.of(context).size.height * 0.05,
         decoration: BoxDecoration(
           color: selected == index

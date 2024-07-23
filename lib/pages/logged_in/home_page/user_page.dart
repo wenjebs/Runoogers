@@ -87,23 +87,14 @@ class UserPageState extends State<UserPage> {
                       ),
                     ),
                     Expanded(
-                        child: SocialMediaPage(Repository(),
-                            showFloatingActionButton: false)),
+                      child: SocialMediaPage(
+                        Repository(),
+                        showFloatingActionButton: false,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PostCreationPage(
-                            repository: widget.repository,
-                          )),
-                );
-              },
-              child: const Icon(Icons.add),
             ),
           );
         } else {
@@ -254,6 +245,7 @@ class ServiceIcon extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
           ),
         ],
       ),

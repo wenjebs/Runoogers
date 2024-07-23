@@ -54,7 +54,6 @@ class User {
         points = doc.data()?['points'] ?? 0,
         posts = List<DocumentReference>.from(doc.data()?['posts'] ?? []),
         runstats = doc.data()?['runstats'] ?? {},
-        // Ensure these are doubles even if the Firestore value is an int
         totalDistanceRan = (doc.data()?['totalDistanceRan']?.toDouble() ?? 0.0),
         totalRuns = doc.data()?['totalRuns'] ?? 0,
         totalTime = (doc.data()?['totalTime']?.toDouble() ?? 0.0),
@@ -85,6 +84,26 @@ class User {
       'averageDifficulty': averageDifficulty,
     };
   }
+
+  User.fromMap(Map<String, dynamic> data)
+      : id = data['id'] ?? '', // Assuming 'id' is included in the map
+        achievements = List<String>.from(data['achievements'] ?? []),
+        email = data['email'] ?? '',
+        name = data['name'] ?? '',
+        age = data['age'] ?? '',
+        friends = List<String>.from(data['friends'] ?? []),
+        activeStory = data['activeStory'] ?? '',
+        onboarded = data['onboarded'] ?? false,
+        points = data['points'] ?? 0,
+        posts = List<DocumentReference>.from(data['posts'] ?? []),
+        runstats = data['runstats'] ?? {},
+        totalDistanceRan = (data['totalDistanceRan']?.toDouble() ?? 0.0),
+        totalRuns = data['totalRuns'] ?? 0,
+        totalTime = (data['totalTime']?.toDouble() ?? 0.0),
+        trainingOnboarded = data['trainingOnboarded'] ?? false,
+        uid = data['uid'] ?? '',
+        username = data['username'] ?? '',
+        averageDifficulty = data['averageDifficulty']?.toDouble() ?? 0.0;
 
   User copyWith({
     String? id,
