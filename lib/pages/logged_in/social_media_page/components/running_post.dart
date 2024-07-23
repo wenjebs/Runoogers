@@ -85,11 +85,8 @@ class RunningPost extends ConsumerWidget {
                           Text(name,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary, // Change text color to make it stand out
-                                decoration: TextDecoration
-                                    .underline, // Underline the text
+                                color: Theme.of(context).colorScheme.primary,
+                                decoration: TextDecoration.underline,
                               )),
                           Icon(
                             Icons.arrow_forward_ios,
@@ -115,51 +112,62 @@ class RunningPost extends ConsumerWidget {
           ),
           content,
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.thumb_up),
-                onPressed: () {
-                  repository.addLikeToPost(post.id, post.userId);
-                },
-              ),
-              likes.when(
-                data: (int count) => Text('$count'),
-                loading: () =>
-                    const SizedBox.shrink(), // Cleaner look during loading
-                error: (e, stack) =>
-                    const Icon(Icons.error_outline), // Simplified error display
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.thumb_up),
+                      onPressed: () {
+                        repository.addLikeToPost(post.id, post.userId);
+                      },
+                    ),
+                    likes.when(
+                      data: (int count) => Text('$count'),
+                      loading: () => const SizedBox.shrink(),
+                      error: (e, stack) => const Icon(Icons.error_outline),
+                    ),
+                  ],
+                ),
               ),
               const VerticalDivider(
-                color: Colors.grey, // Set the color of the divider
-                thickness: 1, // Set the thickness of the divider
-                indent: 10, // Set the top space of the divider
-                endIndent: 10, // Set the bottom space of the divider
+                width: 20,
+                color: Colors.grey,
               ),
-              IconButton(
-                icon: const Icon(Icons.comment),
-                onPressed: () {
-                  if (!disableCommentButton) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PostCommentFeed(
-                            Repository(),
-                            post: post,
-                          ),
-                        ));
-                  }
-                },
-              ),
-              Consumer(
-                builder: (context, ref, _) {
-                  final commentsCount =
-                      ref.watch(commentsCountProvider(post.id));
-                  return commentsCount.when(
-                    data: (comment) => Text('$comment'),
-                    loading: () => const CircularProgressIndicator(),
-                    error: (error, _) => const Text('Error!'),
-                  );
-                },
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.comment),
+                      onPressed: () {
+                        if (!disableCommentButton) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostCommentFeed(
+                                  Repository(),
+                                  post: post,
+                                ),
+                              ));
+                        }
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final commentsCount =
+                            ref.watch(commentsCountProvider(post.id));
+                        return commentsCount.when(
+                          data: (comment) => Text('$comment'),
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, _) => const Text('Error!'),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
