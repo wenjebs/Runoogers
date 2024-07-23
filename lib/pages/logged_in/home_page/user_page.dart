@@ -58,22 +58,35 @@ class UserPage extends ConsumerWidget {
                 }, error: (error, stackTrace) {
                   return Text('Error: $error');
                 }),
-                const Divider(thickness: 2),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Wrap(
-                    spacing: 20, // gap between adjacent chips
-                    runSpacing: 20, // gap between lines
-                    children: const <Widget>[
-                      ServiceIcon(title: 'Story', icon: Icons.book),
-                      ServiceIcon(
-                          title: 'Track Run', icon: Icons.directions_run),
-                      ServiceIcon(
-                          title: 'All', icon: Icons.all_inclusive_outlined),
-                    ],
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics:
+                        NeverScrollableScrollPhysics(), // to disable GridView's own scrolling
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3, // number of items per row
+                      crossAxisSpacing:
+                          20, // spacing between the items horizontally
+                      mainAxisSpacing:
+                          20, // spacing between the items vertically
+                    ),
+                    itemCount: 3, // total number of items
+                    itemBuilder: (context, index) {
+                      // List of your icons and titles
+                      List<Map<String, dynamic>> serviceIcons = [
+                        {'title': 'Story', 'icon': Icons.book},
+                        {'title': 'Track Run', 'icon': Icons.directions_run},
+                        {'title': 'All', 'icon': Icons.all_inclusive_outlined},
+                      ];
+
+                      return ServiceIcon(
+                        title: serviceIcons[index]['title'],
+                        icon: serviceIcons[index]['icon'],
+                      );
+                    },
                   ),
                 ),
-                const Divider(thickness: 2),
                 friendUids.when(
                   data: (friendUids) {
                     return StreamBuilder<QuerySnapshot>(
