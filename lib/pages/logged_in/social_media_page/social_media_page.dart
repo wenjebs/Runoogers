@@ -5,7 +5,6 @@ import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/normal_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
