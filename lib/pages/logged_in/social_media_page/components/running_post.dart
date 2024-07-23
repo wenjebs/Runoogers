@@ -87,6 +87,7 @@ class RunningPost extends ConsumerWidget {
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
                                 decoration: TextDecoration.underline,
+                                fontSize: 18,
                               )),
                           Icon(
                             Icons.arrow_forward_ios,
@@ -101,12 +102,12 @@ class RunningPost extends ConsumerWidget {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(post.caption),
                 Text(formattedTimestamp,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       color: Colors.grey,
                     )),
+                Text(post.caption, style: (const TextStyle(fontSize: 16))),
               ],
             ),
           ),
@@ -193,8 +194,7 @@ class RunningPost extends ConsumerWidget {
           builder: (BuildContext context) {
             return Dialog(
               child: InteractiveViewer(
-                // Allows pinch-to-zoom
-                panEnabled: false, // Set it to false to prevent panning.
+                panEnabled: false,
                 boundaryMargin: const EdgeInsets.all(80),
                 minScale: 0.5,
                 maxScale: 4,
@@ -254,7 +254,7 @@ class RunningPost extends ConsumerWidget {
               Text(
                 '$username is rank #$rank globally!',
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -263,7 +263,7 @@ class RunningPost extends ConsumerWidget {
               Text(
                 'with $points points',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   color: Colors.grey[600],
                 ),
               ),
