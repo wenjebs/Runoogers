@@ -7,61 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:654701318393:android:43644b3b3cdcd41c695228",
-        "android_client_info": {
-          "package_name": "com.example.goonwatch"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "654701318393-bs3b44c9f5rmhop0h6lrv1ddjp2sbf6o.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDgO6mqrt2UvshLiKzsIckUlmYksrwPxdY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "654701318393-bs3b44c9f5rmhop0h6lrv1ddjp2sbf6o.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "654701318393-aeuigr5puuvifni381r3gjnnf5sp07td.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.runningapp"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:654701318393:android:21ef331a359d5eca695228",
         "android_client_info": {
           "package_name": "com.example.runningapp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "654701318393-rvabu61l9ogp4g8irrupdnfk2jna3gjg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.runningapp",
-            "certificate_hash": "af147abc452b35331069b696ac37d9f37e852dea"
-          }
-        },
-        {
-          "client_id": "654701318393-bs3b44c9f5rmhop0h6lrv1ddjp2sbf6o.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyDgO6mqrt2UvshLiKzsIckUlmYksrwPxdY"
@@ -69,19 +20,26 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "654701318393-bs3b44c9f5rmhop0h6lrv1ddjp2sbf6o.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "654701318393-aeuigr5puuvifni381r3gjnnf5sp07td.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.runningapp"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654701318393:android:abda200e1fdcb82a695228",
+        "android_client_info": {
+          "package_name": "com.example.runooger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgO6mqrt2UvshLiKzsIckUlmYksrwPxdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }
