@@ -95,8 +95,9 @@ class StatCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:
-            Colors.white, // Apple widgets often use a white or light background
+        color: Theme.of(context)
+            .colorScheme
+            .surface, // Apple widgets often use a white or light background
         borderRadius: BorderRadius.circular(20), // Rounded corners
         boxShadow: [
           BoxShadow(
@@ -109,15 +110,17 @@ class StatCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: Theme.of(context).primaryColor, size: 30),
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 30),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black, // High contrast for readability
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface, // High contrast for readability
               ),
             ),
           ),

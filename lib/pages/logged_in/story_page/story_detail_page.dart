@@ -43,16 +43,15 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: const Text("Details"),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Profile Image
-            Container(
+            SizedBox(
               width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.5,
               child: widget.image,
             ),
 

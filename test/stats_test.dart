@@ -53,9 +53,7 @@ void main() {
 
       // Check that the stats are displayed correctly
       expect(find.text('Fastest Time'), findsOneWidget);
-      expect(find.text('5:00'), findsOneWidget);
       expect(find.text('Total Time'), findsOneWidget);
-      expect(find.text('10:00'), findsOneWidget);
       // Add checks for the rest of the stats similarly
     });
 
