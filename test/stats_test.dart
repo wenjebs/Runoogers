@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
+import 'package:runningapp/pages/logged_in/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 
 void main() {

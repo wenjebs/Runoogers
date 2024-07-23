@@ -6,7 +6,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_page.dart';
-import 'package:runningapp/pages/logged_in/profile_page/run_stats_page/run_stats_page.dart';
+import 'package:runningapp/pages/logged_in/run_stats_page/run_stats_page.dart';
 import 'package:runningapp/pages/logged_in/routes_page/routes_view.dart';
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
