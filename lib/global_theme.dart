@@ -30,20 +30,23 @@ class GlobalThemeData {
     );
   }
 
-  static const ColorScheme lightColorScheme = ColorScheme(
-    primary: Color.fromARGB(255, 252, 76, 2),
+  static ColorScheme lightColorScheme = ColorScheme(
+    primary: const Color.fromARGB(255, 252, 76, 2),
     onPrimary: Colors.black,
     secondary: Colors.white,
-    onSecondary: Color(0xFF322942),
+    secondaryFixed: const Color.fromARGB(255, 255, 255, 255),
+    onSecondary: const Color(0xFF322942),
     error: Colors.redAccent,
     onError: Colors.white,
     surface: Colors.white,
-    onSurface: Color(0xFF241E30),
+    onSurface: const Color(0xFF241E30),
     brightness: Brightness.light,
+    onPrimaryFixedVariant: Colors.lightBlue[50],
   );
-  static const ColorScheme darkColorScheme = ColorScheme(
+  static ColorScheme darkColorScheme = const ColorScheme(
     primary: Color.fromARGB(255, 252, 76, 2),
     secondary: Color.fromARGB(255, 255, 255, 255),
+    secondaryFixed: Color.fromARGB(255, 22, 22, 22),
     surface: Color.fromARGB(255, 0, 0, 0),
     error: Colors.redAccent,
     onError: Colors.white,
@@ -51,6 +54,7 @@ class GlobalThemeData {
     onSecondary: Colors.white,
     onSurface: Color.fromARGB(255, 255, 241, 241),
     brightness: Brightness.dark,
+    onPrimaryFixedVariant: Color.fromARGB(255, 35, 49, 56),
   );
 }
 

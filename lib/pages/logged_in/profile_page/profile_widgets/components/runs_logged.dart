@@ -29,9 +29,12 @@ class RunsSection extends ConsumerWidget {
                     children: runs.docs.map((doc) {
                       Run run = Run.fromFirestore(
                           doc as DocumentSnapshot<Map<String, dynamic>>, null);
-                      String formattedDate = DateFormat('EEEE \'at\' h:mma')
-                          .format(DateTime.parse(run.date));
+                      String formattedDate =
+                          DateFormat('EEEE \'at\' h:mma').format(
+                        DateTime.parse(run.date),
+                      );
                       return Card(
+                        color: Theme.of(context).colorScheme.secondaryFixed,
                         elevation: 4.0,
                         margin: const EdgeInsets.all(8.0),
                         child: Padding(
@@ -73,35 +76,52 @@ class RunsSection extends ConsumerWidget {
                                   // Distance
                                   Column(
                                     children: [
-                                      Icon(Icons.directions_run,
-                                          color: Theme.of(context)
-                                              .primaryColor), // Use an appropriate icon
-                                      Text("${run.distance} km",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                      Icon(
+                                        Icons.directions_run,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        "${double.parse(run.distance).toStringAsFixed(2)} km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   // Time
                                   Column(
                                     children: [
-                                      Icon(Icons.timer,
-                                          color: Theme.of(context)
-                                              .primaryColor), // Use an appropriate icon
-                                      Text(run.time,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                      Icon(
+                                        Icons.timer,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        run.time,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   // Pace
                                   Column(
                                     children: [
-                                      Icon(Icons.speed,
-                                          color: Theme.of(context)
-                                              .primaryColor), // Use an appropriate icon
+                                      Icon(
+                                        Icons.speed,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
                                       Text(
-                                          "${run.pace.toStringAsFixed(2)} min/km",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold)),
+                                        "${run.pace.toStringAsFixed(2)} min/km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
