@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -60,6 +61,11 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
   }
 
   Future<void> fetchTemplates() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
     final response = await http.get(
         Uri.parse('https://api.readyplayer.me/v2/avatars/templates'),
         headers: {
@@ -70,6 +76,15 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
       String responseBody = response.body;
       var decodedResponse = jsonDecode(responseBody);
       var templatesData = decodedResponse['data'];
+
+      var userData = userDoc.data() as Map<String, dynamic>?;
+
+      if (userDoc.exists && userData!.containsKey('avatarType')) {
+        String avatarType = userDoc.get('avatarType');
+        templatesData = templatesData
+            .where((template) => template['imageUrl'] == avatarType)
+            .toList();
+      }
       setState(() {
         debugPrint('templates ${templatesData.toString()}');
         templates = templatesData;
@@ -156,11 +171,26 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
                     itemCount: templates.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             onCardClick(templates[index]['id']);
                             setState(() {
                               gender = templates[index]['gender'];
                             });
+
+                            var userId = FirebaseAuth.instance.currentUser?.uid;
+                            if (userId != null) {
+                              await FirebaseFirestore.instance
+                                  .collection(
+                                      'users') // Assuming 'users' is your collection name
+                                  .doc(userId)
+                                  .update({
+                                    'avatarType': templates[index]['imageUrl']
+                                  })
+                                  .then((_) => debugPrint(
+                                      'Avatar type updated successfully'))
+                                  .catchError((error) => debugPrint(
+                                      'Failed to update avatar type: $error'));
+                            }
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -522,76 +552,10 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
                     ),
                     itemCount: assets.length,
                     itemBuilder: (context, index) {
-                      return Center(
-                        child: Stack(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                equipAsset(
-                                    assets[index]['id'], assets[index]['type']);
-                              },
-                              child: ClipRect(
-                                child: SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: FittedBox(
-                                    fit: BoxFit
-                                        .cover, // This ensures the image covers the widget area without losing aspect ratio
-                                    child: Image.network(
-                                      assets[index]['iconUrl'],
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Icon(Icons.error);
-                                      },
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 5,
-                              right: 5,
-                              child: assets[index]['unlocked']
-                                  ? const Icon(Icons.check_circle,
-                                      color: Colors.green)
-                                  : Container(
-                                      padding: const EdgeInsets.all(
-                                          2), // Add padding around the text for better visibility
-                                      decoration: BoxDecoration(
-                                        // Optional: Add a slight background to improve text visibility while maintaining image visibility
-                                        color: Colors.black.withOpacity(
-                                            0.2), // Semi-transparent black background
-                                        borderRadius: BorderRadius.circular(
-                                            4), // Rounded corners for the background
-                                      ),
-                                      child: Text(
-                                        '\$${assets[index]['price']}',
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(
-                                              0.0), // Transparent text
-                                          shadows: [
-                                            Shadow(
-                                              // Shadow for text outline effect
-                                              offset: Offset(0, 1),
-                                              blurRadius: 3,
-                                              color: Colors.black
-                                                  .withOpacity(0.75),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                            ),
-                          ],
-                        ),
+                      return AssetDisplayWidget(
+                        asset: assets[index],
+                        index: index,
+                        equipAsset: equipAsset,
                       );
                     },
                   ),
@@ -618,5 +582,145 @@ class AssetCacheManager {
 
   static bool hasAssets(String category) {
     return _cache.containsKey(category);
+  }
+}
+
+class AssetDisplayWidget extends StatefulWidget {
+  final Map<String, dynamic> asset;
+  final int index;
+  final Function(String, String) equipAsset;
+
+  const AssetDisplayWidget({
+    Key? key,
+    required this.asset,
+    required this.index,
+    required this.equipAsset,
+  }) : super(key: key);
+
+  @override
+  _AssetDisplayWidgetState createState() => _AssetDisplayWidgetState();
+}
+
+class _AssetDisplayWidgetState extends State<AssetDisplayWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: () {
+              if (widget.asset['unlocked']) {
+                widget.equipAsset(widget.asset['id'], widget.asset['type']);
+              } else {
+                _promptPurchase();
+              }
+            },
+            child: ClipRect(
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: Image.network(
+                    widget.asset['iconUrl'],
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.error);
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 5,
+            right: 5,
+            child: widget.asset['unlocked']
+                ? const Icon(Icons.check_circle, color: Colors.green)
+                : Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '\$${widget.asset['price']}',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.0),
+                        shadows: [
+                          Shadow(
+                            offset: const Offset(0, 1),
+                            blurRadius: 3,
+                            color: Colors.black.withOpacity(0.75),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _promptPurchase() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Purchase Asset"),
+          content: Text(
+              "Do you want to buy this asset for \$${widget.asset['price']}?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Buy"),
+              onPressed: () {
+                setState(() {
+                  widget.asset['unlocked'] = true;
+                });
+                debugPrint("${widget.asset['id']}");
+
+                FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+                    .collection('assets')
+                    .where('id', isEqualTo: widget.asset['id'])
+                    .get()
+                    .then((QuerySnapshot querySnapshot) {
+                  if (querySnapshot.docs.isNotEmpty) {
+                    var assetDoc = querySnapshot.docs.first;
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+                        .collection('assets')
+                        .doc(assetDoc.id)
+                        .update({'unlocked': true})
+                        .then((_) => debugPrint("Asset unlocked successfully"))
+                        .catchError((error) =>
+                            debugPrint("Error updating asset: $error"));
+                    debugPrint("Asset found: ${assetDoc.id}");
+                  } else {
+                    debugPrint("No asset found with id: ${widget.asset['id']}");
+                  } // TODO deduct points from purchase
+                }).catchError((error) {
+                  debugPrint("Error fetching asset: $error");
+                });
+
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
