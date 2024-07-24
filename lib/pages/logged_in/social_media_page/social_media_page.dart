@@ -12,9 +12,14 @@ class SocialMediaPage extends ConsumerWidget {
   final bool showFloatingActionButton;
   final Repository repository;
   final TextEditingController _captionController = TextEditingController();
+  final GetUserPostService postService;
 
-  SocialMediaPage(this.repository,
-      {super.key, this.showFloatingActionButton = true});
+  SocialMediaPage(
+    this.repository, {
+    super.key,
+    this.showFloatingActionButton = true,
+    required this.postService,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,7 +103,7 @@ class SocialMediaPage extends ConsumerWidget {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   return StreamBuilder<QuerySnapshot>(
-                    stream: GetUserPostService().getPosts(friendUids),
+                    stream: postService.getPosts(friendUids),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const Center(
@@ -127,7 +132,7 @@ class SocialMediaPage extends ConsumerWidget {
                       }).toList();
                       return ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           final post = posts[index];

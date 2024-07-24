@@ -61,8 +61,8 @@ class UserPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,

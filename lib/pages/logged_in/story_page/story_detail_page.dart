@@ -95,9 +95,9 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
                                   .setUserActiveStory(widget.userID, widget.id);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: const Text(
+                                  content: Text(
                                       'Active story set successfully'),
-                                  duration: const Duration(seconds: 2),
+                                  duration: Duration(seconds: 2),
                                 ),
                               );
                               setState(() {
