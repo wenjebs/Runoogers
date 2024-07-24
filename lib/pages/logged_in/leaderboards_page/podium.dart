@@ -50,24 +50,20 @@ class PodiumWidget extends StatelessWidget {
       BuildContext context, User profile, String position, Color color) {
     double fontSizePosition;
     double fontSizeName;
-    double avatarRadius;
 
     switch (position) {
       case '1st':
         fontSizePosition = 30;
         fontSizeName = 25;
-        avatarRadius = 37;
         break;
       case '2nd':
       case '3rd':
         fontSizePosition = 16;
         fontSizeName = 14;
-        avatarRadius = 25;
         break;
       default:
         fontSizePosition = 16;
         fontSizeName = 14;
-        avatarRadius = 25;
     }
 
     return Card(

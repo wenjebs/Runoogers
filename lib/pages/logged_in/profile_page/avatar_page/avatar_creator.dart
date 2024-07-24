@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'dart:convert';
 
@@ -198,7 +199,8 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
                       });
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return const HomePage(initialIndex: 0);
+                        return HomePage(
+                            initialIndex: 0, repository: Repository());
                       }));
                     },
                     child: Column(

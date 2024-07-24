@@ -90,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
           debugPrint('User created');
           var decodedResponse = jsonDecode(response.body);
           var userData = decodedResponse['data'];
-          Repository.addUser('users', {
+          widget.repository.addUser('users', {
             // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
             'email': emailController.text,
             'uid': FirebaseAuth.instance.currentUser!.uid,
@@ -119,7 +119,10 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => const HomePage(initialIndex: 0)),
+                builder: (context) => HomePage(
+                      initialIndex: 0,
+                      repository: Repository(),
+                    )),
           );
         }
       } else {
