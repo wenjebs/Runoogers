@@ -214,7 +214,7 @@ class LeaderboardCard extends StatelessWidget {
             children: [
               Text(
                 "$index.",
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold, // Bold for emphasis
                 ),
               ),

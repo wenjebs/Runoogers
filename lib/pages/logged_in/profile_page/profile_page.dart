@@ -27,7 +27,7 @@ class ProfilePage extends ConsumerWidget {
     int runsCount = 0;
 
     if (runsSnapshot is AsyncData<QuerySnapshot<Object?>>) {
-      runsCount = runsSnapshot.value!.docs.length;
+      runsCount = runsSnapshot.value.docs.length;
     } else {}
     final friendsCount = (userInfo?['friends'] as List?)?.length ?? 69;
 

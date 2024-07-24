@@ -50,7 +50,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
         child: Column(
           children: [
             // Profile Image
-            Container(
+            SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.5,
               child: widget.image,
@@ -96,9 +96,9 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
                                   .setUserActiveStory(widget.userID, widget.id);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: const Text(
+                                  content: Text(
                                       'Active story set successfully'),
-                                  duration: const Duration(seconds: 2),
+                                  duration: Duration(seconds: 2),
                                 ),
                               );
                               setState(() {
