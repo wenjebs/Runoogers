@@ -1,11 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/user.dart';
+import 'package:runningapp/pages/logged_in/leaderboards_page/podium.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/leaderboard_post_creation_page.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.dart';
 
 class LeaderboardsPage extends StatelessWidget {
-  const LeaderboardsPage({super.key});
+  final Repository repository;
+  final FirebaseAuth auth;
+  const LeaderboardsPage({
+    super.key,
+    required this.repository,
+    required this.auth,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +45,7 @@ class LeaderboardsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsetsDirectional.all(30),
                           child: FutureBuilder(
-                            future: Repository.fetchTopUsersGlobal(),
+                            future: repository.fetchTopUsersGlobal(),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
@@ -50,55 +59,69 @@ class LeaderboardsPage extends StatelessWidget {
                               for (int i = 0;
                                   i < globalLeaderboard.length;
                                   i++) {
-                                if (FirebaseAuth.instance.currentUser!.uid ==
+                                if (auth.currentUser!.uid ==
                                     globalLeaderboard[i]['uid']) {
                                   currentUserPlace = i + 1;
                                   break;
                                 }
                               }
-                              return Column(
-                                children: [
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: globalLeaderboard.length,
-                                      itemBuilder: (context, index) {
-                                        debugPrint(globalLeaderboard[index]
-                                            .toString());
+                              return CustomScrollView(
+                                slivers: <Widget>[
+                                  if (globalLeaderboard.length >= 3)
+                                    SliverToBoxAdapter(
+                                      child: Column(
+                                        children: [
+                                          LeaderboardCard(
+                                            shareable: true,
+                                            isCurrentUser: true,
+                                            userId: globalLeaderboard[
+                                                currentUserPlace! - 1]['uid'],
+                                            index: currentUserPlace,
+                                            name: globalLeaderboard[
+                                                currentUserPlace - 1]['name'],
+                                            username: globalLeaderboard[
+                                                    currentUserPlace - 1]
+                                                ['username'],
+                                            points: globalLeaderboard[
+                                                currentUserPlace - 1]['points'],
+                                            repository: repository,
+                                          ),
+                                          PodiumWidget(
+                                            firstPlace: UserModel.fromMap(
+                                                globalLeaderboard[0]),
+                                            secondPlace: UserModel.fromMap(
+                                                globalLeaderboard[1]),
+                                            thirdPlace: UserModel.fromMap(
+                                                globalLeaderboard[2]),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        final skipThree = index + 3;
                                         return LeaderboardCard(
                                           shareable: false,
-                                          isCurrentUser: FirebaseAuth
-                                                  .instance.currentUser!.uid ==
-                                              globalLeaderboard[index]['uid'],
-                                          userId: globalLeaderboard[index]
+                                          isCurrentUser:
+                                              auth.currentUser!.uid ==
+                                                  globalLeaderboard[skipThree]
+                                                      ['uid'],
+                                          userId: globalLeaderboard[skipThree]
                                               ['uid'],
-                                          index: index + 1,
-                                          name: globalLeaderboard[index]
+                                          index: skipThree + 1,
+                                          name: globalLeaderboard[skipThree]
                                               ['name'],
-                                          username: globalLeaderboard[index]
+                                          username: globalLeaderboard[skipThree]
                                               ['username'],
-                                          points: globalLeaderboard[index]
+                                          points: globalLeaderboard[skipThree]
                                               ['points'],
+                                          repository: repository,
                                         );
                                       },
+                                      childCount: globalLeaderboard.length - 3,
                                     ),
                                   ),
-                                  LeaderboardCard(
-                                    shareable: true,
-                                    isCurrentUser: true,
-                                    userId:
-                                        globalLeaderboard[currentUserPlace! - 1]
-                                            ['uid'],
-                                    index: currentUserPlace,
-                                    name:
-                                        globalLeaderboard[currentUserPlace - 1]
-                                            ['name'],
-                                    username:
-                                        globalLeaderboard[currentUserPlace - 1]
-                                            ['username'],
-                                    points:
-                                        globalLeaderboard[currentUserPlace - 1]
-                                            ['points'],
-                                  )
                                 ],
                               );
                             },
@@ -108,7 +131,7 @@ class LeaderboardsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsetsDirectional.all(30),
                           child: FutureBuilder(
-                            future: Repository.fetchTopUsersFriends(),
+                            future: repository.fetchTopUsersFriends(),
                             builder: (context, snapshot) {
                               if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
@@ -122,17 +145,17 @@ class LeaderboardsPage extends StatelessWidget {
                                 itemCount: friendsLeaderboard.length,
                                 itemBuilder: (context, index) {
                                   return LeaderboardCard(
-                                      shareable: false,
-                                      isCurrentUser: FirebaseAuth
-                                              .instance.currentUser!.uid ==
-                                          friendsLeaderboard[index]['uid'],
-                                      userId: friendsLeaderboard[index]['uid'],
-                                      index: index + 1,
-                                      name: friendsLeaderboard[index]['name'],
-                                      username: friendsLeaderboard[index]
-                                          ['username'],
-                                      points: friendsLeaderboard[index]
-                                          ['points']);
+                                    shareable: false,
+                                    isCurrentUser: auth.currentUser!.uid ==
+                                        friendsLeaderboard[index]['uid'],
+                                    userId: friendsLeaderboard[index]['uid'],
+                                    index: index + 1,
+                                    name: friendsLeaderboard[index]['name'],
+                                    username: friendsLeaderboard[index]
+                                        ['username'],
+                                    points: friendsLeaderboard[index]['points'],
+                                    repository: repository,
+                                  );
                                 },
                               );
                             },
@@ -159,6 +182,7 @@ class LeaderboardCard extends StatelessWidget {
   final String userId;
   final bool isCurrentUser;
   final bool shareable;
+  final Repository repository;
 
   const LeaderboardCard({
     super.key,
@@ -169,20 +193,28 @@ class LeaderboardCard extends StatelessWidget {
     required this.userId,
     required this.isCurrentUser,
     required this.shareable,
+    required this.repository,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
+      padding: const EdgeInsetsDirectional.all(4.0),
       child: Container(
         decoration: BoxDecoration(
-          color: isCurrentUser ? Colors.blue[100] : Colors.white,
+          color: isCurrentUser
+              ? Theme.of(context).colorScheme.onPrimaryFixedVariant
+              : Theme.of(context)
+                  .colorScheme
+                  .secondaryFixed, // Softer color for current user
+          borderRadius: BorderRadius.circular(
+            20,
+          ), // Increased border radius for roundness
           boxShadow: [
             BoxShadow(
-              blurRadius: isCurrentUser ? 4 : 0,
-              color: isCurrentUser ? Colors.blue : Colors.grey,
-              offset: const Offset(0, 1),
+              blurRadius: 3,
+              color: Colors.grey.withOpacity(0.5), // Softer shadow
+              offset: const Offset(0, 2),
             ),
           ],
         ),
@@ -192,30 +224,32 @@ class LeaderboardCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("$index."),
+              Text(
+                "$index.",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold, // Bold for emphasis
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: Colors.grey[300],
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.black,
+                      color: Colors.grey[400]!,
                       width: 2,
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(44),
-                      child: Image.network(
-                        'https://picsum.photos/seed/183/600',
-                        width: 44,
-                        height: 44,
-                        fit: BoxFit.cover,
-                      ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: Image.network(
+                      'https://picsum.photos/seed/183/600',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -229,17 +263,28 @@ class LeaderboardCard extends StatelessWidget {
                     Text(
                       '$name (@$username)',
                       style: const TextStyle(
-                        fontFamily: 'Readex Pro',
-                        letterSpacing: 0,
+                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Text(
-                      '$points pts',
-                      style: const TextStyle(
-                        fontFamily: 'Readex Pro',
-                        letterSpacing: 0,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.monetization_on,
+                          color: Theme.of(context).primaryColor,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$points',
+                          style: TextStyle(
+                            letterSpacing: 0.5, //
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -247,7 +292,7 @@ class LeaderboardCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   shareable ? Icons.share : Icons.chevron_right_rounded,
-                  color: Colors.black,
+                  color: Colors.grey[800],
                   size: 24,
                 ),
                 onPressed: () {
@@ -255,17 +300,23 @@ class LeaderboardCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => LeaderboardPostCreationPage(
-                              username: username,
-                              leaderboardPoints: points,
-                              leaderboardRank: index)),
+                        builder: (context) => LeaderboardPostCreationPage(
+                          repository: repository,
+                          leaderboardPoints: points,
+                          leaderboardRank: index,
+                          username: username,
+                        ),
+                      ),
                     );
                   } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(userId: userId)),
+                        builder: (context) => UserProfilePage(
+                          repository: repository,
+                          userId: userId,
+                        ),
+                      ),
                     );
                   }
                 },

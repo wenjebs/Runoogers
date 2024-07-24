@@ -6,8 +6,9 @@ import 'package:runningapp/pages/logged_in/training_page/onboarding/training_onb
 
 class TrainingCard extends StatelessWidget {
   final bool trainingOnboarded;
-
-  const TrainingCard({super.key, required this.trainingOnboarded});
+  final Repository repository;
+  const TrainingCard(
+      {super.key, required this.trainingOnboarded, required this.repository});
 
   String getFormattedTodayDate() {
     final now = DateTime.now();
@@ -16,11 +17,11 @@ class TrainingCard extends StatelessWidget {
   }
 
   Future<String> getTodayTrainingType() async {
-    var plans = await Repository.getTrainingPlans();
+    var plans = await repository.getTrainingPlans();
     if (plans.isEmpty) {
       return "No plans";
     } else {
-      return await Repository.getTodayTrainingType();
+      return await repository.getTodayTrainingType();
     }
   }
 
@@ -94,8 +95,8 @@ class TrainingCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const HomePage(initialIndex: 5)),
+                          builder: (context) => HomePage(
+                              repository: repository, initialIndex: 5)),
                     );
                   } else {
                     Navigator.push(
@@ -209,8 +210,8 @@ class TrainingCard extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const HomePage(initialIndex: 1)));
+                            builder: (context) => HomePage(
+                                repository: repository, initialIndex: 1)));
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),

@@ -3,7 +3,9 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/friend_request.dart';
 
 class FriendRequestPage extends StatefulWidget {
-  const FriendRequestPage({super.key});
+  const FriendRequestPage({super.key, required this.repository});
+
+  final Repository repository;
 
   @override
   State<FriendRequestPage> createState() => _FriendRequestPageState();
@@ -16,7 +18,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
   void initState() {
     super.initState();
     friendsList = [];
-    Repository.getFriendList().then((value) {
+    widget.repository.getFriendList().then((value) {
       friendsList = value;
     });
   }
@@ -28,7 +30,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
         title: const Text('Friend Requests'),
       ),
       body: FutureBuilder<List<String>>(
-        future: Repository.getFriendRequests(),
+        future: widget.repository.getFriendRequests(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -42,7 +44,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
                 String userId = friendRequestUserIds[index];
 
                 return FutureBuilder<String>(
-                  future: Repository.fetchName(userId),
+                  future: widget.repository.fetchName(userId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const ListTile(
@@ -58,6 +60,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
                       bool isFriend = friendsList.contains(
                           userId); // Check if userId is in the friends list
                       return FriendRequest(
+                        repository: widget.repository,
                         name: snapshot.data!,
                         userId: userId,
                         added:

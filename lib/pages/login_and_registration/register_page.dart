@@ -9,8 +9,8 @@ import 'components/auth_textfields.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
-  final Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.repository});
+  final Repository repository;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -18,11 +18,33 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool isLoaded = false;
+  final emailRegex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   void signUserUp() async {
+    if (!emailRegex.hasMatch(emailController.text)) {
+      // If the email format is invalid, show an error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Invalid Email'),
+            content: const Text('Please enter a valid email address.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return; // Do not proceed with the sign-in process
+    }
     //loading circle
     showDialog(
       context: context,
@@ -41,64 +63,26 @@ class _RegisterPageState extends State<RegisterPage> {
           email: emailController.text,
           password: passwordController.text,
         );
-        // Repository.addUser('users', {
-        //   // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
-        //   'email': emailController.text,
-        //   'uid': FirebaseAuth.instance.currentUser!.uid,
-        //   'posts': [],
-        //   'friends': [],
-        //   'onboarded': false,
-        //   'trainingOnboarded': false,
-        //   'runstats': {
-        //     'totalDistance': 0,
-        //     'totalTime': 0,
-        //     'totalRuns': 0,
-        //     'fastestTime': 0,
-        //     'longestDistance': 0,
-        //   },
-        //   'points': 0,
-        //   'activeStory': "",
-        //   'achievements': [],
-        // });
-        final response = await http.post(
-          Uri.parse('https://goorunners.readyplayer.me/api/users'),
-        );
-
-        if (response.statusCode == 200) {
-          debugPrint('User created');
-          var decodedResponse = jsonDecode(response.body);
-          var userData = decodedResponse['data'];
-          Repository.addUser('users', {
-            // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
-            'email': emailController.text,
-            'uid': FirebaseAuth.instance.currentUser!.uid,
-            'posts': [],
-            'friends': [],
-            'onboarded': false,
-            'trainingOnboarded': false,
-            'runstats': {
-              'totalDistance': 0,
-              'totalTime': 0,
-              'totalRuns': 0,
-              'fastestTime': 0,
-              'longestDistance': 0,
-            },
-            'points': 0,
-            'activeStory': "",
-            'achievements': [],
-            'rpmUserId': userData['id'],
-            'rpmToken': userData['token'],
-          });
-        } else {
-          debugPrint('Failed to create user');
-        }
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const HomePage(
-                    initialIndex: 0,
-                  )), // Replace HomePage with your homepage widget
-        );
+        widget.repository.addUser('users', {
+          // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
+          'email': emailController.text,
+          'uid': FirebaseAuth.instance.currentUser!.uid,
+          'posts': [],
+          'friends': [],
+          'onboarded': false,
+          'trainingOnboarded': false,
+          'runstats': {
+            'totalDistance': 0,
+            'totalTime': 0,
+            'totalRuns': 0,
+            'fastestTime': 0,
+            'longestDistance': 0,
+          },
+          'points': 0,
+          'activeStory': "",
+          'achievements': [],
+        });
+        Navigator.pop(context);
       } else {
         Navigator.pop(context);
         showErrorMessage("Passwords dont match!");
@@ -220,7 +204,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 25),
 
                     // sign in button
-                    SignUpButton(
+                    MyButton(
+                      text: 'Sign Up',
                       onTap: signUserUp,
                     ),
 
@@ -282,7 +267,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: widget.onTap,
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                           child: const Text(
                             'Login now',
                             style: TextStyle(

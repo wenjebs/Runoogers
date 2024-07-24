@@ -10,6 +10,8 @@ import 'package:runningapp/state/auth/typedefs.dart';
 
 class Authenticator {
   // Getters
+  Stream<User?> get authStateChanges =>
+      FirebaseAuth.instance.authStateChanges();
   UserId? get userId => FirebaseAuth.instance.currentUser?.uid;
   bool get isAlreadyLoggedIn => userId != null;
   String get displayName =>
@@ -84,7 +86,7 @@ class Authenticator {
             .get()
             .then((value) => value.docs.isNotEmpty);
         if (!userExists) {
-          Repository.addUser('users', {
+          Repository().addUser('users', {
             'email': user.email,
             'uid': user.uid,
             'posts': [],
@@ -117,5 +119,12 @@ class Authenticator {
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  Future<void> loginWithEmailAndPassword(String text, String text2) async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: text,
+      password: text2,
+    );
   }
 }

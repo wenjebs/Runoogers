@@ -6,8 +6,9 @@ import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class RunningPostCreationPage extends StatefulWidget {
   final String photoUrl;
-
-  const RunningPostCreationPage({super.key, required this.photoUrl});
+  final Repository repository;
+  const RunningPostCreationPage(
+      {super.key, required this.photoUrl, required this.repository});
 
   @override
   RunningPostCreationPageState createState() => RunningPostCreationPageState();
@@ -52,7 +53,7 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    Repository.addPost('posts', {
+                    widget.repository.addPost('posts', {
                       'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
                       'userId': FirebaseAuth.instance.currentUser!.uid,
@@ -60,10 +61,14 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                       'runImageUrl': photoUrl,
                     });
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const HomePage(initialIndex: 0)));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(
+                          initialIndex: 0,
+                          repository: widget.repository,
+                        ),
+                      ),
+                    );
                   }
                 },
                 child: const Text('Submit'),

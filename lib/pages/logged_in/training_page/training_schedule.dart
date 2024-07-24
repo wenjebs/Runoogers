@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class TrainingSchedule extends StatelessWidget {
@@ -19,12 +20,20 @@ class TrainingSchedule extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Week ${week['week_number']}',
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Week ${week['week_number']}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    Text('Total distance: ${week['total_distance_km']} km',
-                        style: const TextStyle(fontSize: 18)),
+                    Text(
+                      'Total distance: ${week['total_distance_km']} km',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 4),
                     // Text(
                     //     'Running days: ${week['running_days']}',
@@ -55,6 +64,8 @@ class TrainingSchedule extends StatelessWidget {
                             break;
                         }
                         return Card(
+                          elevation: 2,
+                          color: Theme.of(context).colorScheme.surface,
                           margin: const EdgeInsets.only(bottom: 8),
                           child: ListTile(
                             leading: Icon(icon),
@@ -78,8 +89,9 @@ class TrainingSchedule extends StatelessWidget {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HomePage(initialIndex: 1),
+                                          builder: (context) => HomePage(
+                                              repository: Repository(),
+                                              initialIndex: 1),
                                         ),
                                       );
                                     },

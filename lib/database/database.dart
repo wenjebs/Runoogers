@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
@@ -28,8 +29,9 @@ class Database {
     try {
       await Authenticator().logOut();
 
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AuthPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => AuthPage(
+              repository: Repository(), authenticator: Authenticator())));
     } catch (error) {
       debugPrint("Error logging out: $error");
     }
@@ -49,6 +51,13 @@ class Database {
   Future<String> fetchName(String userId) async {
     final doc = await firestore.collection('users').doc(userId).get();
     return doc['name'];
+  }
+
+  // get entire user
+  Future<DocumentSnapshot<Map<String, dynamic>>> fetchUser(
+      String userId) async {
+    final doc = firestore.collection('users').doc(userId).get();
+    return doc;
   }
 
   ///////////////////////////////////////
@@ -257,12 +266,12 @@ class Database {
     });
   }
 
-  Future<User> getUserProfile(String userId) async {
+  Future<UserModel> getUserProfile(String userId) async {
     DocumentSnapshot<Map<String, dynamic>> docSnapshot =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     if (docSnapshot.exists) {
-      User user = User.fromFirestore(docSnapshot);
+      UserModel user = UserModel.fromFirestore(docSnapshot);
       return user;
     } else {
       throw Exception("User not found");

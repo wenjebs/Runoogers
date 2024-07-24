@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 
 import 'story_detail_page.dart';
 
@@ -18,6 +19,7 @@ class StoryTile extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => StoryDetailPage(
+            repository: Repository(),
             image: Image.asset("lib/assets/images/socat.jpg"),
             title: '',
             description: '',

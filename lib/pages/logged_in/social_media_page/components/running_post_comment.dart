@@ -28,7 +28,7 @@ class RunningPostComment extends StatefulWidget {
   final String userId;
   final String name;
   final String comment;
-
+  final Repository repository;
   const RunningPostComment({
     super.key,
     required this.postId,
@@ -36,6 +36,7 @@ class RunningPostComment extends StatefulWidget {
     required this.userId,
     required this.comment,
     required this.name,
+    required this.repository,
   });
 
   @override
@@ -65,8 +66,9 @@ class _RunningPostCommentState extends State<RunningPostComment> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(userId: widget.userId)),
+                          builder: (context) => UserProfilePage(
+                              repository: widget.repository,
+                              userId: widget.userId)),
                     );
                   },
                   child: Row(
@@ -108,7 +110,7 @@ class _RunningPostCommentState extends State<RunningPostComment> {
                 icon: const Icon(Icons.thumb_up),
                 onPressed: () {
                   setState(() {
-                    Repository.addLikeToComment(
+                    widget.repository.addLikeToComment(
                         widget.postId, widget.commentId, widget.userId);
                   });
                 },

@@ -18,7 +18,10 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerStatefulWidget {
-  RunDetailsAndStop({
+  final LocationService locationService;
+
+  const RunDetailsAndStop(
+    this.repository, {
     super.key,
     required this.paddingValue,
     required StopWatchTimer stopWatchTimer,
@@ -27,9 +30,9 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
     this.activeStory,
     this.questProgress,
     this.storyRun,
+    required this.locationService,
   }) : _stopWatchTimer = stopWatchTimer;
 
-  final imagesRef = FirebaseStorage.instance.ref().child('images');
   final double paddingValue;
   final StopWatchTimer _stopWatchTimer;
   final GoogleMapsContainer mapContainer;
@@ -37,7 +40,7 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
   final String? activeStory;
   final QuestProgressModel? questProgress;
   final bool? storyRun;
-
+  final Repository repository;
   @override
   ConsumerState<RunDetailsAndStop> createState() => _RunDetailsAndStopState();
 }
@@ -55,9 +58,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   Future<void> _checkAndUpdateDifficulty() async {
     try {
       // Fetch the user model
-      user.User model = await Repository.getUserProfile(
-          FirebaseAuth.instance.currentUser!.uid);
-      // TODO every 3 runs prompt user to revamp their plan (rn its turned off)
+      user.UserModel model = await widget.repository
+          .getUserProfile(FirebaseAuth.instance.currentUser!.uid);
+      // every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {
         setState(() {
           updateDifficulty = true;
@@ -78,7 +81,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
             width: 200,
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Center(
@@ -92,20 +95,18 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
             ),
           )
         : isHidden
-            ? FilledButton(
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.paddingValue / 4,
-                      ),
-                    ),
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: FloatingActionButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
                   ),
+                  key: const Key("showRunDetailsButton"),
+                  onPressed: () {
+                    ref.read(runDetailsProvider.notifier).showHideRunDetails();
+                  },
+                  child: const Icon(Icons.keyboard_arrow_up),
                 ),
-                onPressed: () {
-                  ref.read(runDetailsProvider.notifier).showHideRunDetails();
-                },
-                child: const Text("Show Details"),
               )
             : Animate(
                 effects: [
@@ -123,9 +124,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                     width: MediaQuery.of(context).size.width -
                         (widget.paddingValue * 2),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(widget.paddingValue / 2),
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     ////////////////////////////////////////
                     // DISPLAY DISTANCE TIME AND PACE
@@ -135,53 +135,68 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ////////////////////
-                        // DISPLAY DISTANCE
+                        // Display time
                         ////////////////////
-                        Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 20.0),
-                              child: Text(
-                                'DISTANCE',
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Text(
-                                '${LocationService.distanceTravelled.toStringAsFixed(2)} km',
-                                style: const TextStyle(
-                                  fontSize: 40,
-                                  fontFamily: 'Helvetica',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+                        TimeDisplayWidget(
+                          stopWatchTimer: widget._stopWatchTimer,
                         ),
+                        ////////////////////
 
-                        const Divider(
-                          color: Colors.black,
-                          thickness: 2,
-                          endIndent: 50,
-                          indent: 50,
-                        ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            // DISPLAY DISTANCE
                             ////////////////////
-                            // Display time
-                            ////////////////////
-                            TimeDisplayWidget(
-                                stopWatchTimer: widget._stopWatchTimer),
-                            const SizedBox(
-                              height: 60,
+                            Column(
+                              children: [
+                                Text(
+                                  'Distance',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    fontSize: 15,
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        widget.locationService.distanceTravelled
+                                            .toStringAsFixed(2),
+                                        style: const TextStyle(
+                                          fontSize: 40,
+                                          fontFamily: 'Helvetica',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Text(
+                                        " km",
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(
+                              height: 80,
                               child: VerticalDivider(
-                                color: Colors.black,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withAlpha(100),
                                 thickness: 2,
                               ),
                             ),
                             // Display pace
                             PaceDisplayWidget(
-                                stopWatchTimer: widget._stopWatchTimer),
+                              stopWatchTimer: widget._stopWatchTimer,
+                              locationService: widget.locationService,
+                            ),
                           ],
                         ),
                         ///////////////////////////////////
@@ -216,7 +231,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
                                   // get distance travelled in KM
                                   final double distance =
-                                      LocationService.distanceTravelled;
+                                      widget.locationService.distanceTravelled;
 
                                   // if travelled less than 20 metres, ask user if sure they want to save run
                                   if (distance < 0.02) {
@@ -281,6 +296,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => RatingPage(
+                                              widget.repository,
                                               updateDifficulty:
                                                   updateDifficulty,
                                               downloadUrl: downloadUrl)),
@@ -291,7 +307,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     stopServices(ref);
                                   }
                                 },
-                                child: const Text("Stop Run"),
+                                key: const Key("stopRunButton"),
+                                child: const Icon(Icons.stop),
                               ),
                             ),
 
@@ -314,16 +331,24 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                   // Pause Location Tracking
                                   LocationService.pauseLocationTracking();
                                   // Show a new page of current stats
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PausedPage(
-                                        stopWatchTimer: widget._stopWatchTimer,
+                                  showModalBottomSheet(
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
                                       ),
                                     ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return PausedPage(
+                                        stopWatchTimer: widget._stopWatchTimer,
+                                        locationService: widget.locationService,
+                                      );
+                                    },
                                   );
                                 },
-                                child: const Text("Pause"),
+                                child: const Icon(Icons.pause),
                               ),
                             ),
 
@@ -345,7 +370,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                       .read(runDetailsProvider.notifier)
                                       .showHideRunDetails();
                                 },
-                                child: const Text("Hide Details"),
+                                child: const Icon(Icons.keyboard_arrow_down),
                               ),
                             ),
                           ],
@@ -369,11 +394,11 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   }
 
   void updateStats(double distance, int time) {
-    Repository.incrementRuns();
-    Repository.incrementTotalDistanceRan(distance);
-    Repository.incrementTotalTimeRan(time);
+    widget.repository.incrementRuns();
+    widget.repository.incrementTotalDistanceRan(distance);
+    widget.repository.incrementTotalTimeRan(time);
     double totalPoints = distance / (time / 60000) * 10;
-    Repository.addPoints(totalPoints.toInt());
+    widget.repository.addPoints(totalPoints.toInt());
   }
 
   Future<String> saveRun(int time, double distance, WidgetRef ref) async {
@@ -415,9 +440,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     );
 
     // get runs done
-    final String username =
-        await Repository.fetchName(FirebaseAuth.instance.currentUser!.uid);
-    final int runsDone = await Repository.getRunsDone();
+    final String username = await widget.repository
+        .fetchName(FirebaseAuth.instance.currentUser!.uid);
+    final int runsDone = await widget.repository.getRunsDone();
 
     // stop tracking
     LocationService.stopListeningToLocationChanges();
@@ -456,7 +481,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         .getDownloadURL();
     debugPrint("after download url");
     // add run to database
-    Repository.addRun(
+    widget.repository.addRun(
       "runs",
       Run(
         id: "",
@@ -476,13 +501,13 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     // update quest progress
     if (widget.storyRun != null && widget.storyRun == true) {
-      Repository.updateQuestProgress(distance, time,
+      widget.repository.updateQuestProgress(distance, time,
           widget.questProgress!.currentQuest, widget.activeStory!, context);
     }
     // update and display achievements
     debugPrint("before update user achievements");
     List<String> newAchievements =
-        await Repository.updateUserAchievements(distance, time);
+        await widget.repository.updateUserAchievements(distance, time);
     if (newAchievements.isNotEmpty) {
       // Show dialog with the list of new achievements
       showDialog(
@@ -524,16 +549,9 @@ class TimeDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 30.0,
-        top: 20,
-        right: 10,
-      ),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const Text(
-            'TIME',
-          ),
           Column(
             children: [
               /// Display stop watch time
@@ -553,10 +571,12 @@ class TimeDisplayWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           child: Text(
                             displayTime,
-                            style: const TextStyle(
-                                fontSize: 40,
-                                fontFamily: 'Helvetica',
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 70,
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
                         ),
                       ],
@@ -571,44 +591,53 @@ class TimeDisplayWidget extends StatelessWidget {
 }
 
 class PaceDisplayWidget extends StatelessWidget {
+  final LocationService locationService;
+
   const PaceDisplayWidget({
     super.key,
     required StopWatchTimer stopWatchTimer,
+    required this.locationService,
   }) : _stopWatchTimer = stopWatchTimer;
 
   final StopWatchTimer _stopWatchTimer;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 20,
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'PACE',
+    return Column(
+      children: [
+        Text(
+          'Pace',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontSize: 15,
+            fontFamily: 'Helvetica',
+            fontWeight: FontWeight.bold,
           ),
-          StreamBuilder<int>(
-              stream: _stopWatchTimer.rawTime,
-              initialData: _stopWatchTimer.rawTime.value,
-              builder: (context, snap) {
-                // debugPrint((snap.data! / 1000).toString());
-                final value = snap.data!;
-                final currentTime = value;
-                return PaceWidget(currentTime: currentTime);
-              }),
-        ],
-      ),
+        ),
+        StreamBuilder<int>(
+            stream: _stopWatchTimer.rawTime,
+            initialData: _stopWatchTimer.rawTime.value,
+            builder: (context, snap) {
+              // debugPrint((snap.data! / 1000).toString());
+              final value = snap.data!;
+              final currentTime = value;
+              return PaceWidget(
+                locationService: locationService,
+                currentTime: currentTime,
+              );
+            }),
+      ],
     );
   }
 }
 
 class PaceWidget extends StatelessWidget {
+  final LocationService locationService;
+
   const PaceWidget({
     super.key,
     required this.currentTime,
+    required this.locationService,
   });
 
   final int currentTime;
@@ -622,10 +651,10 @@ class PaceWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                LocationService.distanceTravelled == 0
+                locationService.distanceTravelled == 0
                     ? '0'
                     // minutes
-                    : "${((currentTime / 60000) / LocationService.distanceTravelled).toStringAsFixed(0)}:",
+                    : "${((currentTime / 60000) / locationService.distanceTravelled).toStringAsFixed(0)}:",
                 style: const TextStyle(
                   fontSize: 40,
                   fontFamily: 'Helvetica',
@@ -633,13 +662,13 @@ class PaceWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                LocationService.distanceTravelled == 0
+                locationService.distanceTravelled == 0
                     ? '0'
                     // minutes
                     : ((((currentTime / 60000) /
-                                    LocationService.distanceTravelled) -
+                                    locationService.distanceTravelled) -
                                 ((currentTime / 60000) /
-                                        LocationService.distanceTravelled)
+                                        locationService.distanceTravelled)
                                     .floor()) *
                             60)
                         .toStringAsFixed(0),

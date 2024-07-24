@@ -7,8 +7,8 @@ import 'package:runningapp/models/user.dart';
 import 'package:runningapp/providers.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
-
+  const SettingsPage({super.key, required this.repository});
+  final Repository repository;
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -18,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final _formKey = GlobalKey<FormState>();
   final _formKeyTwo = GlobalKey<FormState>();
   String _newName = '';
-  User? _user;
+  UserModel? _user;
 
   @override
   void initState() {
@@ -27,8 +27,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _loadUserProfile() async {
-    User userProfile = await Repository.getUserProfile(
-        auth.FirebaseAuth.instance.currentUser!.uid);
+    UserModel userProfile = await widget.repository
+        .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid);
     if (mounted) {
       setState(() {
         _user = userProfile;
@@ -41,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      User updatedUser = _user!.copyWith(name: _newName);
+      UserModel updatedUser = _user!.copyWith(name: _newName);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_user!.uid)
@@ -69,8 +69,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Center(
               child: Column(
                 children: [
-                  FutureBuilder<User>(
-                    future: Repository.getUserProfile(
+                  FutureBuilder<UserModel>(
+                    future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -132,8 +132,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Center(
               child: Column(
                 children: [
-                  FutureBuilder<User>(
-                    future: Repository.getUserProfile(
+                  FutureBuilder<UserModel>(
+                    future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

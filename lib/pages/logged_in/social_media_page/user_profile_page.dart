@@ -12,21 +12,22 @@ import 'package:runningapp/pages/logged_in/profile_page/webtest.dart';
 
 class UserProfilePage extends StatefulWidget {
   final String userId;
-
-  const UserProfilePage({super.key, required this.userId});
+  final Repository repository;
+  const UserProfilePage(
+      {super.key, required this.userId, required this.repository});
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  late Future<User> _userFuture;
+  late Future<UserModel> _userFuture;
 
   @override
   void initState() {
     super.initState();
     // Initialize the future in initState
-    _userFuture = Repository.getUserProfile(widget.userId);
+    _userFuture = widget.repository.getUserProfile(widget.userId);
   }
 
   @override
@@ -73,7 +74,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       user.id; // Ensure user.id is accessible in the scope
                   return Consumer(builder: (context, ref, child) {
                     return ref.watch(selectedIndexProvider) == 0
-                        ? AchievementsFeed(userId: userId)
+                        ? AchievementsFeed(
+                            repository: widget.repository, userId: userId)
                         : RunsSection(userId: userId);
                   });
                 }),

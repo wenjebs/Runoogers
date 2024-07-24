@@ -4,8 +4,8 @@ import 'package:runningapp/pages/logged_in/profile_page/achievements_page/sharea
 
 class AchievementsFeed extends StatefulWidget {
   final String? userId;
-
-  const AchievementsFeed({super.key, this.userId});
+  final Repository repository;
+  const AchievementsFeed({super.key, this.userId, required this.repository});
 
   @override
   AchievementsFeedState createState() => AchievementsFeedState();
@@ -15,7 +15,9 @@ class AchievementsFeedState extends State<AchievementsFeed> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: Repository.fetchUserAchievements(uid: widget.userId).asStream(),
+      stream: widget.repository
+          .fetchUserAchievements(uid: widget.userId)
+          .asStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Padding(

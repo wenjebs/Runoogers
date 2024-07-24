@@ -10,7 +10,8 @@ import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class RoutesGenerationPage extends ConsumerStatefulWidget {
-  const RoutesGenerationPage({super.key});
+  final Repository repository;
+  const RoutesGenerationPage(this.repository, {super.key});
 
   @override
   ConsumerState<RoutesGenerationPage> createState() => _RoutesPageState();
@@ -44,8 +45,14 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
 
   @override
   Widget build(BuildContext context) {
-    route = ref
-        .watch(routeProvider(seed, distance, currentLocation, _selectedPoints));
+    route = ref.watch(
+      routeProvider(
+        seed,
+        distance,
+        currentLocation,
+        _selectedPoints,
+      ),
+    );
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -310,7 +317,7 @@ class _RoutesPageState extends ConsumerState<RoutesGenerationPage> {
       // Use the name and description from the controllers
       String name = _nameController.text;
       String description = _descriptionController.text;
-      Repository.saveRoute(
+      widget.repository.saveRoute(
         RouteModel(
             id: "",
             name: name,
