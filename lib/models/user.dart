@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   String id;
   final List<String> achievements;
   final String email;
@@ -20,7 +20,7 @@ class User {
   final String username;
   final double averageDifficulty;
 
-  User({
+  UserModel({
     this.id = '',
     required this.achievements,
     required this.email,
@@ -42,7 +42,7 @@ class User {
   });
 
   // Constructor to create a User instance from a Firestore document
-  User.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc)
+  UserModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc)
       : id = doc.id,
         achievements = List<String>.from(doc.data()?['achievements'] ?? []),
         email = doc.data()?['email'] ?? '',
@@ -85,7 +85,7 @@ class User {
     };
   }
 
-  User.fromMap(Map<String, dynamic> data)
+  UserModel.fromMap(Map<String, dynamic> data)
       : id = data['id'] ?? '', // Assuming 'id' is included in the map
         achievements = List<String>.from(data['achievements'] ?? []),
         email = data['email'] ?? '',
@@ -105,7 +105,7 @@ class User {
         username = data['username'] ?? '',
         averageDifficulty = data['averageDifficulty']?.toDouble() ?? 0.0;
 
-  User copyWith({
+  UserModel copyWith({
     String? id,
     List<String>? achievements,
     String? email,
@@ -125,7 +125,7 @@ class User {
     String? username,
     double? averageDifficulty,
   }) {
-    return User(
+    return UserModel(
       id: id ?? this.id,
       achievements: achievements ?? this.achievements,
       email: email ?? this.email,

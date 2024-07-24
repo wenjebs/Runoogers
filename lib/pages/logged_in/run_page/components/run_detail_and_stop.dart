@@ -58,7 +58,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   Future<void> _checkAndUpdateDifficulty() async {
     try {
       // Fetch the user model
-      user.User model = await widget.repository
+      user.UserModel model = await widget.repository
           .getUserProfile(FirebaseAuth.instance.currentUser!.uid);
       // every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {

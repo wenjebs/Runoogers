@@ -18,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final _formKey = GlobalKey<FormState>();
   final _formKeyTwo = GlobalKey<FormState>();
   String _newName = '';
-  User? _user;
+  UserModel? _user;
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _loadUserProfile() async {
-    User userProfile = await widget.repository
+    UserModel userProfile = await widget.repository
         .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid);
     if (mounted) {
       setState(() {
@@ -41,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      User updatedUser = _user!.copyWith(name: _newName);
+      UserModel updatedUser = _user!.copyWith(name: _newName);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_user!.uid)
@@ -69,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Center(
               child: Column(
                 children: [
-                  FutureBuilder<User>(
+                  FutureBuilder<UserModel>(
                     future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
@@ -132,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Center(
               child: Column(
                 children: [
-                  FutureBuilder<User>(
+                  FutureBuilder<UserModel>(
                     future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {

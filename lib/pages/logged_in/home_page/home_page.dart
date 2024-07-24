@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
     const RunStatsPage(),
     LeaderboardsPage(
       repository: Repository(),
+      auth: FirebaseAuth.instance,
     ),
     SettingsPage(
       repository: Repository(),

@@ -64,8 +64,8 @@ class _FakeQuerySnapshot_2<T extends Object?> extends _i1.SmartFake
         );
 }
 
-class _FakeUser_3 extends _i1.SmartFake implements _i4.User {
-  _FakeUser_3(
+class _FakeUserModel_3 extends _i1.SmartFake implements _i4.UserModel {
+  _FakeUserModel_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -356,26 +356,28 @@ class MockRepository extends _i1.Mock implements _i6.Repository {
       ) as _i7.Future<List<String>>);
 
   @override
-  _i7.Future<_i4.User> getUserProfile(String? userId) => (super.noSuchMethod(
+  _i7.Future<_i4.UserModel> getUserProfile(String? userId) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getUserProfile,
           [userId],
         ),
-        returnValue: _i7.Future<_i4.User>.value(_FakeUser_3(
+        returnValue: _i7.Future<_i4.UserModel>.value(_FakeUserModel_3(
           this,
           Invocation.method(
             #getUserProfile,
             [userId],
           ),
         )),
-        returnValueForMissingStub: _i7.Future<_i4.User>.value(_FakeUser_3(
+        returnValueForMissingStub:
+            _i7.Future<_i4.UserModel>.value(_FakeUserModel_3(
           this,
           Invocation.method(
             #getUserProfile,
             [userId],
           ),
         )),
-      ) as _i7.Future<_i4.User>);
+      ) as _i7.Future<_i4.UserModel>);
 
   @override
   _i7.Future<bool> getTrainingOnboarded() => (super.noSuchMethod(

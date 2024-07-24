@@ -266,12 +266,12 @@ class Database {
     });
   }
 
-  Future<User> getUserProfile(String userId) async {
+  Future<UserModel> getUserProfile(String userId) async {
     DocumentSnapshot<Map<String, dynamic>> docSnapshot =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     if (docSnapshot.exists) {
-      User user = User.fromFirestore(docSnapshot);
+      UserModel user = UserModel.fromFirestore(docSnapshot);
       return user;
     } else {
       throw Exception("User not found");

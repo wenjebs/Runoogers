@@ -31,7 +31,7 @@ class UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User>(
+    return FutureBuilder<UserModel>(
       future: widget.repository
           .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid),
       builder: (context, snapshot) {
@@ -44,7 +44,7 @@ class UserPageState extends State<UserPage> {
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         } else if (snapshot.hasData) {
-          User user = snapshot.data!;
+          UserModel user = snapshot.data!;
           return Scaffold(
             body: SingleChildScrollView(
               child: SizedBox(
