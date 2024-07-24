@@ -84,6 +84,7 @@ class LeaderboardsPage extends StatelessWidget {
                                                 ['username'],
                                             points: globalLeaderboard[
                                                 currentUserPlace - 1]['points'],
+                                            repository: repository,
                                           ),
                                           PodiumWidget(
                                             firstPlace: UserModel.fromMap(
@@ -115,6 +116,7 @@ class LeaderboardsPage extends StatelessWidget {
                                               ['username'],
                                           points: globalLeaderboard[skipThree]
                                               ['points'],
+                                          repository: repository,
                                         );
                                       },
                                       childCount: globalLeaderboard.length - 3,
@@ -143,16 +145,17 @@ class LeaderboardsPage extends StatelessWidget {
                                 itemCount: friendsLeaderboard.length,
                                 itemBuilder: (context, index) {
                                   return LeaderboardCard(
-                                      shareable: false,
-                                      isCurrentUser: auth.currentUser!.uid ==
-                                          friendsLeaderboard[index]['uid'],
-                                      userId: friendsLeaderboard[index]['uid'],
-                                      index: index + 1,
-                                      name: friendsLeaderboard[index]['name'],
-                                      username: friendsLeaderboard[index]
-                                          ['username'],
-                                      points: friendsLeaderboard[index]
-                                          ['points']);
+                                    shareable: false,
+                                    isCurrentUser: auth.currentUser!.uid ==
+                                        friendsLeaderboard[index]['uid'],
+                                    userId: friendsLeaderboard[index]['uid'],
+                                    index: index + 1,
+                                    name: friendsLeaderboard[index]['name'],
+                                    username: friendsLeaderboard[index]
+                                        ['username'],
+                                    points: friendsLeaderboard[index]['points'],
+                                    repository: repository,
+                                  );
                                 },
                               );
                             },
@@ -179,6 +182,7 @@ class LeaderboardCard extends StatelessWidget {
   final String userId;
   final bool isCurrentUser;
   final bool shareable;
+  final Repository repository;
 
   const LeaderboardCard({
     super.key,
@@ -189,6 +193,7 @@ class LeaderboardCard extends StatelessWidget {
     required this.userId,
     required this.isCurrentUser,
     required this.shareable,
+    required this.repository,
   });
 
   @override
@@ -296,7 +301,7 @@ class LeaderboardCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => LeaderboardPostCreationPage(
-                          repository: Repository(),
+                          repository: repository,
                           leaderboardPoints: points,
                           leaderboardRank: index,
                           username: username,
@@ -308,7 +313,7 @@ class LeaderboardCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => UserProfilePage(
-                          repository: Repository(),
+                          repository: repository,
                           userId: userId,
                         ),
                       ),
