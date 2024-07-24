@@ -14,8 +14,9 @@ final commentControllerProvider =
 
 class PostCommentFeed extends ConsumerWidget {
   final Post post;
-
-  const PostCommentFeed({
+  final Repository repository;
+  const PostCommentFeed(
+    this.repository, {
     super.key,
     required this.post,
   });
@@ -32,7 +33,7 @@ class PostCommentFeed extends ConsumerWidget {
           title: const Text('Comments')),
       body: Column(
         children: [
-          RunningPost(post: post, disableCommentButton: true),
+          RunningPost(repository, post: post, disableCommentButton: true),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               builder: (context, snapshot) {
@@ -41,6 +42,7 @@ class PostCommentFeed extends ConsumerWidget {
                 }
                 final comments = snapshot.data!.docs.map((doc) {
                   return RunningPostComment(
+                    repository: repository,
                     name: doc['name'],
                     postId: post.id,
                     commentId: doc.id,
@@ -81,8 +83,8 @@ class PostCommentFeed extends ConsumerWidget {
                   icon: const Icon(Icons.send),
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    String name = await Repository.fetchName(
-                        FirebaseAuth.instance.currentUser!.uid);
+                    String name = await repository
+                        .fetchName(FirebaseAuth.instance.currentUser!.uid);
                     FirebaseFirestore.instance
                         .collection('posts')
                         .doc(post.id)

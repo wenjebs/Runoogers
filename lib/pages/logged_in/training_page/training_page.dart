@@ -10,8 +10,8 @@ import 'package:runningapp/pages/logged_in/training_page/plan_generator.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_schedule.dart';
 
 class TrainingPage extends StatefulWidget {
-  const TrainingPage({super.key});
-
+  const TrainingPage({super.key, required this.repository});
+  final Repository repository;
   @override
   State<TrainingPage> createState() => _TrainingPageState();
 }
@@ -21,7 +21,7 @@ class _TrainingPageState extends State<TrainingPage> {
   late List<dynamic> runningPlan = [];
 
   Future<void> _fetchTrainingPlans() async {
-    final plans = await Repository.getTrainingPlans();
+    final plans = await widget.repository.getTrainingPlans();
     setState(() {
       runningPlan = plans;
     });
@@ -81,7 +81,8 @@ class _TrainingPageState extends State<TrainingPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HomePage(
+                        builder: (context) => HomePage(
+                              repository: widget.repository,
                               initialIndex: 5,
                             )),
                   );
@@ -155,7 +156,8 @@ class _TrainingPageState extends State<TrainingPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HomePage(
+                        builder: (context) => HomePage(
+                              repository: widget.repository,
                               initialIndex: 5,
                             )),
                   );

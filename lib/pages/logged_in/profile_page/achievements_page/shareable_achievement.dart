@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/achievement_post_creation_page.dart';
 
 class ShareableAchievement extends StatelessWidget {
@@ -62,6 +63,7 @@ class ShareableAchievement extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AchievementPostCreationPage(
+                    repository: Repository(),
                     picture: picture,
                     name: name,
                     description: description,

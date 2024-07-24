@@ -7,7 +7,8 @@ import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/pages/logged_in/routes_page/route_provider.dart';
 
 class SelectPointsAndGenerateRoutePage extends ConsumerStatefulWidget {
-  const SelectPointsAndGenerateRoutePage({super.key});
+  final Repository repository;
+  const SelectPointsAndGenerateRoutePage(this.repository, {super.key});
 
   @override
   ConsumerState<SelectPointsAndGenerateRoutePage> createState() =>
@@ -266,7 +267,7 @@ class _SelectPointsAndGenerateRoutePageState
       // Use the name and description from the controllers
       String name = _nameController.text;
       String description = _descriptionController.text;
-      Repository.saveRoute(
+      widget.repository.saveRoute(
         RouteModel(
             id: "",
             name: name,

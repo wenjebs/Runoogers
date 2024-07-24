@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/run.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
@@ -13,6 +15,7 @@ class RunsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final runs = ref.watch(getRunsProvider(userId ?? Authenticator().userId!));
+
     return Expanded(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -26,7 +29,12 @@ class RunsSection extends ConsumerWidget {
                     children: runs.docs.map((doc) {
                       Run run = Run.fromFirestore(
                           doc as DocumentSnapshot<Map<String, dynamic>>, null);
+                      String formattedDate =
+                          DateFormat('EEEE \'at\' h:mma').format(
+                        DateTime.parse(run.date),
+                      );
                       return Card(
+                        color: Theme.of(context).colorScheme.secondaryFixed,
                         elevation: 4.0,
                         margin: const EdgeInsets.all(8.0),
                         child: Padding(
@@ -51,6 +59,7 @@ class RunsSection extends ConsumerWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 RunningPostCreationPage(
+                                                    repository: Repository(),
                                                     photoUrl:
                                                         doc['imageUrl'] ?? ''),
                                           ),
@@ -59,37 +68,61 @@ class RunsSection extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 8.0),
-                              Text("Date: ${run.date}"),
+                              Text(formattedDate),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceEvenly, // Distribute space evenly
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        const Text("Distance"),
-                                        Text("${run.distance} km"),
-                                      ],
-                                    ),
+                                  // Distance
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.directions_run,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        "${double.parse(run.distance).toStringAsFixed(2)} km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        const Text("Time"),
-                                        Text(run.time),
-                                      ],
-                                    ),
+                                  // Time
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.timer,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        run.time,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        const Text("Pace"),
-                                        Text(
-                                            "${run.pace.toStringAsFixed(2)} min/km"),
-                                      ],
-                                    ),
+                                  // Pace
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.speed,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        "${run.pace.toStringAsFixed(2)} min/km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

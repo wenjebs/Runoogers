@@ -7,8 +7,8 @@ import 'package:runningapp/models/user.dart';
 import 'package:runningapp/providers.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
-
+  const SettingsPage({super.key, required this.repository});
+  final Repository repository;
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -27,8 +27,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _loadUserProfile() async {
-    User userProfile = await Repository.getUserProfile(
-        auth.FirebaseAuth.instance.currentUser!.uid);
+    User userProfile = await widget.repository
+        .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid);
     if (mounted) {
       setState(() {
         _user = userProfile;
@@ -70,7 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   FutureBuilder<User>(
-                    future: Repository.getUserProfile(
+                    future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -133,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   FutureBuilder<User>(
-                    future: Repository.getUserProfile(
+                    future: widget.repository.getUserProfile(
                         auth.FirebaseAuth.instance.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

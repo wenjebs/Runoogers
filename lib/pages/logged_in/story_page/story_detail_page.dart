@@ -3,6 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:runningapp/database/repository.dart';
 
 class StoryDetailPage extends StatefulWidget {
+  final Repository repository;
   final Image image;
   final String title;
   final String description;
@@ -16,6 +17,7 @@ class StoryDetailPage extends StatefulWidget {
     required this.description,
     required this.userID,
     required this.id,
+    required this.repository,
   });
 
   @override
@@ -41,69 +43,77 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Story details"),
+        title: const Text("Details"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      body: Column(
-        children: [
-          // STORY IMAGE
-          Center(child: widget.image),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Profile Image
+            SizedBox(
+              width: double.infinity,
+              child: widget.image,
+            ),
 
-          // Title
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            // Profile Details
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      // onPressed: () => Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         // TODO, handle no permission unhandled exception
+                      //         builder: (context) => const RunPage(
+                      //           storyRun: true,
+                      //         ),
+                      //       ),
+                      //     ),
+                      onPressed: active
+                          ? null
+                          : () {
+                              widget.repository
+                                  .setUserActiveStory(widget.userID, widget.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: const Text(
+                                      'Active story set successfully'),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                              setState(() {
+                                active = true;
+                              });
+                            },
+                      child: active
+                          ? const Text("This quest is currently active!")
+                          : const Text("Make active quest"),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-
-          // Description
-          Expanded(
-              child: SingleChildScrollView(
-                  child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(widget.description),
-          ))),
-          // Start button
-          ElevatedButton(
-            // onPressed: () => Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         // TODO, handle no permission unhandled exception
-            //         builder: (context) => const RunPage(
-            //           storyRun: true,
-            //         ),
-            //       ),
-            //     ),
-            onPressed: active
-                ? () {}
-                : () {
-                    Repository.setUserActiveStory(widget.userID, widget.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        dismissDirection: DismissDirection.up,
-                        behavior: SnackBarBehavior.floating,
-                        margin: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).size.height - 150,
-                            left: 10,
-                            right: 10),
-                        content: const Text('Active story set successfully'),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                    setState(() {
-                      active = true;
-                    });
-                  },
-            child: active
-                ? const Text("This quest is currently active!")
-                : const Text("Make active quest"),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -7,7 +7,8 @@ import 'routes_details_page.dart';
 import 'select_points_and_generate_route_page.dart';
 
 class RoutesView extends StatefulWidget {
-  const RoutesView({super.key});
+  final Repository repository;
+  const RoutesView({super.key, required this.repository});
 
   @override
   State<RoutesView> createState() => _RoutesViewState();
@@ -18,11 +19,8 @@ class _RoutesViewState extends State<RoutesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Saved Routes'),
-      ),
       body: FutureBuilder(
-        future: Repository.getSavedRoutes(),
+        future: widget.repository.getSavedRoutes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -30,6 +28,11 @@ class _RoutesViewState extends State<RoutesView> {
             );
           } else {
             List<RouteModel> routes = snapshot.data!;
+            if (routes.isEmpty) {
+              return const Center(
+                child: Text("No routes saved yet."),
+              );
+            }
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
@@ -90,8 +93,8 @@ class _RoutesViewState extends State<RoutesView> {
                                       TextButton(
                                         onPressed: () {
                                           // Delete route
-                                          Repository.deleteRoute(
-                                              routes[index].getId);
+                                          widget.repository
+                                              .deleteRoute(routes[index].getId);
                                           Navigator.pop(context);
                                           setState(() {});
                                         },
@@ -131,8 +134,9 @@ class _RoutesViewState extends State<RoutesView> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const RoutesGenerationPage(), // Replace with your first page
+                              builder: (context) => RoutesGenerationPage(
+                                widget.repository,
+                              ), // Replace with your first page
                             ),
                           );
                           setState(() {});
@@ -146,7 +150,9 @@ class _RoutesViewState extends State<RoutesView> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const SelectPointsAndGenerateRoutePage(), // Replace with your second page
+                                  SelectPointsAndGenerateRoutePage(
+                                widget.repository,
+                              ),
                             ),
                           );
                           setState(() {});

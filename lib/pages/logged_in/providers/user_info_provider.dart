@@ -27,6 +27,18 @@ final friendsProvider = StreamProvider.autoDispose<List<String>>((ref) async* {
   });
 });
 
+final trainingOnboardedProvider = StreamProvider.autoDispose<bool>((ref) {
+  final user = ref.watch(userProvider);
+  if (user != null) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .snapshots()
+        .map((snapshot) => snapshot.data()?['trainingOnboarded'] ?? false);
+  }
+  return const Stream.empty();
+});
+
 final userInformationProvider =
     StreamProvider.autoDispose<Map<String, dynamic>?>((ref) async* {
   final user = FirebaseAuth.instance.currentUser;

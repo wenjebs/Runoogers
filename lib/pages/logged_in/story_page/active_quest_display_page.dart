@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
@@ -9,8 +10,9 @@ import 'package:runningapp/pages/logged_in/story_page/providers/providers.dart';
 class ActiveQuestDisplayPage extends ConsumerWidget {
   final List<Quest> quests;
   final String activeStoryTitle;
-
-  const ActiveQuestDisplayPage({
+  final Repository repository;
+  const ActiveQuestDisplayPage(
+    this.repository, {
     super.key,
     required this.quests,
     required this.activeStoryTitle,
@@ -18,17 +20,19 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questProgress = ref.watch(questProgressProvider(activeStoryTitle));
+    final questProgress =
+        ref.watch(questProgressProvider(activeStoryTitle, repository));
     // debugPrint(questProgress.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Active Quests"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: switch (questProgress) {
         AsyncData(:final value) => RefreshIndicator(
             onRefresh: () {
               // ignore: unused_result
-              ref.refresh(questProgressProvider(activeStoryTitle));
+              ref.refresh(questProgressProvider(activeStoryTitle, repository));
               return Future.value();
             },
             child: Column(
@@ -38,6 +42,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                     itemCount: quests.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Card(
+                        elevation: 5,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
@@ -71,9 +76,10 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
                   onPressed: () async {
                     bool confirm = await showConfirmationDialog(context);
                     if (confirm) {
-                      await Repository.resetQuestsProgress(activeStoryTitle);
+                      await repository.resetQuestsProgress(activeStoryTitle);
                       // ignore: unused_result
-                      ref.refresh(questProgressProvider(activeStoryTitle));
+                      ref.refresh(
+                          questProgressProvider(activeStoryTitle, repository));
                     }
                   },
                   child: const Text("Reset quests progress"),
@@ -135,6 +141,8 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => RunPage(
+          locationService: LocationService(),
+          repository: repository,
           title: quest.getTitle,
           storyRun: true,
           activeStoryTitle: activeStoryTitle,
@@ -145,7 +153,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
       ),
     );
     // ignore: unused_result
-    ref.refresh(questProgressProvider(activeStoryTitle));
+    ref.refresh(questProgressProvider(activeStoryTitle, repository));
   }
 }
 

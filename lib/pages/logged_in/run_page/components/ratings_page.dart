@@ -9,9 +9,13 @@ import 'package:runningapp/pages/logged_in/training_page/dynamic_plan/update_pla
 class RatingPage extends ConsumerWidget {
   final bool updateDifficulty;
   final String downloadUrl;
-
+  final Repository repository;
   const RatingPage(
-      {super.key, required this.updateDifficulty, required this.downloadUrl});
+    this.repository, {
+    super.key,
+    required this.updateDifficulty,
+    required this.downloadUrl,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +28,7 @@ class RatingPage extends ConsumerWidget {
             return IconButton(
                 icon: CircleAvatar(child: Text('${index + 1}')),
                 onPressed: () async {
-                  final user = await Repository.getUserProfile(
+                  final user = await repository.getUserProfile(
                       auth.FirebaseAuth.instance.currentUser!.uid);
 
                   double avgDifficulty = user.averageDifficulty + index + 1.0;
@@ -74,8 +78,8 @@ class RatingPage extends ConsumerWidget {
                       .update(updatedNewUser.toFirestore());
 
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) =>
-                          RunningPostCreationPage(photoUrl: downloadUrl)));
+                      builder: (_) => RunningPostCreationPage(
+                          repository: repository, photoUrl: downloadUrl)));
                 });
           }),
         ),

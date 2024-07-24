@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 
 class FriendRequest extends StatefulWidget {
+  final Repository repository;
   final String name;
   final String userId;
   final bool added;
@@ -11,6 +12,7 @@ class FriendRequest extends StatefulWidget {
     required this.name,
     required this.userId,
     required this.added,
+    required this.repository,
   });
 
   @override
@@ -41,7 +43,7 @@ class FriendRequestState extends State<FriendRequest> {
             ),
             IconButton(
               onPressed: () {
-                Repository.acceptFriendRequest(widget.userId);
+                widget.repository.acceptFriendRequest(widget.userId);
                 setState(() {
                   _isVisible = false; // Hide the widget
                 });
@@ -50,7 +52,7 @@ class FriendRequestState extends State<FriendRequest> {
             ),
             IconButton(
               onPressed: () {
-                Repository.rejectFriendRequest(widget.userId);
+                widget.repository.rejectFriendRequest(widget.userId);
                 setState(() {
                   _isVisible = false; // Hide the widget
                 });
