@@ -55,7 +55,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
     dayAfterTomorrowsDate: getFormattedDayAfterTomorrowDate(),
   ).prompt;
 
-  int maxAttempts = 5;
+  int maxAttempts = 20;
   int attempts = 0;
 
   // Encode it into a json
@@ -63,11 +63,13 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
     try {
       debugPrint("generating $attempts");
       final text = await gemini.text(prompt, modelName: 'models/gemini-pro');
+      debugPrint(text!.output!);
       final json = jsonDecode(text!.output!) as Map<String, dynamic>;
-      if (!json.containsKey('weeks')) {
-        throw const FormatException("JSON is null or missing 'weeks' key");
-      }
-      List<dynamic> weeks = json['weeks'];
+      // if (!json.containsKey('weeks')) {
+      //   throw const FormatException("JSON is null or missing 'weeks' key");
+      // }
+
+      List<dynamic> weeks = json['running_plan']['weeks'];
       for (int i = 0; i < weeks.length; i++) {
         var week = weeks[i];
         if (week == null || (i >= 1 && week.length != 7)) {
@@ -81,7 +83,8 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
           .collection('trainingPlans')
           .add(json);
       return json;
-    } on FormatException {
+    } on FormatException catch (e) {
+      debugPrint("Failed to generate plan $e");
       attempts++;
       if (attempts >= maxAttempts) {
         throw Exception("Failed to generate plan");

@@ -1,105 +1,120 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
+import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 // Import your user data model and data fetching service
 // import 'path_to_your_user_data_model.dart';
 // import 'path_to_your_data_fetching_service.dart';
 
-class UserPage extends StatefulWidget {
+class UserPage extends ConsumerWidget {
   final Repository repository;
   const UserPage({super.key, required this.repository});
 
   @override
-  UserPageState createState() => UserPageState();
-}
-
-class UserPageState extends State<UserPage> {
-  bool trainingOnboarded = false;
-  @override
-  void initState() {
-    super.initState();
-    widget.repository.getTrainingOnboarded().then((value) {
-      setState(() {
-        trainingOnboarded = value;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final friendUids = ref.watch(friendsProvider);
+    final trainingOnboarded = ref.watch(trainingOnboardedProvider);
     return FutureBuilder<UserModel>(
-      future: widget.repository
+      future: repository
           .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+              body: Center(child: CircularProgressIndicator()));
         } else if (snapshot.hasError) {
           return Scaffold(
-            body: Center(child: Text('Error: ${snapshot.error}')),
-          );
+              body: Center(child: Text('Error: ${snapshot.error}')));
         } else if (snapshot.hasData) {
           UserModel user = snapshot.data!;
           return Scaffold(
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  children: [
-                    Text(
-                      "Welcome, ${user.name}!",
-                      style: const TextStyle(
+            body: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Welcome, ${user.name}!",
+                    style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TrainingCard(
-                        repository: widget.repository,
-                        trainingOnboarded: trainingOnboarded),
-                    Container(
-                      height: 150,
-                      padding: const EdgeInsets.all(20),
-                      child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(20),
-                        crossAxisCount: 3,
-                        children: const <Widget>[
-                          ServiceIcon(
-                            title: 'Story',
-                            icon: Icons.book,
-                          ),
-                          ServiceIcon(
-                            title: 'Track Run',
-                            icon: Icons.directions_run,
-                          ),
-                          ServiceIcon(
-                            title: 'All',
-                            icon: Icons.all_inclusive_outlined,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: SocialMediaPage(
-                        Repository(),
-                        showFloatingActionButton: false,
-                      ),
-                    ),
-                  ],
+                        color: Colors.black),
+                  ),
                 ),
-              ),
+                trainingOnboarded.when(data: (trainingOnboarded) {
+                  return TrainingCard(
+                    repository: repository,
+                    trainingOnboarded: trainingOnboarded,
+                  );
+                }, loading: () {
+                  return const CircularProgressIndicator();
+                }, error: (error, stackTrace) {
+                  return Text('Error: $error');
+                }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                    ),
+                    itemCount: 3,
+                    itemBuilder: (context, index) {
+                      List<Map<String, dynamic>> serviceIcons = [
+                        {'title': 'Story', 'icon': Icons.book},
+                        {'title': 'Track Run', 'icon': Icons.directions_run},
+                        {'title': 'All', 'icon': Icons.all_inclusive_outlined},
+                      ];
+
+                      return ServiceIcon(
+                        title: serviceIcons[index]['title'],
+                        icon: serviceIcons[index]['icon'],
+                      );
+                    },
+                  ),
+                ),
+                friendUids.when(
+                  data: (friendUids) {
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: GetUserPostService().getPosts(friendUids),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        final posts = snapshot.data!.docs.map((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          return Post.fromMap(data);
+                        }).toList();
+                        return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index];
+                            return RunningPost(repository, post: post);
+                          },
+                        );
+                      },
+                    );
+                  },
+                  loading: () => const CircularProgressIndicator(),
+                  error: (error, stackTrace) => Text('Error: $error'),
+                ),
+              ],
             ),
           );
         } else {
-          return const Scaffold(
-            body: Center(child: Text('No data found')),
-          );
+          return const Scaffold(body: Center(child: Text('No data found')));
         }
       },
     );

@@ -75,6 +75,8 @@ For week 1, generate the plan starting from today's date. For weeks 2 and beyond
 
 Ensure that each week increases in difficulty gradually. Ensure you generate EVERY day and date of the week. Today's date is $todaysDate.
 
+Dont include the ```json ``` tag in your response.
+
 """;
   }
 }

@@ -194,14 +194,17 @@ class LeaderboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 1),
+      padding: const EdgeInsetsDirectional.all(4.0),
       child: Container(
         decoration: BoxDecoration(
           color: isCurrentUser
-              ? Colors.lightBlue[50]
-              : Colors.white, // Softer color for current user
+              ? Theme.of(context).colorScheme.onPrimaryFixedVariant
+              : Theme.of(context)
+                  .colorScheme
+                  .secondaryFixed, // Softer color for current user
           borderRadius: BorderRadius.circular(
-              20), // Increased border radius for roundness
+            20,
+          ), // Increased border radius for roundness
           boxShadow: [
             BoxShadow(
               blurRadius: 3,
