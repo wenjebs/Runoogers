@@ -224,35 +224,19 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
 
   // for fetching assets
   List<String> categories = [
-    'bottom',
-    'eye',
-    'eyebrows',
-    'eyeshape',
-    'facemask',
-    'faceshape',
-    'facewear',
-    'footwear',
-    'glasses',
-    'hair',
-    'beard',
-    'headwear',
-    'lipshape',
-    'noseshape',
     'outfit',
-    'shirt',
-    'top',
-    'costume'
   ];
   String currentAvatarUrl = '';
   int glbViewerKey = 0; // TODO THIS IS DAMN SCUFFED
   Key avatarKey = UniqueKey();
   String userId = '';
 
-  Future<List<dynamic>> getUsableAssets(String category) async {
-    debugPrint("userId: ${auth.FirebaseAuth.instance.currentUser!.uid}");
+  Future<void> getUsableAssets(String category) async {
     DocumentReference userDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(auth.FirebaseAuth.instance.currentUser!.uid);
+
+    QuerySnapshot existingAssets = await userDoc.collection('assets').get();
 
     try {
       DocumentSnapshot userSnapshot = await userDoc.get();
@@ -271,27 +255,70 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
       debugPrint('Error fetching user: $e');
     }
 
-    final response = await http.get(
-        Uri.parse(
-            'https://api.readyplayer.me/v1/assets?filter=usable-by-user-and-app&filterApplicationId=664f39ea83967c2d66c6d26b&filterUserId=$userId&gender=neutral&gender=${widget.gender}&type=$category&limit=50'),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer ${widget.userId}',
-          'X-APP-ID': '664f39ea83967c2d66c6d26b',
-        });
-
-    if (response.statusCode == 200) {
-      String responseBody = response.body;
-      var decodedResponse = jsonDecode(responseBody);
-      // debugPrint(decodedResponse['data'].toString());
-      final List<dynamic> assetsData = decodedResponse['data'];
+    if (existingAssets.docs.isNotEmpty) {
+      List<dynamic> existingAssetsData =
+          existingAssets.docs.map((doc) => doc.data()).toList();
       setState(() {
-        assets = assetsData;
+        assets = existingAssetsData;
       });
-      debugPrint("getUsableAssets: Assets retrieved");
-      return assetsData;
+      debugPrint("Loaded assets from Firestore.");
     } else {
-      debugPrint(response.reasonPhrase);
-      return [];
+      final response = await http.get(
+          Uri.parse(
+              'https://api.readyplayer.me/v1/assets?filter=usable-by-user-and-app&filterApplicationId=664f39ea83967c2d66c6d26b&filterUserId=$userId&gender=neutral&gender=${widget.gender}&type=$category&limit=16'),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer ${widget.userId}',
+            'X-APP-ID': '664f39ea83967c2d66c6d26b',
+          });
+
+      if (response.statusCode == 200) {
+        String responseBody = response.body;
+        var decodedResponse = jsonDecode(responseBody);
+        // debugPrint(decodedResponse['data'].toString());
+        List<dynamic> assetsData = decodedResponse['data'];
+
+        for (var asset in assetsData) {
+          Map<String, dynamic> assetData = {
+            'id': asset['id'],
+            'name': asset['name'],
+            'organizationId': asset['organizationId'],
+            'locked': asset['locked'],
+            'type': asset['type'],
+            'bodyType': asset['bodyType'],
+            'editable': asset['editable'],
+            'gender': asset['gender'],
+            'hasApps': asset['hasApps'],
+            'campaignIds': asset['campaignIds'] ??
+                [], // Handle optional fields with a default value
+            'iconUrl': asset['iconUrl'],
+            'badgeText': asset['badgeText'],
+            'badgeLogoUrl': asset['badgeLogoUrl'],
+            'faceBlendShapes': asset['faceBlendShapes'] ?? [],
+            'hairStyle': asset['hairStyle'] ?? '',
+            'eyebrowStyle': asset['eyebrowStyle'] ?? '',
+            'eyeStyle': asset['eyeStyle'] ?? '',
+            'beardStyle': asset['beardStyle'] ?? '',
+            'glassesStyle': asset['glassesStyle'] ?? '',
+            'lockedCategories': asset['lockedCategories'] ?? [],
+            'iconGlow': asset['iconGlow'] ?? false,
+            'position': asset['position'],
+            'price': 500,
+            'unlocked': false,
+          };
+          await userDoc.collection('assets').add(assetData);
+          debugPrint("Asset data stored successfully in Firestore.");
+        }
+        List<dynamic> listedAssetsData =
+            existingAssets.docs.map((doc) => doc.data()).toList();
+        setState(() {
+          assets = listedAssetsData;
+        });
+        debugPrint("Assets data stored successfully in Firestore.");
+
+        debugPrint("getUsableAssets: Assets retrieved");
+      } else {
+        debugPrint(response.reasonPhrase);
+      }
     }
   }
 
@@ -406,24 +433,6 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
     }
   }
 
-  Future<void> fetchAndCacheAssets(String category) async {
-    if (AssetCacheManager.hasAssets(category)) {
-      // If assets are cached, use them
-      setState(() {
-        assets = AssetCacheManager.getAssets(category)!;
-      });
-    } else {
-      // Simulate fetching assets from the network
-      var fetchedAssets = await getUsableAssets(category);
-      // Cache the fetched assets
-      AssetCacheManager.cacheAssets(category, fetchedAssets);
-      // Update the UI
-      setState(() {
-        assets = fetchedAssets;
-      });
-    }
-  }
-
   Future<void> fetchUserId() async {
     DocumentReference userDoc = FirebaseFirestore.instance
         .collection('users')
@@ -491,7 +500,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
                       return Center(
                         child: InkWell(
                           onTap: () {
-                            fetchAndCacheAssets(categories[index]);
+                            getUsableAssets(categories[index]);
                           },
                           child: Icon(getIconForCategory(categories[index])),
                         ),
@@ -514,35 +523,74 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
                     itemCount: assets.length,
                     itemBuilder: (context, index) {
                       return Center(
-                        child: InkWell(
-                          onTap: () {
-                            equipAsset(
-                                assets[index]['id'], assets[index]['type']);
-                          },
-                          child: ClipRect(
-                            child: SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: FittedBox(
-                                fit: BoxFit
-                                    .cover, // This ensures the image covers the widget area without losing aspect ratio
-                                child: Image.network(
-                                  assets[index]['iconUrl'],
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(Icons.error);
-                                  },
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    }
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  },
+                        child: Stack(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                equipAsset(
+                                    assets[index]['id'], assets[index]['type']);
+                              },
+                              child: ClipRect(
+                                child: SizedBox(
+                                  width: 100,
+                                  height: 100,
+                                  child: FittedBox(
+                                    fit: BoxFit
+                                        .cover, // This ensures the image covers the widget area without losing aspect ratio
+                                    child: Image.network(
+                                      assets[index]['iconUrl'],
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(Icons.error);
+                                      },
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              bottom: 5,
+                              right: 5,
+                              child: assets[index]['unlocked']
+                                  ? const Icon(Icons.check_circle,
+                                      color: Colors.green)
+                                  : Container(
+                                      padding: const EdgeInsets.all(
+                                          2), // Add padding around the text for better visibility
+                                      decoration: BoxDecoration(
+                                        // Optional: Add a slight background to improve text visibility while maintaining image visibility
+                                        color: Colors.black.withOpacity(
+                                            0.2), // Semi-transparent black background
+                                        borderRadius: BorderRadius.circular(
+                                            4), // Rounded corners for the background
+                                      ),
+                                      child: Text(
+                                        '\$${assets[index]['price']}',
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(
+                                              0.0), // Transparent text
+                                          shadows: [
+                                            Shadow(
+                                              // Shadow for text outline effect
+                                              offset: Offset(0, 1),
+                                              blurRadius: 3,
+                                              color: Colors.black
+                                                  .withOpacity(0.75),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ],
                         ),
                       );
                     },
