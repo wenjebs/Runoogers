@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:runningapp/models/user.dart';
 
 class PodiumWidget extends StatelessWidget {
-  final User firstPlace;
-  final User secondPlace;
-  final User thirdPlace;
+  final UserModel firstPlace;
+  final UserModel secondPlace;
+  final UserModel thirdPlace;
 
   const PodiumWidget({
     super.key,
@@ -47,7 +47,7 @@ class PodiumWidget extends StatelessWidget {
   }
 
   Widget _buildProfileColumn(
-      BuildContext context, User profile, String position, Color color) {
+      BuildContext context, UserModel profile, String position, Color color) {
     double fontSizePosition;
     double fontSizeName;
     double avatarRadius;

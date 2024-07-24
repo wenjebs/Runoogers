@@ -22,7 +22,7 @@ class UserPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final friendUids = ref.watch(friendsProvider);
     final trainingOnboarded = ref.watch(trainingOnboardedProvider);
-    return FutureBuilder<User>(
+    return FutureBuilder<UserModel>(
       future: repository
           .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid),
       builder: (context, snapshot) {
@@ -33,7 +33,7 @@ class UserPage extends ConsumerWidget {
           return Scaffold(
               body: Center(child: Text('Error: ${snapshot.error}')));
         } else if (snapshot.hasData) {
-          User user = snapshot.data!;
+          UserModel user = snapshot.data!;
           return Scaffold(
             body: ListView(
               children: [

@@ -97,7 +97,7 @@ class Repository {
   }
 
   // Get user profile
-  Future<User> getUserProfile(String userId) {
+  Future<UserModel> getUserProfile(String userId) {
     return database.getUserProfile(userId);
   }
 

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
@@ -8,7 +9,12 @@ import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.d
 
 class LeaderboardsPage extends StatelessWidget {
   final Repository repository;
-  const LeaderboardsPage({super.key, required this.repository});
+  final FirebaseAuth auth;
+  const LeaderboardsPage({
+    super.key,
+    required this.repository,
+    required this.auth,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +59,7 @@ class LeaderboardsPage extends StatelessWidget {
                               for (int i = 0;
                                   i < globalLeaderboard.length;
                                   i++) {
-                                if (auth.FirebaseAuth.instance.currentUser!
-                                        .uid ==
+                                if (auth.currentUser!.uid ==
                                     globalLeaderboard[i]['uid']) {
                                   currentUserPlace = i + 1;
                                   break;
@@ -79,13 +84,14 @@ class LeaderboardsPage extends StatelessWidget {
                                                 ['username'],
                                             points: globalLeaderboard[
                                                 currentUserPlace - 1]['points'],
+                                            repository: repository,
                                           ),
                                           PodiumWidget(
-                                            firstPlace: User.fromMap(
+                                            firstPlace: UserModel.fromMap(
                                                 globalLeaderboard[0]),
-                                            secondPlace: User.fromMap(
+                                            secondPlace: UserModel.fromMap(
                                                 globalLeaderboard[1]),
-                                            thirdPlace: User.fromMap(
+                                            thirdPlace: UserModel.fromMap(
                                                 globalLeaderboard[2]),
                                           ),
                                         ],
@@ -97,10 +103,10 @@ class LeaderboardsPage extends StatelessWidget {
                                         final skipThree = index + 3;
                                         return LeaderboardCard(
                                           shareable: false,
-                                          isCurrentUser: auth.FirebaseAuth
-                                                  .instance.currentUser!.uid ==
-                                              globalLeaderboard[skipThree]
-                                                  ['uid'],
+                                          isCurrentUser:
+                                              auth.currentUser!.uid ==
+                                                  globalLeaderboard[skipThree]
+                                                      ['uid'],
                                           userId: globalLeaderboard[skipThree]
                                               ['uid'],
                                           index: skipThree + 1,
@@ -110,6 +116,7 @@ class LeaderboardsPage extends StatelessWidget {
                                               ['username'],
                                           points: globalLeaderboard[skipThree]
                                               ['points'],
+                                          repository: repository,
                                         );
                                       },
                                       childCount: globalLeaderboard.length - 3,
@@ -138,17 +145,17 @@ class LeaderboardsPage extends StatelessWidget {
                                 itemCount: friendsLeaderboard.length,
                                 itemBuilder: (context, index) {
                                   return LeaderboardCard(
-                                      shareable: false,
-                                      isCurrentUser: auth.FirebaseAuth.instance
-                                              .currentUser!.uid ==
-                                          friendsLeaderboard[index]['uid'],
-                                      userId: friendsLeaderboard[index]['uid'],
-                                      index: index + 1,
-                                      name: friendsLeaderboard[index]['name'],
-                                      username: friendsLeaderboard[index]
-                                          ['username'],
-                                      points: friendsLeaderboard[index]
-                                          ['points']);
+                                    shareable: false,
+                                    isCurrentUser: auth.currentUser!.uid ==
+                                        friendsLeaderboard[index]['uid'],
+                                    userId: friendsLeaderboard[index]['uid'],
+                                    index: index + 1,
+                                    name: friendsLeaderboard[index]['name'],
+                                    username: friendsLeaderboard[index]
+                                        ['username'],
+                                    points: friendsLeaderboard[index]['points'],
+                                    repository: repository,
+                                  );
                                 },
                               );
                             },
@@ -175,6 +182,7 @@ class LeaderboardCard extends StatelessWidget {
   final String userId;
   final bool isCurrentUser;
   final bool shareable;
+  final Repository repository;
 
   const LeaderboardCard({
     super.key,
@@ -185,6 +193,7 @@ class LeaderboardCard extends StatelessWidget {
     required this.userId,
     required this.isCurrentUser,
     required this.shareable,
+    required this.repository,
   });
 
   @override
@@ -292,7 +301,7 @@ class LeaderboardCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => LeaderboardPostCreationPage(
-                          repository: Repository(),
+                          repository: repository,
                           leaderboardPoints: points,
                           leaderboardRank: index,
                           username: username,
@@ -304,7 +313,7 @@ class LeaderboardCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => UserProfilePage(
-                          repository: Repository(),
+                          repository: repository,
                           userId: userId,
                         ),
                       ),

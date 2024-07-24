@@ -21,7 +21,7 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  late Future<User> _userFuture;
+  late Future<UserModel> _userFuture;
 
   @override
   void initState() {
