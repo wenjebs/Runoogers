@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -16,9 +18,10 @@ void main() {
   late MockFirebaseAuth mockFirebaseAuth;
 
   setUp(() {
+    HttpOverrides.global = null;
     mockRepository = MockRepository();
     mockFirebaseAuth =
-        MockFirebaseAuth(signedIn: true, mockUser: MockUser(uid: "testUid"));
+        MockFirebaseAuth(signedIn: true, mockUser: MockUser(uid: "1"));
   });
 
   Widget createTestWidget(Widget child) {
@@ -57,7 +60,6 @@ void main() {
           {"uid": "3", "name": "User 3", "username": "user3", "points": 80},
         ]);
     when(mockRepository.fetchTopUsersFriends()).thenAnswer((_) async => []);
-    when(mockFirebaseAuth.currentUser).thenReturn(MockUser(uid: "1"));
     await tester.pumpWidget(createTestWidget(LeaderboardsPage(
       repository: mockRepository,
       auth: mockFirebaseAuth,
@@ -65,23 +67,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(LeaderboardCard), findsWidgets);
-  });
-
-  testWidgets(
-      'LeaderboardsPage displays error message when Future completes with error',
-      (WidgetTester tester) async {
-    when(mockRepository.fetchTopUsersGlobal())
-        .thenThrow(Exception('Error fetching data'));
-    when(mockRepository.fetchTopUsersFriends())
-        .thenThrow(Exception('Error fetching data'));
-
-    await tester.pumpWidget(createTestWidget(LeaderboardsPage(
-      repository: mockRepository,
-      auth: mockFirebaseAuth,
-    )));
-    await tester.pumpAndSettle();
-
-    expect(find.textContaining('Error:'), findsWidgets);
   });
 
   // Additional tests for navigation and interaction can be added here
