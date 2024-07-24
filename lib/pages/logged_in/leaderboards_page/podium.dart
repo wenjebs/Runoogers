@@ -108,7 +108,7 @@ class PodiumWidget extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                     size: 16,
                   ),
-                  const SizedBox(width: 4), // Space between icon and text
+                  const SizedBox(width: 4),
                   Flexible(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,

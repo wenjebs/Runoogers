@@ -9,7 +9,6 @@ import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/social_media_page.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 // Import your user data model and data fetching service
 // import 'path_to_your_user_data_model.dart';
@@ -62,18 +61,14 @@ class UserPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics:
-                        NeverScrollableScrollPhysics(), // to disable GridView's own scrolling
+                    physics: NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, // number of items per row
-                      crossAxisSpacing:
-                          20, // spacing between the items horizontally
-                      mainAxisSpacing:
-                          20, // spacing between the items vertically
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
                     ),
-                    itemCount: 3, // total number of items
+                    itemCount: 3,
                     itemBuilder: (context, index) {
-                      // List of your icons and titles
                       List<Map<String, dynamic>> serviceIcons = [
                         {'title': 'Story', 'icon': Icons.book},
                         {'title': 'Track Run', 'icon': Icons.directions_run},
