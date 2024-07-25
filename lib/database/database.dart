@@ -53,6 +53,11 @@ class Database {
     return doc['name'];
   }
 
+  Future<String> fetchUsername(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    return doc['username'];
+  }
+
   // get entire user
   Future<DocumentSnapshot<Map<String, dynamic>>> fetchUser(
       String userId) async {

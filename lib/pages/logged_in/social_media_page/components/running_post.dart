@@ -37,7 +37,8 @@ class RunningPost extends ConsumerWidget {
           post.achievementPoints!);
     } else if (post.isRunPost) {
       debugPrint('Building run post');
-      content = _buildRunPost(context, post.runImageUrl!);
+      content = _buildRunPost(context, post.runImageUrl!, post.runDistance!,
+          post.runDuration.toString(), post.runPace!);
     } else if (post.isLeaderboardPost) {
       debugPrint("Building leaderboard post");
       content = _buildLeaderboardPost(
@@ -118,7 +119,7 @@ class RunningPost extends ConsumerWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(name,
+                                  Text('@$name',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context)
@@ -230,33 +231,106 @@ class RunningPost extends ConsumerWidget {
         points: points);
   }
 
-  Widget _buildRunPost(BuildContext context, String runImageUrl) {
-    return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: InteractiveViewer(
-                panEnabled: false,
-                boundaryMargin: const EdgeInsets.all(80),
-                minScale: 0.5,
-                maxScale: 4,
-                child: Image.network(
-                  runImageUrl,
-                  fit: BoxFit.contain,
+  String _formatTime(int milliseconds) {
+    int seconds = milliseconds ~/ 1000;
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    return '${_twoDigits(hours)}:${_twoDigits(minutes)}:${_twoDigits(remainingSeconds)}';
+  }
+
+  String _twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+
+  Widget _buildRunPost(BuildContext context, String runImageUrl,
+      double distance, String time, double pace) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceEvenly, // Distribute space evenly
+          children: [
+            // Distance
+            Column(
+              children: [
+                Icon(
+                  Icons.directions_run,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  "${distance.toStringAsFixed(2)} km",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+              ],
+            ),
+            // Time
+            Column(
+              children: [
+                Icon(
+                  Icons.timer,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  _formatTime(double.parse(time).toInt()),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            // Pace
+            Column(
+              children: [
+                Icon(
+                  Icons.speed,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  "${pace.toStringAsFixed(2)} min/km",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Column(
+                  children: [
+                    Dialog(
+                      child: InteractiveViewer(
+                        panEnabled: false,
+                        boundaryMargin: const EdgeInsets.all(80),
+                        minScale: 0.5,
+                        maxScale: 4,
+                        child: Image.network(
+                          runImageUrl,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
-        );
-      },
-      child: Image.network(
-        runImageUrl,
-        height: 200,
-        width: double.infinity,
-        fit: BoxFit.cover,
-      ),
+          child: Image.network(
+            runImageUrl,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
     );
   }
 

@@ -9,6 +9,9 @@ import 'package:runningapp/pages/logged_in/training_page/dynamic_plan/update_pla
 class RatingPage extends ConsumerWidget {
   final bool updateDifficulty;
   final String downloadUrl;
+  final int runTime;
+  final double runDistance;
+  final double runPace;
   final Repository repository;
   final FirebaseAuth auth;
 
@@ -18,6 +21,9 @@ class RatingPage extends ConsumerWidget {
     required this.updateDifficulty,
     required this.downloadUrl,
     required this.auth,
+    required this.runTime,
+    required this.runDistance,
+    required this.runPace,
   });
 
   @override
@@ -82,6 +88,9 @@ class RatingPage extends ConsumerWidget {
 
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (_) => RunningPostCreationPage(
+                          runDistance: runDistance,
+                          runTime: runTime,
+                          runPace: runPace,
                           repository: repository,
                           photoUrl: downloadUrl,
                           auth: FirebaseAuth.instance)));

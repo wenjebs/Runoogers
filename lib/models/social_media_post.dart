@@ -15,6 +15,9 @@ class Post {
 
   // if its a run post
   final String? runImageUrl;
+  final double? runDistance;
+  final double? runDuration;
+  final double? runPace;
 
   // if its a leaderboard post
   final int? rank;
@@ -34,6 +37,9 @@ class Post {
     this.achievementImageUrl,
     this.achievementPoints,
     this.runImageUrl,
+    this.runDistance,
+    this.runDuration,
+    this.runPace,
     this.rank,
     this.leaderboardPoints,
     this.username,
@@ -53,6 +59,9 @@ class Post {
       achievementImageUrl: data['achievementImageUrl'],
       achievementPoints: data['achievementPoints'],
       runImageUrl: data['runImageUrl'],
+      runDistance: data['runDistance'].toDouble(),
+      runDuration: data['runDuration'].toDouble(),
+      runPace: data['runPace'],
       rank: data['rank'],
       leaderboardPoints: data['points'],
       username: data['username'],

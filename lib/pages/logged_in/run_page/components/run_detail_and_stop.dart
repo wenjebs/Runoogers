@@ -302,6 +302,10 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                               updateDifficulty:
                                                   updateDifficulty,
                                               downloadUrl: downloadUrl,
+                                              runDistance: distance,
+                                              runTime: time,
+                                              runPace:
+                                                  (time / 60000) / distance,
                                               auth: FirebaseAuth.instance)),
                                     );
                                   } else {
@@ -444,7 +448,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     // get runs done
     final String username =
-        await widget.repository.fetchName(widget.auth.currentUser!.uid);
+        await widget.repository.fetchUsername(widget.auth.currentUser!.uid);
     final int runsDone = await widget.repository.getRunsDone();
 
     // stop tracking

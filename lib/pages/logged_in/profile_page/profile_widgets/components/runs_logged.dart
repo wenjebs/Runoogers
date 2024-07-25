@@ -60,10 +60,14 @@ class RunsSection extends ConsumerWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 RunningPostCreationPage(
-                                                    auth: FirebaseAuth.instance,
-                                                    repository: Repository(),
-                                                    photoUrl:
-                                                        doc['imageUrl'] ?? ''),
+                                              auth: FirebaseAuth.instance,
+                                              repository: Repository(),
+                                              photoUrl: doc['imageUrl'] ?? '',
+                                              runDistance:
+                                                  double.parse(run.distance),
+                                              runTime: int.parse(run.time),
+                                              runPace: run.pace,
+                                            ),
                                           ),
                                         );
                                       }),
