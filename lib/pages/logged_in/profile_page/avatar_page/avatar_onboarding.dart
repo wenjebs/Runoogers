@@ -1,14 +1,24 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class AvatarOnboarding extends StatefulWidget {
-  const AvatarOnboarding({super.key});
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
+
+  const AvatarOnboarding(
+      {super.key,
+      required this.auth,
+      required this.firestore,
+      required this.storage});
 
   @override
   AvatarOnboardingState createState() => AvatarOnboardingState();
@@ -48,6 +58,15 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
       setState(() {
         token = decodedResponse['data']['token'];
       });
+      String userId = FirebaseAuth.instance.currentUser!.uid;
+
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      await userDoc.set({
+        'rpmUserId': decodedResponse['data']['id'],
+        'rpmToken': decodedResponse['data']['token'],
+      }, SetOptions(merge: true));
       return true;
     } else {
       debugPrint("Creating anon user ${response.reasonPhrase}");
@@ -120,6 +139,38 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     } else {
       debugPrint(saveResponse.reasonPhrase);
     }
+    debugPrint("before saving pfp");
+    final pfpResponse = await http.get(Uri.parse(
+        'https://models.readyplayer.me/$draftAvatarId.png?expression=happy&pose=power-stance'));
+    if (pfpResponse.statusCode == 200) {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/avatar.png');
+      debugPrint("pfp response: 200");
+      if (await file.exists()) {
+        await file.delete();
+      }
+
+      await file.writeAsBytes(pfpResponse.bodyBytes);
+    } else {
+      throw Exception('Failed to load avatar');
+    }
+
+    String userId = widget.auth.currentUser!.uid;
+
+    debugPrint("tryibng tos ave to firestore");
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/avatar.png');
+    TaskSnapshot snapshot =
+        await widget.storage.ref('userAvatars/$userId.png').putFile(file);
+    final String downloadUrl = await snapshot.ref.getDownloadURL();
+    await widget.firestore
+        .collection('users')
+        .doc(userId)
+        .update({'profilePic': downloadUrl});
+
+    setState(() {
+      isAvatarCreated = true;
+    });
   }
 
   void onCardClick(String templateId) async {
@@ -162,7 +213,8 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
                                       'users') // Assuming 'users' is your collection name
                                   .doc(userId)
                                   .update({
-                                    'avatarType': templates[index]['imageUrl']
+                                    'gender': templates[index]['gender'],
+                                    'avatarType': templates[index]['imageUrl'],
                                   })
                                   .then((_) => debugPrint(
                                       'Avatar type updated successfully'))

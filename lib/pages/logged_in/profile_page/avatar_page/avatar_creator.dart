@@ -115,6 +115,10 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
       var decodedResponse = jsonDecode(responseBody);
       debugPrint("Draft Avatar ID: ${decodedResponse['data']['id']}");
       draftAvatarId = decodedResponse['data']['id'];
+      setState(() {
+        gender = decodedResponse['data']['gender'];
+        avatarId = draftAvatarId;
+      });
     } else {
       debugPrint("create and save avatar failed: ${response.reasonPhrase}");
       debugPrint(response.statusCode.toString());

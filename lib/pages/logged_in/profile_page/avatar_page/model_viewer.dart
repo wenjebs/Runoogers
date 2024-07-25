@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:o3d/o3d.dart';
@@ -15,12 +16,23 @@ class GLBViewer extends StatefulWidget {
 
 class _GLBViewerState extends State<GLBViewer> {
   String? localPath;
+  Completer<void> completer = Completer<void>();
 
   @override
   void initState() {
     super.initState();
     debugPrint("Downloading file for avatar ${widget.avatarId}");
-    downloadAndStoreFile(widget.avatarId);
+    asyncInitialise();
+  }
+
+  @override
+  void dispose() {
+    completer.complete(); // Complete the completer if the widget is disposed
+    super.dispose();
+  }
+
+  Future<void> asyncInitialise() async {
+    await downloadAndStoreFile(widget.avatarId);
   }
 
   Future<void> downloadAndStoreFile(String avatarId) async {
@@ -38,13 +50,29 @@ class _GLBViewerState extends State<GLBViewer> {
       await file.delete();
     }
 
-    await file.writeAsBytes(bytes);
+    try {
+      await file.writeAsBytes(bytes);
+      debugPrint("File written to ${file.path}");
+
+      // Optionally, verify the file exists after writing
+      if (await file.exists()) {
+        debugPrint("File write successful");
+        // Perform further actions if needed, e.g., updating the UI
+      } else {
+        debugPrint("File write failed: File does not exist after writing");
+      }
+    } catch (e) {
+      debugPrint("Error writing file: $e");
+      // Handle the error, e.g., by showing an error message to the user
+    }
 
     debugPrint("File written to ${file.path}");
 
-    setState(() {
-      localPath = file.path;
-    });
+    if (!completer.isCompleted) {
+      setState(() {
+        localPath = file.path;
+      });
+    }
   }
 
   @override

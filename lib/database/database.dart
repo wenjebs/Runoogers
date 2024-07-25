@@ -844,4 +844,17 @@ class Database {
     final routeRef = userRef.collection('routes').doc(getId);
     return routeRef.delete();
   }
+
+  Future<String> fetchProfilePic(String userId) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(userId).get();
+      final String profilePicUrl = userDoc.get('profilePic') as String;
+      return profilePicUrl;
+    } catch (e) {
+      print('Error fetching profile picture: $e');
+      return 'https://via.placeholder.com/150';
+    }
+  }
 }

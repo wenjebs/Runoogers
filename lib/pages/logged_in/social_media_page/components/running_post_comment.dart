@@ -51,10 +51,27 @@ class _RunningPostCommentState extends State<RunningPostComment> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-            // Placeholder for commenter's profile picture
-            backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-            radius: 20,
+          FutureBuilder<String>(
+            future: widget.repository.fetchProfilePic(
+                widget.userId), // Assuming userId is defined and accessible
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                // Handle errors, e.g., display a default profile picture
+                return const CircleAvatar(
+                  backgroundImage:
+                      NetworkImage('https://via.placeholder.com/150'),
+                  radius: 20,
+                );
+              } else {
+                // When data is fetched successfully, display the profile picture
+                return CircleAvatar(
+                  backgroundImage: NetworkImage(snapshot.data!),
+                  radius: 20,
+                );
+              }
+            },
           ),
           const SizedBox(width: 10),
           Expanded(

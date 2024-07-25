@@ -213,4 +213,8 @@ class Repository {
   void deleteRoute(String getId) {
     database.deleteRoute(getId);
   }
+
+  Future<String> fetchProfilePic(String userId) async {
+    return database.fetchProfilePic(userId);
+  }
 }

@@ -84,6 +84,9 @@ class LeaderboardsPage extends StatelessWidget {
                                             points: globalLeaderboard[
                                                 currentUserPlace - 1]['points'],
                                             repository: repository,
+                                            profilePic: globalLeaderboard[
+                                                    currentUserPlace - 1]
+                                                ['profilePic'],
                                           ),
                                           PodiumWidget(
                                             firstPlace: UserModel.fromMap(
@@ -116,6 +119,9 @@ class LeaderboardsPage extends StatelessWidget {
                                           points: globalLeaderboard[skipThree]
                                               ['points'],
                                           repository: repository,
+                                          profilePic:
+                                              globalLeaderboard[skipThree]
+                                                  ['profilePic'],
                                         );
                                       },
                                       childCount: globalLeaderboard.length - 3,
@@ -154,6 +160,8 @@ class LeaderboardsPage extends StatelessWidget {
                                         ['username'],
                                     points: friendsLeaderboard[index]['points'],
                                     repository: repository,
+                                    profilePic: friendsLeaderboard[index]
+                                        ['profilePic'],
                                   );
                                 },
                               );
@@ -182,6 +190,7 @@ class LeaderboardCard extends StatelessWidget {
   final bool isCurrentUser;
   final bool shareable;
   final Repository repository;
+  final String profilePic;
 
   const LeaderboardCard({
     super.key,
@@ -193,6 +202,7 @@ class LeaderboardCard extends StatelessWidget {
     required this.isCurrentUser,
     required this.shareable,
     required this.repository,
+    required this.profilePic,
   });
 
   @override
@@ -245,7 +255,7 @@ class LeaderboardCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(22),
                     child: Image.network(
-                      'https://picsum.photos/seed/183/600',
+                      profilePic,
                       width: 44,
                       height: 44,
                       fit: BoxFit.cover,

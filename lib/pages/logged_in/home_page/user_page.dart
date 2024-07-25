@@ -91,6 +91,7 @@ class UserPage extends ConsumerWidget {
                         }
                         final posts = snapshot.data!.docs.map((doc) {
                           final data = doc.data() as Map<String, dynamic>;
+                          debugPrint(data.toString());
                           return Post.fromMap(data);
                         }).toList();
                         return ListView.builder(

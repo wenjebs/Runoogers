@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/friend_request.dart';
 
 class FriendRequestPage extends StatefulWidget {
@@ -43,8 +44,8 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
               itemBuilder: (context, index) {
                 String userId = friendRequestUserIds[index];
 
-                return FutureBuilder<String>(
-                  future: widget.repository.fetchName(userId),
+                return FutureBuilder<UserModel>(
+                  future: widget.repository.getUserProfile(userId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const ListTile(
@@ -61,10 +62,10 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
                           userId); // Check if userId is in the friends list
                       return FriendRequest(
                         repository: widget.repository,
-                        name: snapshot.data!,
+                        name: snapshot.data!.name,
                         userId: userId,
-                        added:
-                            isFriend, // Set added based on whether userId is in friends list
+                        profilePic: snapshot.data!.profilePic,
+                        added: isFriend,
                       );
                     } else {
                       return const ListTile(

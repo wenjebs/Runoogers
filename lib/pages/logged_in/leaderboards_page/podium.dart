@@ -82,10 +82,10 @@ class PodiumWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const CircleAvatar(
+            CircleAvatar(
               radius: 30,
               backgroundImage: NetworkImage(
-                  'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'), // TODO replace with avatar img
+                  profile.profilePic), // TODO replace with avatar img
             ),
             const SizedBox(height: 8),
             Text(profile.name, style: TextStyle(fontSize: fontSizeName)),

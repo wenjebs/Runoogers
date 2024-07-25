@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:o3d/o3d.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/asset_display_widget.dart';
@@ -50,6 +52,8 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
         .collection('users')
         .doc(widget.auth.currentUser!.uid);
 
+    debugPrint(widget.auth.currentUser!.uid);
+
     QuerySnapshot existingAssets = await userDoc.collection('assets').get();
 
     try {
@@ -77,6 +81,8 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
       });
       debugPrint("Loaded assets from Firestore.");
     } else {
+      debugPrint(
+          "userid: $userId, gender: ${widget.gender}, category: $category, long token = ${widget.userId}");
       final response = await http.get(
           Uri.parse(
               'https://api.readyplayer.me/v1/assets?filter=usable-by-user-and-app&filterApplicationId=664f39ea83967c2d66c6d26b&filterUserId=$userId&gender=neutral&gender=${widget.gender}&type=$category&limit=16'),
@@ -122,8 +128,12 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
           await userDoc.collection('assets').add(assetData);
           debugPrint("Asset data stored successfully in Firestore.");
         }
+
+        QuerySnapshot freshlyUploadedAssets =
+            await userDoc.collection('assets').get();
+
         List<dynamic> listedAssetsData =
-            existingAssets.docs.map((doc) => doc.data()).toList();
+            freshlyUploadedAssets.docs.map((doc) => doc.data()).toList();
         setState(() {
           assets = listedAssetsData;
         });
@@ -131,7 +141,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
 
         debugPrint("getUsableAssets: Assets retrieved");
       } else {
-        debugPrint(response.reasonPhrase);
+        debugPrint('here: ${response.reasonPhrase}');
       }
     }
   }
@@ -184,6 +194,35 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
     } else {
       debugPrint(response.reasonPhrase);
     }
+
+    final pfpResponse = await http.get(Uri.parse(
+        'https://models.readyplayer.me/${widget.avatarId}.png?expression=happy&pose=power-stance'));
+    if (pfpResponse.statusCode == 200) {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/avatar.png');
+      debugPrint("pfp response: 200");
+      if (await file.exists()) {
+        await file.delete();
+      }
+
+      await file.writeAsBytes(pfpResponse.bodyBytes);
+    } else {
+      throw Exception('Failed to load avatar');
+    }
+
+    String userId = widget.auth.currentUser!.uid;
+
+    debugPrint("tryibng tos ave to firestore");
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/avatar.png');
+    TaskSnapshot snapshot = await FirebaseStorage.instance
+        .ref('userAvatars/$userId.png')
+        .putFile(file);
+    final String downloadUrl = await snapshot.ref.getDownloadURL();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({'profilePic': downloadUrl});
   }
 
   String convertToAvatarAttribute(String category) {

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creator.dart';
+import 'package:runningapp/pages/logged_in/profile_page/avatar_page/profile_pic_editor.dart';
 import 'package:runningapp/pages/logged_in/profile_page/inventory_page/inventory_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
@@ -78,7 +80,7 @@ class ProfilePage extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.edit),
-                    label: const Text('Customize'),
+                    label: const Text('Avatar'),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.secondary,
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -87,6 +89,28 @@ class ProfilePage extends ConsumerWidget {
                     ),
                   ),
                 ),
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilePicEditor(
+                                auth: FirebaseAuth.instance,
+                                storage: FirebaseStorage.instance,
+                                firestore: FirebaseFirestore.instance)),
+                      ),
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Picture'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        elevation: 4.0,
+                        shadowColor: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    )),
               ])),
           // Profile details
           Padding(
