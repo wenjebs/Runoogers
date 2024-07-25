@@ -69,45 +69,87 @@ class RunningPost extends ConsumerWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: name.when(
-                data: (String name) => InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserProfilePage(
-                                  repository: Repository(),
-                                  userId: post.userId)),
-                        );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                                decoration: TextDecoration.underline,
-                                fontSize: 18,
-                              )),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16.0,
-                            color: Theme.of(context).colorScheme.primary,
-                          ), // Add an icon
-                        ],
-                      ),
-                    ),
-                loading: () => const Text('Loading...'),
-                error: (error, _) => const Text('Error!')),
+            title: Row(
+              children: <Widget>[
+                FutureBuilder<String>(
+                  future: repository.fetchProfilePic(post.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimary, // Outline color
+                            width: 2, // Outline thickness
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          backgroundImage: NetworkImage(snapshot.data!),
+                        ),
+                      );
+                    } else {
+                      return const CircleAvatar(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    name.when(
+                        data: (String name) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UserProfilePage(
+                                          repository: Repository(),
+                                          userId: post.userId)),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(name,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                      )),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16.0,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ), // Add an icon
+                                ],
+                              ),
+                            ),
+                        loading: () => const Text('Loading...'),
+                        error: (error, _) => const Text('Error!')),
+                    Text(formattedTimestamp,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        )),
+                  ],
+                ),
+              ],
+            ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formattedTimestamp,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    )),
                 Text(post.caption, style: (const TextStyle(fontSize: 16))),
               ],
             ),
