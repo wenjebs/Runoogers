@@ -35,18 +35,23 @@ class _HomePageState extends State<HomePage> {
   late int _selectedIndex = 0;
   bool trainingOnboarded = false;
   final List<Widget> _pages = [
-    UserPage(repository: Repository()),
+    UserPage(repository: Repository(), auth: FirebaseAuth.instance),
     RunPage(
       locationService: LocationService(),
       repository: Repository(),
       title: "",
       storyRun: false,
+      auth: FirebaseAuth.instance,
     ),
-    const ProfilePage(),
-    SocialMediaPage(Repository()),
-    StoryPage(Repository()),
+    ProfilePage(auth: FirebaseAuth.instance),
+    SocialMediaPage(repository: Repository(), auth: FirebaseAuth.instance),
+    StoryPage(
+      Repository(),
+      auth: FirebaseAuth.instance,
+    ),
     TrainingPage(
       repository: Repository(),
+      auth: FirebaseAuth.instance,
     ),
     const RunStatsPage(),
     LeaderboardsPage(
@@ -55,9 +60,11 @@ class _HomePageState extends State<HomePage> {
     ),
     SettingsPage(
       repository: Repository(),
+      auth: FirebaseAuth.instance,
     ),
     RoutesView(
       repository: Repository(),
+      auth: FirebaseAuth.instance,
     ),
   ];
 
@@ -147,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                 ),
           backgroundColor: Theme.of(context).colorScheme.onSurface,
           body: _selectedIndex == 5 && !trainingOnboarded
-              ? const TrainingOnboardingPage()
+              ? TrainingOnboardingPage(auth: FirebaseAuth.instance)
               : _pages[_selectedIndex],
           bottomNavigationBar: isRunning
               ? const SizedBox()

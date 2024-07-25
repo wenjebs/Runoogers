@@ -19,6 +19,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerStatefulWidget {
   final LocationService locationService;
+  final FirebaseAuth auth;
 
   const RunDetailsAndStop(
     this.repository, {
@@ -27,6 +28,7 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
     required StopWatchTimer stopWatchTimer,
     required this.context,
     required this.mapContainer,
+    required this.auth,
     this.activeStory,
     this.questProgress,
     this.storyRun,
@@ -58,8 +60,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   Future<void> _checkAndUpdateDifficulty() async {
     try {
       // Fetch the user model
-      user.UserModel model = await widget.repository
-          .getUserProfile(FirebaseAuth.instance.currentUser!.uid);
+      user.UserModel model =
+          await widget.repository.getUserProfile(widget.auth.currentUser!.uid);
       // every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {
         setState(() {
@@ -68,7 +70,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       }
     } catch (e) {
       // Handle errors or exceptions
-      print("Error fetching user model: $e");
+      debugPrint("Error fetching user model: $e");
     }
   }
 
@@ -299,7 +301,12 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                               widget.repository,
                                               updateDifficulty:
                                                   updateDifficulty,
-                                              downloadUrl: downloadUrl)),
+                                              downloadUrl: downloadUrl,
+                                              runDistance: distance,
+                                              runTime: time,
+                                              runPace:
+                                                  (time / 60000) / distance,
+                                              auth: FirebaseAuth.instance)),
                                     );
                                   } else {
                                     debugPrint(
@@ -440,8 +447,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     );
 
     // get runs done
-    final String username = await widget.repository
-        .fetchName(FirebaseAuth.instance.currentUser!.uid);
+    final String username =
+        await widget.repository.fetchUsername(widget.auth.currentUser!.uid);
     final int runsDone = await widget.repository.getRunsDone();
 
     // stop tracking

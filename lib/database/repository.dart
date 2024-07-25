@@ -33,6 +33,10 @@ class Repository {
     return database.fetchUser(userId);
   }
 
+  Future<String> fetchUsername(String userId) async {
+    return database.fetchUsername(userId);
+  }
+
   // Add user
   Future<void> addUser(String collection, Map<String, dynamic> data) {
     return database.addUser(collection, data);
@@ -212,5 +216,9 @@ class Repository {
 
   void deleteRoute(String getId) {
     database.deleteRoute(getId);
+  }
+
+  Future<String> fetchProfilePic(String userId) async {
+    return database.fetchProfilePic(userId);
   }
 }

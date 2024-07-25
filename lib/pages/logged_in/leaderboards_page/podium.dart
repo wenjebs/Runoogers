@@ -50,24 +50,20 @@ class PodiumWidget extends StatelessWidget {
       BuildContext context, UserModel profile, String position, Color color) {
     double fontSizePosition;
     double fontSizeName;
-    double avatarRadius;
 
     switch (position) {
       case '1st':
         fontSizePosition = 30;
         fontSizeName = 25;
-        avatarRadius = 37;
         break;
       case '2nd':
       case '3rd':
         fontSizePosition = 16;
         fontSizeName = 14;
-        avatarRadius = 25;
         break;
       default:
         fontSizePosition = 16;
         fontSizeName = 14;
-        avatarRadius = 25;
     }
 
     return Card(
@@ -86,10 +82,21 @@ class PodiumWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(
-                  'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg'), // TODO replace with avatar img
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 30,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                backgroundImage: NetworkImage(profile.profilePic),
+              ),
             ),
             const SizedBox(height: 8),
             Text(profile.name, style: TextStyle(fontSize: fontSizeName)),

@@ -16,7 +16,7 @@ final userNameProvider = FutureProvider.family<String, String>((ref, userId) {
       .collection('users')
       .doc(userId)
       .get()
-      .then((snapshot) => snapshot.data()?['name'] ?? 'Unknown User');
+      .then((snapshot) => snapshot.data()?['username'] ?? 'Unknown User');
 });
 
 final commentsCountProvider = StreamProvider.family<int, String>((ref, postId) {

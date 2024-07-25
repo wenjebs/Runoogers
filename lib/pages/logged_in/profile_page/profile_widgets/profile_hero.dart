@@ -1,8 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:o3d/o3d.dart';
 
-class ProfileHero extends StatelessWidget {
-  const ProfileHero({super.key});
+class ProfileHero extends StatefulWidget {
+  final String avatarUrl;
+  const ProfileHero({super.key, required this.avatarUrl});
+
+  @override
+  State<ProfileHero> createState() => _ProfileHeroState();
+}
+
+class _ProfileHeroState extends State<ProfileHero> {
+  String currentView = 'left';
+
+  Future<String> fetchProfilePicUrl() async {
+    try {
+      // Fetch the user document from Firestore using the userId
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (userDoc.exists) {
+        // Assuming 'profilePicUrl' is the field name in the document
+        return userDoc['profilePic'] ??
+            'https://example.com/default-profile-pic.jpg'; // Provide a default URL in case the field is missing
+      } else {
+        // Handle the case where the user document does not exist
+        return 'https://example.com/default-profile-pic.jpg'; // Default URL or error handling
+      }
+    } catch (e) {
+      // Handle any errors that occur during the fetch operation
+      print(e); // Consider logging the error or handling it appropriately
+      return 'https://example.com/default-profile-pic.jpg'; // Return a default URL in case of error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,68 +42,69 @@ class ProfileHero extends StatelessWidget {
       height: 200,
       child: Stack(
         children: [
-          // BACKGROUND IMAGE CONTAINER
           Container(
             width: double.infinity,
             height: 140,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
             ),
-            // decoration: const BoxDecoration(
-            //   image: DecorationImage(
-            //     fit: BoxFit.cover,
-            //     image: NetworkImage(
-            //       'https://images.unsplash.com/photo-1434394354979-a235cd36269d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fG1vdW50YWluc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
-            //     ), // To BE CHANGED FROM DATABASE
-            //   ),
-            // ),
           ),
-
-          // PROFILE IMAGE CONTAINER
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Align(
-                alignment: const AlignmentDirectional(0, 1),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-                  child: Container(
-                    width: 130,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        width: 4,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            image: const DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
-                              ), // To BE CHANGED FROM DATABASE
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+              if (currentView == 'right')
+                CircleAvatar(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_left),
+                    onPressed: () {
+                      setState(() {
+                        currentView = 'left';
+                      });
+                    },
                   ),
                 ),
-              ),
-              const SizedBox(
+              SizedBox(
                 width: 200,
                 height: 200,
-                child: O3D(
-                  src:
-                      'https://models.readyplayer.me/667ea6b3decc99af8e97c067.glb',
+                child: Center(
+                  child: currentView == 'right'
+                      ? O3D(
+                          src: widget.avatarUrl,
+                          autoRotate: true,
+                        )
+                      : FutureBuilder<String>(
+                          future: fetchProfilePicUrl(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Icon(Icons.error);
+                            } else {
+                              return Image.network(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
                 ),
               ),
+              if (currentView == 'left')
+                CircleAvatar(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_right),
+                    onPressed: () {
+                      setState(() {
+                        currentView = 'right';
+                      });
+                    },
+                  ),
+                ),
             ],
           ),
         ],

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,15 @@ void main() {
         (WidgetTester tester) async {
       when(mockRepository.getStories()).thenAnswer((_) async => <Story>[]);
       await tester.pumpWidget(
-          ProviderScope(child: MaterialApp(home: StoryPage(mockRepository))));
+        ProviderScope(
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
@@ -37,7 +46,15 @@ void main() {
         (WidgetTester tester) async {
       when(mockRepository.getStories()).thenAnswer((_) async => <Story>[]);
       await tester.pumpWidget(
-          ProviderScope(child: MaterialApp(home: StoryPage(mockRepository))));
+        ProviderScope(
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(find.byType(PageView), findsWidgets);
     });
@@ -48,7 +65,15 @@ void main() {
       when(mockRepository.getStories())
           .thenAnswer((_) async => throw Exception('Error fetching data'));
       await tester.pumpWidget(
-          ProviderScope(child: MaterialApp(home: StoryPage(mockRepository))));
+        ProviderScope(
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(
           find.text('Error: Exception: Error fetching data'), findsOneWidget);
@@ -66,15 +91,25 @@ void main() {
                     "https://firebasestorage.googleapis.com/v0/b/runoogers.appspot.com/o/story%2FIVAN.png?alt=media&token=2d7b9a97-44e0-4abe-b664-2540b3b9451b",
                 quests: [])
           ]);
-      await tester.pumpWidget(ProviderScope(overrides: [
-        userInformationProvider.overrideWith((ref) {
-          return Stream.value({
-            'uid': '123',
-            'name': 'Test User',
-            'email': "test@gmail.com",
-          });
-        })
-      ], child: MaterialApp(home: StoryPage(mockRepository))));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            userInformationProvider.overrideWith((ref) {
+              return Stream.value({
+                'uid': '123',
+                'name': 'Test User',
+                'email': "test@gmail.com",
+              });
+            })
+          ],
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.byType(StoryTileWithImage));
       await tester.pumpAndSettle();
@@ -92,15 +127,25 @@ void main() {
                     "https://firebasestorage.googleapis.com/v0/b/runoogers.appspot.com/o/story%2FIVAN.png?alt=media&token=2d7b9a97-44e0-4abe-b664-2540b3b9451b",
                 quests: [])
           ]);
-      await tester.pumpWidget(ProviderScope(overrides: [
-        userInformationProvider.overrideWith((ref) {
-          return Stream.value({
-            'uid': '123',
-            'name': 'Test User',
-            'email': "test@gmail.com",
-          });
-        })
-      ], child: MaterialApp(home: StoryPage(mockRepository))));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            userInformationProvider.overrideWith((ref) {
+              return Stream.value({
+                'uid': '123',
+                'name': 'Test User',
+                'email': "test@gmail.com",
+              });
+            })
+          ],
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.tap(find.byType(StoryTileWithImage));
       await tester.pumpAndSettle();
@@ -113,16 +158,26 @@ void main() {
         'Tapping on "Active Quests" navigates to ActiveQuestDisplayPage',
         (WidgetTester tester) async {
       when(mockRepository.getStories()).thenAnswer((_) async => <Story>[]);
-      await tester.pumpWidget(ProviderScope(overrides: [
-        userInformationProvider.overrideWith((ref) {
-          return Stream.value({
-            'uid': '123',
-            'name': 'Test User',
-            'email': "test@gmail.com",
-            'activeStory': 'ivan',
-          });
-        })
-      ], child: MaterialApp(home: StoryPage(mockRepository))));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            userInformationProvider.overrideWith((ref) {
+              return Stream.value({
+                'uid': '123',
+                'name': 'Test User',
+                'email': "test@gmail.com",
+                'activeStory': 'ivan',
+              });
+            })
+          ],
+          child: MaterialApp(
+            home: StoryPage(
+              mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();

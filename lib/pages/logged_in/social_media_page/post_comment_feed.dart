@@ -15,10 +15,12 @@ final commentControllerProvider =
 class PostCommentFeed extends ConsumerWidget {
   final Post post;
   final Repository repository;
+  final FirebaseAuth auth;
   const PostCommentFeed(
     this.repository, {
     super.key,
     required this.post,
+    required this.auth,
   });
 
   @override
@@ -83,14 +85,14 @@ class PostCommentFeed extends ConsumerWidget {
                   icon: const Icon(Icons.send),
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    String name = await repository
-                        .fetchName(FirebaseAuth.instance.currentUser!.uid);
+                    String name =
+                        await repository.fetchName(auth.currentUser!.uid);
                     FirebaseFirestore.instance
                         .collection('posts')
                         .doc(post.id)
                         .collection('comments')
                         .add({
-                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'userId': auth.currentUser!.uid,
                       'name': name,
                       'comment': commentController.text,
                       'likes': 0,

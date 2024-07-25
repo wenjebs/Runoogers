@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:runningapp/pages/logged_in/training_page/prompt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:runningapp/state/auth/constants/constants.dart';
 
 part 'plan_generator.g.dart';
 
@@ -55,7 +56,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
     dayAfterTomorrowsDate: getFormattedDayAfterTomorrowDate(),
   ).prompt;
 
-  int maxAttempts = 20;
+  int maxAttempts = 5;
   int attempts = 0;
 
   // Encode it into a json
@@ -73,6 +74,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       for (int i = 0; i < weeks.length; i++) {
         var week = weeks[i];
         if (week == null || (i >= 1 && week.length != 7)) {
+          debugPrint(week.length.toString());
           throw FormatException(
               "Week ${i + 1} has less than 7 entries, contains null, or is missing");
         }
@@ -87,9 +89,16 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       debugPrint("Failed to generate plan $e");
       attempts++;
       if (attempts >= maxAttempts) {
-        throw Exception("Failed to generate plan");
+        debugPrint(
+            "Failed to generate plan after $attempts attempts, here's a basic plan instead");
+        Map<String, dynamic> json = jsonDecode(Constants.GENERALRUNNINGPLAN);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('trainingPlans')
+            .add(json);
+        return json;
       }
     }
   }
-  return null;
 }

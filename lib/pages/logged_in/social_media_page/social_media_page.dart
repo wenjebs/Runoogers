@@ -11,10 +11,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 class SocialMediaPage extends ConsumerWidget {
   final bool showFloatingActionButton;
   final Repository repository;
+  final FirebaseAuth auth;
   final TextEditingController _captionController = TextEditingController();
 
-  SocialMediaPage(this.repository,
-      {super.key, this.showFloatingActionButton = true});
+  SocialMediaPage({
+    super.key,
+    this.showFloatingActionButton = true,
+    required this.auth,
+    required this.repository,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +31,7 @@ class SocialMediaPage extends ConsumerWidget {
         repository.addPost('posts', {
           'timestamp': FieldValue.serverTimestamp(),
           'caption': caption,
-          'userId': FirebaseAuth.instance.currentUser!.uid,
+          'userId': auth.currentUser!.uid,
           'likes': 0,
           'photoUrl':
               'https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg',

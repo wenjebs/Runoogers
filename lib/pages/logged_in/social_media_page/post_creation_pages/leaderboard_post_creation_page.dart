@@ -9,12 +9,14 @@ class LeaderboardPostCreationPage extends StatefulWidget {
   final int leaderboardRank;
   final String username;
   final Repository repository;
+  final FirebaseAuth auth;
   const LeaderboardPostCreationPage(
       {super.key,
       required this.leaderboardPoints,
       required this.leaderboardRank,
       required this.username,
-      required this.repository});
+      required this.repository,
+      required this.auth});
 
   @override
   AchievementPostCreationPageState createState() =>
@@ -105,7 +107,7 @@ class AchievementPostCreationPageState
                     _formKey.currentState!.save();
                     widget.repository.addPost('posts', {
                       'caption': _caption,
-                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'userId': widget.auth.currentUser!.uid,
                       'likes': 0,
                       'timestamp': FieldValue.serverTimestamp(),
                       'rank': leaderboardRank,

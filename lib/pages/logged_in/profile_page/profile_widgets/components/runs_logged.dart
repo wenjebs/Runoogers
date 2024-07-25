@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -59,9 +60,14 @@ class RunsSection extends ConsumerWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 RunningPostCreationPage(
-                                                    repository: Repository(),
-                                                    photoUrl:
-                                                        doc['imageUrl'] ?? ''),
+                                              auth: FirebaseAuth.instance,
+                                              repository: Repository(),
+                                              photoUrl: doc['imageUrl'] ?? '',
+                                              runDistance:
+                                                  double.parse(run.distance),
+                                              runTime: int.parse(run.time),
+                                              runPace: run.pace,
+                                            ),
                                           ),
                                         );
                                       }),

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
@@ -85,6 +84,10 @@ class LeaderboardsPage extends StatelessWidget {
                                             points: globalLeaderboard[
                                                 currentUserPlace - 1]['points'],
                                             repository: repository,
+                                            profilePic: globalLeaderboard[
+                                                    currentUserPlace - 1]
+                                                ['profilePic'],
+                                            auth: auth,
                                           ),
                                           PodiumWidget(
                                             firstPlace: UserModel.fromMap(
@@ -117,6 +120,10 @@ class LeaderboardsPage extends StatelessWidget {
                                           points: globalLeaderboard[skipThree]
                                               ['points'],
                                           repository: repository,
+                                          profilePic:
+                                              globalLeaderboard[skipThree]
+                                                  ['profilePic'],
+                                          auth: auth,
                                         );
                                       },
                                       childCount: globalLeaderboard.length - 3,
@@ -155,6 +162,9 @@ class LeaderboardsPage extends StatelessWidget {
                                         ['username'],
                                     points: friendsLeaderboard[index]['points'],
                                     repository: repository,
+                                    profilePic: friendsLeaderboard[index]
+                                        ['profilePic'],
+                                    auth: auth,
                                   );
                                 },
                               );
@@ -183,6 +193,8 @@ class LeaderboardCard extends StatelessWidget {
   final bool isCurrentUser;
   final bool shareable;
   final Repository repository;
+  final String profilePic;
+  final FirebaseAuth auth;
 
   const LeaderboardCard({
     super.key,
@@ -194,6 +206,8 @@ class LeaderboardCard extends StatelessWidget {
     required this.isCurrentUser,
     required this.shareable,
     required this.repository,
+    required this.profilePic,
+    required this.auth,
   });
 
   @override
@@ -235,22 +249,19 @@ class LeaderboardCard extends StatelessWidget {
                 child: Container(
                   width: 44,
                   height: 44,
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: Theme.of(context).colorScheme.secondary,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.grey[400]!,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       width: 2,
                     ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
-                    child: Image.network(
-                      'https://picsum.photos/seed/183/600',
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                    ),
+                  child: CircleAvatar(
+                    radius: 22,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    backgroundImage: NetworkImage(profilePic),
                   ),
                 ),
               ),
@@ -305,6 +316,7 @@ class LeaderboardCard extends StatelessWidget {
                           leaderboardPoints: points,
                           leaderboardRank: index,
                           username: username,
+                          auth: auth,
                         ),
                       ),
                     );

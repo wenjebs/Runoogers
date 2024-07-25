@@ -10,8 +10,9 @@ import 'package:runningapp/pages/logged_in/training_page/plan_generator.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_schedule.dart';
 
 class TrainingPage extends StatefulWidget {
-  const TrainingPage({super.key, required this.repository});
+  const TrainingPage({super.key, required this.repository, required this.auth});
   final Repository repository;
+  final FirebaseAuth auth;
   @override
   State<TrainingPage> createState() => _TrainingPageState();
 }
@@ -63,7 +64,7 @@ class _TrainingPageState extends State<TrainingPage> {
                   setState(() {
                     generated = false;
                   });
-                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  String userId = widget.auth.currentUser!.uid;
                   // Reference to the user's trainingPlans subcollection
                   var collectionRef = FirebaseFirestore.instance
                       .collection('users')
@@ -138,7 +139,7 @@ class _TrainingPageState extends State<TrainingPage> {
                   setState(() {
                     generated = false;
                   });
-                  String userId = FirebaseAuth.instance.currentUser!.uid;
+                  String userId = widget.auth.currentUser!.uid;
                   // Reference to the user's trainingPlans subcollection
                   var collectionRef = FirebaseFirestore.instance
                       .collection('users')

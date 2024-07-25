@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,6 +46,7 @@ void main() {
             repository: mockRepository,
             storyRun: false,
             title: 'Test Run',
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -62,6 +64,7 @@ void main() {
             repository: mockRepository,
             storyRun: false,
             title: 'Test Run',
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -93,6 +96,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -110,6 +114,7 @@ void main() {
             repository: mockRepository,
             storyRun: false,
             title: 'Test Run',
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -140,6 +145,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -178,6 +184,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
+            auth: MockFirebaseAuth(),
           ),
         ),
       );
@@ -227,6 +234,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
+            auth: MockFirebaseAuth(),
           ),
         ),
       );

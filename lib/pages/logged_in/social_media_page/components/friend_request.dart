@@ -6,6 +6,7 @@ class FriendRequest extends StatefulWidget {
   final String name;
   final String userId;
   final bool added;
+  final String profilePic;
 
   const FriendRequest({
     super.key,
@@ -13,6 +14,7 @@ class FriendRequest extends StatefulWidget {
     required this.userId,
     required this.added,
     required this.repository,
+    required this.profilePic,
   });
 
   @override
@@ -33,9 +35,8 @@ class FriendRequestState extends State<FriendRequest> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            const CircleAvatar(
-              backgroundImage:
-                  NetworkImage('https://picsum.photos/id/237/200/300'),
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.profilePic),
             ),
             const SizedBox(width: 10),
             Expanded(

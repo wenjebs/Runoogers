@@ -11,6 +11,7 @@ class AchievementPostCreationPage extends StatefulWidget {
   final String description;
   final int points;
   final Repository repository;
+  final FirebaseAuth auth;
 
   const AchievementPostCreationPage(
       {super.key,
@@ -18,7 +19,8 @@ class AchievementPostCreationPage extends StatefulWidget {
       required this.name,
       required this.description,
       required this.points,
-      required this.repository});
+      required this.repository,
+      required this.auth});
 
   @override
   AchievementPostCreationPageState createState() =>
@@ -69,7 +71,7 @@ class AchievementPostCreationPageState
                     _formKey.currentState!.save();
                     widget.repository.addPost('posts', {
                       'caption': _caption,
-                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'userId': widget.auth.currentUser!.uid,
                       'likes': 0,
                       'timestamp': FieldValue.serverTimestamp(),
                       'achievementDescription': description,

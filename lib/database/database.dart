@@ -53,6 +53,11 @@ class Database {
     return doc['name'];
   }
 
+  Future<String> fetchUsername(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    return doc['username'];
+  }
+
   // get entire user
   Future<DocumentSnapshot<Map<String, dynamic>>> fetchUser(
       String userId) async {
@@ -532,7 +537,12 @@ class Database {
         .limit(100)
         .get();
 
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
+    final filteredDocs = querySnapshot.docs
+        .where((doc) => doc.data().containsKey('name'))
+        .map((doc) => doc.data())
+        .toList();
+
+    return filteredDocs;
   }
 
   Future<List<Map<String, dynamic>>> fetchTopUsersFriends() async {
@@ -843,5 +853,18 @@ class Database {
     final userRef = firestore.collection('users').doc(userId);
     final routeRef = userRef.collection('routes').doc(getId);
     return routeRef.delete();
+  }
+
+  Future<String> fetchProfilePic(String userId) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(userId).get();
+      final String profilePicUrl = userDoc.get('profilePic') as String;
+      return profilePicUrl;
+    } catch (e) {
+      print('Error fetching profile picture: $e');
+      return 'https://via.placeholder.com/150';
+    }
   }
 }
