@@ -179,82 +179,91 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
 
   @override
   Widget build(BuildContext context) {
+    if (isAvatarCreated) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                HomePage(initialIndex: 0, repository: Repository()),
+          ),
+        );
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: const Text('Choose an Avatar'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: isAvatarCreated
-          ? HomePage(initialIndex: 0, repository: Repository())
-          : Column(
-              children: [
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 10.0,
-                    ),
-                    itemCount: templates.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                          onTap: () async {
-                            onCardClick(templates[index]['id']);
-                            setState(() {
-                              gender = templates[index]['gender'];
-                            });
+      body: Column(
+        children: [
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+              ),
+              itemCount: templates.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                    onTap: () async {
+                      onCardClick(templates[index]['id']);
+                      setState(() {
+                        gender = templates[index]['gender'];
+                      });
 
-                            var userId = FirebaseAuth.instance.currentUser?.uid;
-                            if (userId != null) {
-                              await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userId)
-                                  .update({
-                                    'gender': templates[index]['gender'],
-                                    'avatarType': templates[index]['imageUrl'],
-                                  })
-                                  .then((_) => debugPrint(
-                                      'Avatar type updated successfully'))
-                                  .catchError((error) => debugPrint(
-                                      'Failed to update avatar type: $error'));
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: Image.network(
-                                      templates[index]['imageUrl'],
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ],
+                      var userId = FirebaseAuth.instance.currentUser?.uid;
+                      if (userId != null) {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId)
+                            .update({
+                              'gender': templates[index]['gender'],
+                              'avatarType': templates[index]['imageUrl'],
+                            })
+                            .then((_) =>
+                                debugPrint('Avatar type updated successfully'))
+                            .catchError((error) => debugPrint(
+                                'Failed to update avatar type: $error'));
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Image.network(
+                                templates[index]['imageUrl'],
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ));
-                    },
-                  ),
-                ),
-                if (finalAvatarUrl.isNotEmpty)
-                  Text('Final Avatar URL: $finalAvatarUrl'),
-              ],
+                          ],
+                        ),
+                      ),
+                    ));
+              },
             ),
+          ),
+          if (finalAvatarUrl.isNotEmpty)
+            Text('Final Avatar URL: $finalAvatarUrl'),
+        ],
+      ),
     );
   }
 }
