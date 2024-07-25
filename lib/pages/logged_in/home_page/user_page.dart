@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +10,6 @@ import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
-// Import your user data model and data fetching service
-// import 'path_to_your_user_data_model.dart';
-// import 'path_to_your_data_fetching_service.dart';
 
 class UserPage extends ConsumerWidget {
   final Repository repository;

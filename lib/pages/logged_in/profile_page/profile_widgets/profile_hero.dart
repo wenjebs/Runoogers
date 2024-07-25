@@ -28,6 +28,7 @@ class ProfileHero extends StatelessWidget {
                 child: Center(
                   child: O3D(
                     src: avatarUrl,
+                    autoRotate: true,
                   ),
                 ),
               ),

@@ -27,7 +27,6 @@ class ProfilePage extends ConsumerWidget {
 
     final name = userInfo?['name'] as String?;
     final username = userInfo?['username'] as String?;
-    final avatarUrl = userInfo?['avatarUrl'] as String?;
     int runsCount = 0;
 
     if (runsSnapshot is AsyncData<QuerySnapshot<Object?>>) {
@@ -41,27 +40,54 @@ class ProfilePage extends ConsumerWidget {
           // Profile hero
           Material(
               elevation: 10,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+              child: Stack(children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: FutureBuilder<UserModel>(
+                      future: repository.getUserProfile(auth.currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          UserModel user = snapshot.data!;
+                          return ProfileHero(avatarUrl: user.avatarUrl);
+                        } else {
+                          return const Text('Unknown error occurred');
+                        }
+                      }),
                 ),
-                child: FutureBuilder<UserModel>(
-                    future: repository.getUserProfile(auth.currentUser!.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        UserModel user = snapshot.data!;
-                        return ProfileHero(avatarUrl: user.avatarUrl);
-                      } else {
-                        return const Text('Unknown error occurred');
-                      }
-                    }),
-              )),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvatarCreatorWidget(
+                            auth: FirebaseAuth.instance,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Customize'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      elevation: 4.0,
+                      shadowColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ])),
           // Profile details
           Padding(
             padding: const EdgeInsets.all(2.0),
@@ -131,28 +157,6 @@ class ProfilePage extends ConsumerWidget {
                   )
                 : const RunsSection();
           }),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AvatarCreatorWidget(
-                        auth: FirebaseAuth.instance)), // TODO replace
-              );
-            },
-            child: const Text('3D Avatar Test'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const InventoryPage(),
-                ), // TODO replace
-              );
-            },
-            child: const Text('Invetory'),
-          ),
         ]),
       ),
     );
