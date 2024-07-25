@@ -132,7 +132,6 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     if (saveResponse.statusCode == 200) {
       setState(() {
         finalAvatarUrl = 'https://models.readyplayer.me/$draftAvatarId.glb';
-        isAvatarCreated = true;
         avatarId = draftAvatarId;
       });
       debugPrint("Draft Avatar Saved");
@@ -163,10 +162,11 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     TaskSnapshot snapshot =
         await widget.storage.ref('userAvatars/$userId.png').putFile(file);
     final String downloadUrl = await snapshot.ref.getDownloadURL();
-    await widget.firestore
-        .collection('users')
-        .doc(userId)
-        .update({'profilePic': downloadUrl});
+    await widget.firestore.collection('users').doc(userId).update({
+      'profilePic': downloadUrl,
+      'avatarUrl': finalAvatarUrl,
+      'avatarId': avatarId
+    });
 
     setState(() {
       isAvatarCreated = true;
@@ -209,8 +209,7 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
                             var userId = FirebaseAuth.instance.currentUser?.uid;
                             if (userId != null) {
                               await FirebaseFirestore.instance
-                                  .collection(
-                                      'users') // Assuming 'users' is your collection name
+                                  .collection('users')
                                   .doc(userId)
                                   .update({
                                     'gender': templates[index]['gender'],

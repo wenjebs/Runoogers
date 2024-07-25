@@ -181,6 +181,10 @@ class _ProfilePicEditorState extends State<ProfilePicEditor> {
       final directory = await getApplicationDocumentsDirectory();
       final file = File('${directory.path}/avatar.png');
 
+      if (!(await directory.exists())) {
+        await directory.create(recursive: true);
+      }
+
       if (await file.exists()) {
         await file.delete();
       }

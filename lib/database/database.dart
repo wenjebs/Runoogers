@@ -532,7 +532,12 @@ class Database {
         .limit(100)
         .get();
 
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
+    final filteredDocs = querySnapshot.docs
+        .where((doc) => doc.data().containsKey('name'))
+        .map((doc) => doc.data())
+        .toList();
+
+    return filteredDocs;
   }
 
   Future<List<Map<String, dynamic>>> fetchTopUsersFriends() async {

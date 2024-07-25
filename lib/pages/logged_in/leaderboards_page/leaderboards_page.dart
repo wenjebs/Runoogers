@@ -249,22 +249,19 @@ class LeaderboardCard extends StatelessWidget {
                 child: Container(
                   width: 44,
                   height: 44,
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: Theme.of(context).colorScheme.secondary,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.grey[400]!,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       width: 2,
                     ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
-                    child: Image.network(
-                      profilePic,
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                    ),
+                  child: CircleAvatar(
+                    radius: 22,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    backgroundImage: NetworkImage(profilePic),
                   ),
                 ),
               ),
