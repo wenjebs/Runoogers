@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'components/auth_buttons.dart';
 import 'components/auth_textfields.dart';
-import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key, required this.repository});
+  const RegisterPage({super.key, required this.repository, required this.auth});
   final Repository repository;
+  final FirebaseAuth auth;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -66,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
         widget.repository.addUser('users', {
           // REMEMBER TO UPDATE SIGNIN AFTER MODYIFYING THIS!
           'email': emailController.text,
-          'uid': FirebaseAuth.instance.currentUser!.uid,
+          'uid': widget.auth.currentUser!.uid,
           'posts': [],
           'friends': [],
           'onboarded': false,

@@ -7,8 +7,12 @@ import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 class RunningPostCreationPage extends StatefulWidget {
   final String photoUrl;
   final Repository repository;
+  final FirebaseAuth auth;
   const RunningPostCreationPage(
-      {super.key, required this.photoUrl, required this.repository});
+      {super.key,
+      required this.photoUrl,
+      required this.repository,
+      required this.auth});
 
   @override
   RunningPostCreationPageState createState() => RunningPostCreationPageState();
@@ -56,7 +60,7 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
                     widget.repository.addPost('posts', {
                       'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
-                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'userId': widget.auth.currentUser!.uid,
                       'likes': 0,
                       'runImageUrl': photoUrl,
                     });

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:runningapp/models/user.dart' as user;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RunDetailsAndStop extends ConsumerStatefulWidget {
   final LocationService locationService;
+  final FirebaseAuth auth;
 
   const RunDetailsAndStop(
     this.repository, {
@@ -27,6 +29,7 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
     required StopWatchTimer stopWatchTimer,
     required this.context,
     required this.mapContainer,
+    required this.auth,
     this.activeStory,
     this.questProgress,
     this.storyRun,
@@ -58,8 +61,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
   Future<void> _checkAndUpdateDifficulty() async {
     try {
       // Fetch the user model
-      user.UserModel model = await widget.repository
-          .getUserProfile(FirebaseAuth.instance.currentUser!.uid);
+      user.UserModel model =
+          await widget.repository.getUserProfile(widget.auth.currentUser!.uid);
       // every 3 runs prompt user to revamp their plan (rn its turned off)
       if (model.trainingOnboarded) {
         setState(() {
@@ -299,7 +302,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                               widget.repository,
                                               updateDifficulty:
                                                   updateDifficulty,
-                                              downloadUrl: downloadUrl)),
+                                              downloadUrl: downloadUrl,
+                                              auth: FirebaseAuth.instance)),
                                     );
                                   } else {
                                     debugPrint(
@@ -440,8 +444,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     );
 
     // get runs done
-    final String username = await widget.repository
-        .fetchName(FirebaseAuth.instance.currentUser!.uid);
+    final String username =
+        await widget.repository.fetchName(widget.auth.currentUser!.uid);
     final int runsDone = await widget.repository.getRunsDone();
 
     // stop tracking

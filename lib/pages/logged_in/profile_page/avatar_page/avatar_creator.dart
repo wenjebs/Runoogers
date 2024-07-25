@@ -1,19 +1,19 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:o3d/o3d.dart';
+import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/model_viewer.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/testwidget.dart';
 
 class AvatarCreatorWidget extends StatefulWidget {
-  const AvatarCreatorWidget({super.key});
+  final FirebaseAuth auth;
+  const AvatarCreatorWidget({super.key, required this.auth});
 
   @override
   _AvatarCreatorWidgetState createState() => _AvatarCreatorWidgetState();
@@ -63,7 +63,7 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
   Future<void> fetchTemplates() async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+        .doc(widget.auth.currentUser!.uid)
         .get();
 
     final response = await http.get(
@@ -84,6 +84,7 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
         templatesData = templatesData
             .where((template) => template['imageUrl'] == avatarType)
             .toList();
+        await createAndSaveAvatar(templatesData[0]['id']);
       }
       setState(() {
         debugPrint('templates ${templatesData.toString()}');
@@ -149,7 +150,7 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text('Choose an Avatar'),
+        title: const Text('Customise'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: isAvatarCreated
@@ -157,7 +158,8 @@ class _AvatarCreatorWidgetState extends State<AvatarCreatorWidget> {
               finalAvatarUrl: finalAvatarUrl,
               userId: token,
               gender: gender,
-              avatarId: avatarId)
+              avatarId: avatarId,
+              auth: FirebaseAuth.instance)
           : Column(
               children: [
                 Expanded(
@@ -235,12 +237,14 @@ class AvatarDisplayWidget extends StatefulWidget {
   final String userId;
   final String gender;
   final String avatarId;
+  final FirebaseAuth auth;
 
   const AvatarDisplayWidget(
       {required this.finalAvatarUrl,
       required this.userId,
       required this.gender,
       required this.avatarId,
+      required this.auth,
       super.key});
 
   @override
@@ -264,7 +268,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
   Future<void> getUsableAssets(String category) async {
     DocumentReference userDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(auth.FirebaseAuth.instance.currentUser!.uid);
+        .doc(widget.auth.currentUser!.uid);
 
     QuerySnapshot existingAssets = await userDoc.collection('assets').get();
 
@@ -378,6 +382,10 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
   }
 
   Future<void> saveAvatar() async {
+    DocumentReference userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.auth.currentUser!.uid);
+
     final response = await http.put(
         Uri.parse('https://api.readyplayer.me/v2/avatars/${widget.avatarId}'),
         headers: {
@@ -385,7 +393,14 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
         });
 
     if (response.statusCode == 200) {
-      debugPrint("Avatar Saved");
+      await userDoc.update({
+        'avatarUrl': 'https://models.readyplayer.me/${widget.avatarId}.glb',
+        'avatarId': widget.avatarId,
+      }).then((_) {
+        debugPrint("Avatar URL updated in Firestore new");
+      }).catchError((error) {
+        debugPrint("Error updating avatar URL in Firestore: $error");
+      });
     } else {
       debugPrint(response.reasonPhrase);
     }
@@ -466,7 +481,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
   Future<void> fetchUserId() async {
     DocumentReference userDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(auth.FirebaseAuth.instance.currentUser!.uid);
+        .doc(widget.auth.currentUser!.uid);
 
     try {
       DocumentSnapshot userSnapshot = await userDoc.get();
@@ -497,11 +512,15 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          saveAvatar();
+          await saveAvatar();
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TestWidget(avatarId: widget.avatarId)),
+              builder: (context) => HomePage(
+                initialIndex: 2,
+                repository: Repository(),
+              ),
+            ),
           );
         },
         backgroundColor: Colors.green,
@@ -556,6 +575,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
                         asset: assets[index],
                         index: index,
                         equipAsset: equipAsset,
+                        auth: FirebaseAuth.instance,
                       );
                     },
                   ),
@@ -589,13 +609,15 @@ class AssetDisplayWidget extends StatefulWidget {
   final Map<String, dynamic> asset;
   final int index;
   final Function(String, String) equipAsset;
+  final FirebaseAuth auth;
 
   const AssetDisplayWidget({
-    Key? key,
+    super.key,
     required this.asset,
     required this.index,
     required this.equipAsset,
-  }) : super(key: key);
+    required this.auth,
+  });
 
   @override
   _AssetDisplayWidgetState createState() => _AssetDisplayWidgetState();
@@ -691,7 +713,7 @@ class _AssetDisplayWidgetState extends State<AssetDisplayWidget> {
 
                 FirebaseFirestore.instance
                     .collection('users')
-                    .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+                    .doc(widget.auth.currentUser!.uid)
                     .collection('assets')
                     .where('id', isEqualTo: widget.asset['id'])
                     .get()
@@ -700,7 +722,7 @@ class _AssetDisplayWidgetState extends State<AssetDisplayWidget> {
                     var assetDoc = querySnapshot.docs.first;
                     FirebaseFirestore.instance
                         .collection('users')
-                        .doc(auth.FirebaseAuth.instance.currentUser!.uid)
+                        .doc(widget.auth.currentUser!.uid)
                         .collection('assets')
                         .doc(assetDoc.id)
                         .update({'unlocked': true})

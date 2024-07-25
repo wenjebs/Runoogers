@@ -304,6 +304,7 @@ class LeaderboardCard extends StatelessWidget {
                           leaderboardPoints: points,
                           leaderboardRank: index,
                           username: username,
+                          auth: FirebaseAuth.instance,
                         ),
                       ),
                     );

@@ -19,6 +19,7 @@ class UserModel {
   final String uid;
   final String username;
   final double averageDifficulty;
+  final String avatarUrl;
 
   UserModel({
     this.id = '',
@@ -39,6 +40,7 @@ class UserModel {
     required this.uid,
     required this.username,
     required this.averageDifficulty,
+    required this.avatarUrl,
   });
 
   // Constructor to create a User instance from a Firestore document
@@ -60,7 +62,8 @@ class UserModel {
         trainingOnboarded = doc.data()?['trainingOnboarded'] ?? false,
         uid = doc.data()?['uid'] ?? '',
         username = doc.data()?['username'] ?? '',
-        averageDifficulty = doc.data()?['averageDifficulty']?.toDouble() ?? 0.0;
+        averageDifficulty = doc.data()?['averageDifficulty']?.toDouble() ?? 0.0,
+        avatarUrl = doc.data()?['avatarUrl'] ?? '';
 
   // Method to convert a User instance into a Map for uploading to Firestore
   Map<String, dynamic> toFirestore() {
@@ -82,6 +85,7 @@ class UserModel {
       'uid': uid,
       'username': username,
       'averageDifficulty': averageDifficulty,
+      'avatarUrl': avatarUrl,
     };
   }
 
@@ -103,7 +107,8 @@ class UserModel {
         trainingOnboarded = data['trainingOnboarded'] ?? false,
         uid = data['uid'] ?? '',
         username = data['username'] ?? '',
-        averageDifficulty = data['averageDifficulty']?.toDouble() ?? 0.0;
+        averageDifficulty = data['averageDifficulty']?.toDouble() ?? 0.0,
+        avatarUrl = data['avatarUrl'] ?? '';
 
   UserModel copyWith({
     String? id,
@@ -124,6 +129,7 @@ class UserModel {
     String? uid,
     String? username,
     double? averageDifficulty,
+    String? avatarUrl,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -144,6 +150,7 @@ class UserModel {
       uid: uid ?? this.uid,
       username: username ?? this.username,
       averageDifficulty: averageDifficulty ?? this.averageDifficulty,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
 }

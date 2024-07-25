@@ -91,7 +91,8 @@ class TrainingOnboardingNotifier
 }
 
 class TrainingOnboardingPage extends ConsumerStatefulWidget {
-  const TrainingOnboardingPage({super.key});
+  const TrainingOnboardingPage({super.key, required this.auth});
+  final FirebaseAuth auth;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -251,7 +252,7 @@ class _TrainingOnboardingPageState
                   .saveToFirestore();
 
               // Get the current user's ID
-              final userId = FirebaseAuth.instance.currentUser!.uid;
+              final userId = widget.auth.currentUser!.uid;
 
               // Update the 'onboarded' field in Firestore
               await FirebaseFirestore.instance

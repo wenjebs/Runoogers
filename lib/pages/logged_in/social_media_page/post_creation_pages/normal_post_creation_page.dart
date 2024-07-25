@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
 
 class PostCreationPage extends StatefulWidget {
   final Repository repository;
-  const PostCreationPage({super.key, required this.repository});
+  final FirebaseAuth auth;
+  const PostCreationPage(
+      {super.key, required this.repository, required this.auth});
 
   @override
   PostCreationPageState createState() => PostCreationPageState();
@@ -47,7 +50,7 @@ class PostCreationPageState extends State<PostCreationPage> {
                     widget.repository.addPost('posts', {
                       'timestamp': FieldValue.serverTimestamp(),
                       'caption': _caption,
-                      'userId': FirebaseAuth.instance.currentUser!.uid,
+                      'userId': widget.auth.currentUser!.uid,
                       'likes': 0,
                       'photoUrl':
                           'https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg',

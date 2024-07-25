@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:runningapp/database/repository.dart';
@@ -102,7 +103,8 @@ class TrainingCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const TrainingOnboardingPage()),
+                          builder: (context) => TrainingOnboardingPage(
+                              auth: FirebaseAuth.instance)),
                     );
                   }
                 },

@@ -321,6 +321,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
+        auth: FirebaseAuth.instance, // TODO @wenjie idk abt this
         repository: mock,
       )));
 
@@ -332,6 +333,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
+        auth: FirebaseAuth.instance,
         repository: mock,
       )));
 
@@ -343,6 +345,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
+        auth: FirebaseAuth.instance,
         repository: mock,
       )));
 
@@ -354,6 +357,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(
           home: RegisterPage(
+        auth: FirebaseAuth.instance,
         repository: mock,
       )));
 

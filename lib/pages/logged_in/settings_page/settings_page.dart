@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -7,8 +8,10 @@ import 'package:runningapp/models/user.dart';
 import 'package:runningapp/providers.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key, required this.repository});
   final Repository repository;
+  final FirebaseAuth auth;
+
+  const SettingsPage({super.key, required this.repository, required this.auth});
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -27,8 +30,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _loadUserProfile() async {
-    UserModel userProfile = await widget.repository
-        .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid);
+    UserModel userProfile =
+        await widget.repository.getUserProfile(widget.auth.currentUser!.uid);
     if (mounted) {
       setState(() {
         _user = userProfile;
@@ -70,8 +73,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   FutureBuilder<UserModel>(
-                    future: widget.repository.getUserProfile(
-                        auth.FirebaseAuth.instance.currentUser!.uid),
+                    future: widget.repository
+                        .getUserProfile(widget.auth.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
@@ -133,8 +136,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   FutureBuilder<UserModel>(
-                    future: widget.repository.getUserProfile(
-                        auth.FirebaseAuth.instance.currentUser!.uid),
+                    future: widget.repository
+                        .getUserProfile(widget.auth.currentUser!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();

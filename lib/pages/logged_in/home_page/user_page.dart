@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -16,15 +17,15 @@ import 'package:runningapp/pages/logged_in/training_page/training_card.dart';
 
 class UserPage extends ConsumerWidget {
   final Repository repository;
-  const UserPage({super.key, required this.repository});
+  final FirebaseAuth auth;
+  const UserPage({super.key, required this.repository, required this.auth});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final friendUids = ref.watch(friendsProvider);
     final trainingOnboarded = ref.watch(trainingOnboardedProvider);
     return FutureBuilder<UserModel>(
-      future: repository
-          .getUserProfile(auth.FirebaseAuth.instance.currentUser!.uid),
+      future: repository.getUserProfile(auth.currentUser!.uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -61,8 +62,9 @@ class UserPage extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,

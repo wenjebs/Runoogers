@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -221,6 +222,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                         questProgress: widget.questProgress,
                         activeStory: widget.activeStoryTitle,
                         storyRun: storyRun,
+                        auth: FirebaseAuth.instance,
                       ),
                     )
                   : FloatingActionButton.large(

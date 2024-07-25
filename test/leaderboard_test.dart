@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -11,7 +10,6 @@ import 'package:runningapp/pages/logged_in/leaderboards_page/leaderboards_page.d
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:runningapp/pages/logged_in/leaderboards_page/podium.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/leaderboard_post_creation_page.dart';
-import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.dart';
 
 @GenerateNiceMocks([MockSpec<Repository>()])
 import 'leaderboard_test.mocks.dart';

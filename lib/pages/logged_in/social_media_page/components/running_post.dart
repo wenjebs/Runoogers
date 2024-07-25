@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -149,6 +150,7 @@ class RunningPost extends ConsumerWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PostCommentFeed(
+                                  auth: FirebaseAuth.instance,
                                   Repository(),
                                   post: post,
                                 ),

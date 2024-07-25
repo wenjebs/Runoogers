@@ -315,6 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                               MaterialPageRoute(
                                 builder: (context) => RegisterPage(
                                   repository: widget.repository,
+                                  auth: FirebaseAuth.instance,
                                 ),
                               ),
                             );
