@@ -31,6 +31,7 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
       return LoginPage(
         repository: Repository(),
         authenticator: Authenticator(),
+        auth: FirebaseAuth.instance,
       );
     } else {
       return RegisterPage(

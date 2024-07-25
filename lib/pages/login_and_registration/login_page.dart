@@ -11,12 +11,13 @@ import 'components/auth_textfields.dart';
 
 class LoginPage extends StatefulWidget {
   final Authenticator authenticator;
-
+  final FirebaseAuth auth;
   final Repository repository;
   const LoginPage({
     super.key,
     required this.authenticator,
     required this.repository,
+    required this.auth,
   });
 
   @override
@@ -315,7 +316,7 @@ class _LoginPageState extends State<LoginPage> {
                               MaterialPageRoute(
                                 builder: (context) => RegisterPage(
                                   repository: widget.repository,
-                                  auth: FirebaseAuth.instance,
+                                  auth: widget.auth,
                                 ),
                               ),
                             );
