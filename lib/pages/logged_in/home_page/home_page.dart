@@ -41,10 +41,14 @@ class _HomePageState extends State<HomePage> {
       repository: Repository(),
       title: "",
       storyRun: false,
+      auth: FirebaseAuth.instance,
     ),
     ProfilePage(auth: FirebaseAuth.instance),
     SocialMediaPage(repository: Repository(), auth: FirebaseAuth.instance),
-    StoryPage(Repository()),
+    StoryPage(
+      Repository(),
+      auth: FirebaseAuth.instance,
+    ),
     TrainingPage(
       repository: Repository(),
       auth: FirebaseAuth.instance,
@@ -60,6 +64,7 @@ class _HomePageState extends State<HomePage> {
     ),
     RoutesView(
       repository: Repository(),
+      auth: FirebaseAuth.instance,
     ),
   ];
 

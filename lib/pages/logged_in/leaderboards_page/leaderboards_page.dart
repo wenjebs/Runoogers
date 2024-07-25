@@ -87,6 +87,7 @@ class LeaderboardsPage extends StatelessWidget {
                                             profilePic: globalLeaderboard[
                                                     currentUserPlace - 1]
                                                 ['profilePic'],
+                                            auth: auth,
                                           ),
                                           PodiumWidget(
                                             firstPlace: UserModel.fromMap(
@@ -122,6 +123,7 @@ class LeaderboardsPage extends StatelessWidget {
                                           profilePic:
                                               globalLeaderboard[skipThree]
                                                   ['profilePic'],
+                                          auth: auth,
                                         );
                                       },
                                       childCount: globalLeaderboard.length - 3,
@@ -162,6 +164,7 @@ class LeaderboardsPage extends StatelessWidget {
                                     repository: repository,
                                     profilePic: friendsLeaderboard[index]
                                         ['profilePic'],
+                                    auth: auth,
                                   );
                                 },
                               );
@@ -191,6 +194,7 @@ class LeaderboardCard extends StatelessWidget {
   final bool shareable;
   final Repository repository;
   final String profilePic;
+  final FirebaseAuth auth;
 
   const LeaderboardCard({
     super.key,
@@ -203,6 +207,7 @@ class LeaderboardCard extends StatelessWidget {
     required this.shareable,
     required this.repository,
     required this.profilePic,
+    required this.auth,
   });
 
   @override
@@ -314,7 +319,7 @@ class LeaderboardCard extends StatelessWidget {
                           leaderboardPoints: points,
                           leaderboardRank: index,
                           username: username,
-                          auth: FirebaseAuth.instance,
+                          auth: auth,
                         ),
                       ),
                     );

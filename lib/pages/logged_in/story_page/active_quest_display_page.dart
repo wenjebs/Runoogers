@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -11,11 +12,13 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
   final List<Quest> quests;
   final String activeStoryTitle;
   final Repository repository;
+  final FirebaseAuth auth;
   const ActiveQuestDisplayPage(
     this.repository, {
     super.key,
     required this.quests,
     required this.activeStoryTitle,
+    required this.auth,
   });
 
   @override
@@ -149,6 +152,7 @@ class ActiveQuestDisplayPage extends ConsumerWidget {
           questProgress: questProgress,
           questDistance: quest.getDistance,
           currentQuest: currentQuest,
+          auth: auth,
         ),
       ),
     );

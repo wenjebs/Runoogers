@@ -36,6 +36,8 @@ class RunPage extends ConsumerStatefulWidget {
 
   final Position? currPos;
 
+  final FirebaseAuth auth;
+
   const RunPage({
     super.key,
     this.route,
@@ -48,6 +50,7 @@ class RunPage extends ConsumerStatefulWidget {
     required this.repository,
     required this.locationService,
     this.currPos,
+    required this.auth,
   });
 
   @override
@@ -222,7 +225,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                         questProgress: widget.questProgress,
                         activeStory: widget.activeStoryTitle,
                         storyRun: storyRun,
-                        auth: FirebaseAuth.instance,
+                        auth: widget.auth,
                       ),
                     )
                   : FloatingActionButton.large(

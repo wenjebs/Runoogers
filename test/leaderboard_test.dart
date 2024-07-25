@@ -57,9 +57,30 @@ void main() {
         'LeaderboardsPage displays data when Future completes successfully',
         (WidgetTester tester) async {
       when(mockRepository.fetchTopUsersGlobal()).thenAnswer((_) async => [
-            {"uid": "1", "name": "User 1", "username": "user1", "points": 100},
-            {"uid": "2", "name": "User 2", "username": "user2", "points": 90},
-            {"uid": "3", "name": "User 3", "username": "user3", "points": 80},
+            {
+              "uid": "1",
+              "name": "User 1",
+              "username": "user1",
+              "points": 100,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "2",
+              "name": "User 2",
+              "username": "user2",
+              "points": 90,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "3",
+              "name": "User 3",
+              "username": "user3",
+              "points": 80,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
           ]);
       when(mockRepository.fetchTopUsersFriends()).thenAnswer((_) async => []);
       await tester.pumpWidget(createTestWidget(LeaderboardsPage(
@@ -74,9 +95,30 @@ void main() {
     testWidgets('LeaderboardsPage displays podium',
         (WidgetTester tester) async {
       when(mockRepository.fetchTopUsersGlobal()).thenAnswer((_) async => [
-            {"uid": "1", "name": "User 1", "username": "user1", "points": 100},
-            {"uid": "2", "name": "User 2", "username": "user2", "points": 90},
-            {"uid": "3", "name": "User 3", "username": "user3", "points": 80},
+            {
+              "uid": "1",
+              "name": "User 1",
+              "username": "user1",
+              "points": 100,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "2",
+              "name": "User 2",
+              "username": "user2",
+              "points": 90,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "3",
+              "name": "User 3",
+              "username": "user3",
+              "points": 80,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
           ]);
       when(mockRepository.fetchTopUsersFriends()).thenAnswer((_) async => []);
       await tester.pumpWidget(createTestWidget(LeaderboardsPage(
@@ -95,9 +137,30 @@ void main() {
     testWidgets('Tapping own card navigates to sharing page',
         (WidgetTester tester) async {
       when(mockRepository.fetchTopUsersGlobal()).thenAnswer((_) async => [
-            {"uid": "1", "name": "User 1", "username": "user1", "points": 100},
-            {"uid": "2", "name": "User 2", "username": "user2", "points": 90},
-            {"uid": "3", "name": "User 3", "username": "user3", "points": 80},
+            {
+              "uid": "1",
+              "name": "User 1",
+              "username": "user1",
+              "points": 100,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "2",
+              "name": "User 2",
+              "username": "user2",
+              "points": 90,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
+            {
+              "uid": "3",
+              "name": "User 3",
+              "username": "user3",
+              "points": 80,
+              "profilePic":
+                  "https://media.gettyimages.com/id/1728008421/photo/teacher-mentoring-university-student.jpg?s=612x612&w=gi&k=20&c=lRk7c05c887Uhne6X_6jCr1CuCtrb9ILuazoQr1O7Lo="
+            },
           ]);
       when(mockRepository.fetchTopUsersFriends()).thenAnswer((_) async => []);
       await tester.pumpWidget(createTestWidget(LeaderboardsPage(

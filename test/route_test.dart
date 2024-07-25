@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +31,10 @@ void main() {
         ProviderScope(
           overrides: const [],
           child: MaterialApp(
-            home: RoutesView(repository: mockRepository),
+            home: RoutesView(
+              repository: mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
           ),
         ),
       );
@@ -46,7 +50,10 @@ void main() {
         ProviderScope(
           overrides: const [],
           child: MaterialApp(
-            home: RoutesView(repository: mockRepository),
+            home: RoutesView(
+              repository: mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
           ),
         ),
       );
@@ -72,7 +79,10 @@ void main() {
         ProviderScope(
           overrides: const [],
           child: MaterialApp(
-            home: RoutesView(repository: mockRepository),
+            home: RoutesView(
+              repository: mockRepository,
+              auth: MockFirebaseAuth(),
+            ),
           ),
         ),
       );
@@ -105,7 +115,10 @@ void main() {
           ProviderScope(
             overrides: const [],
             child: MaterialApp(
-              home: RoutesView(repository: mockRepository),
+              home: RoutesView(
+                repository: mockRepository,
+                auth: MockFirebaseAuth(),
+              ),
             ),
           ),
         );
@@ -148,7 +161,10 @@ void main() {
           ProviderScope(
             overrides: const [],
             child: MaterialApp(
-              home: RoutesView(repository: mockRepository),
+              home: RoutesView(
+                repository: mockRepository,
+                auth: MockFirebaseAuth(),
+              ),
             ),
           ),
         );
@@ -178,7 +194,10 @@ void main() {
           ProviderScope(
             overrides: const [],
             child: MaterialApp(
-              home: RoutesView(repository: mockRepository),
+              home: RoutesView(
+                repository: mockRepository,
+                auth: MockFirebaseAuth(),
+              ),
             ),
           ),
         );
@@ -202,7 +221,10 @@ void main() {
           ProviderScope(
             overrides: const [],
             child: MaterialApp(
-              home: RoutesView(repository: mockRepository),
+              home: RoutesView(
+                repository: mockRepository,
+                auth: MockFirebaseAuth(),
+              ),
             ),
           ),
         );
