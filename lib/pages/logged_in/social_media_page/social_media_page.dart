@@ -112,23 +112,7 @@ class SocialMediaPage extends ConsumerWidget {
                       }
                       final posts = snapshot.data!.docs.map((doc) {
                         final data = doc.data() as Map<String, dynamic>;
-                        return Post(
-                          id: data['id'] ?? '',
-                          userId: data['userId'] ?? '',
-                          caption: data['caption'] ?? '',
-                          likes: data['likes'] ?? 0,
-                          timestamp: data['timestamp'] ?? Timestamp.now(),
-                          achievementDescription: data[
-                              'achievementDescription'], // No need for ??, null is acceptable
-                          achievementTitle: data[
-                              'achievementTitle'], // Assuming these can also be null
-                          achievementImageUrl: data['achievementImageUrl'],
-                          achievementPoints: data['achievementPoints'],
-                          runImageUrl: data['runImageUrl'],
-                          rank: data['rank'],
-                          leaderboardPoints: data['points'],
-                          username: data['username'],
-                        );
+                        return Post.fromMap(data);
                       }).toList();
                       return ListView.builder(
                         shrinkWrap: true,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:runningapp/database/repository.dart';
@@ -285,10 +286,8 @@ class Database {
 
   Future<List<UserModel>> getAllFriendsProfile(String userId) async {
     List<UserModel> friends = [];
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc('yourUserId')
-        .get();
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     final List<String> friendIds =
         List<String>.from(userDoc.data()?['friends'] ?? []);
 
