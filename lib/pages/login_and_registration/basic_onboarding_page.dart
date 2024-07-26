@@ -72,7 +72,9 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
 
   void _validateAge(String value) {
     setState(() {
-      _isAgeValid = value.isNotEmpty && int.tryParse(value) != null;
+      _isAgeValid = value.isNotEmpty &&
+          int.tryParse(value) != null &&
+          int.parse(value) > 0;
     });
   }
 

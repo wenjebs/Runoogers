@@ -72,6 +72,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
 
       List<dynamic> weeks = json['running_plan']['weeks'];
       for (int i = 0; i < weeks.length; i++) {
+        debugPrint("weeks.length = ${weeks.length}");
         var week = weeks[i];
         if (week == null || (i >= 1 && week.length != 7)) {
           debugPrint(week.length.toString());

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +217,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                             end: const Offset(0, 0)),
                       ],
                       child: RunDetailsAndStop(
+                        firestore: FirebaseFirestore.instance,
                         locationService: widget.locationService,
                         widget.repository,
                         paddingValue: paddingValue,

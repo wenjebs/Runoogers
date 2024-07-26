@@ -45,17 +45,20 @@ Example of the expected JSON structure:
 {
 "day_of_week": "Monday, 16 May",
 "distance_km": 5,
-"type": "Easy run"
+"type": "Easy run",
+"completed": false
 },
 {
 "day_of_week": "Tuesday, 17 May",
 "distance_km": 6,
-"type": "Speed work"
+"type": "Speed work",
+"completed": false
 },
 {
 "day_of_week": "Wednesday, 18 May",
 "distance_km": 0,
-"type": "Rest day"
+"type": "Rest day",
+"completed": false
 },
 // ... continue with the rest of the week
 ]
