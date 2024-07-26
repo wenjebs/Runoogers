@@ -79,6 +79,10 @@ class _RegisterPageState extends State<RegisterPage> {
           'activeStory': "",
           'achievements': [],
         });
+        // pop loading circle
+        Navigator.pop(context);
+
+        // pop register page
         Navigator.pop(context);
       } else {
         Navigator.pop(context);

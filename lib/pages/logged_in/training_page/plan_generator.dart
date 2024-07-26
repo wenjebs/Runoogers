@@ -65,7 +65,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       debugPrint("generating $attempts");
       final text = await gemini.text(prompt, modelName: 'models/gemini-pro');
       debugPrint(text!.output!);
-      final json = jsonDecode(text!.output!) as Map<String, dynamic>;
+      final json = jsonDecode(text.output!) as Map<String, dynamic>;
       // if (!json.containsKey('weeks')) {
       //   throw const FormatException("JSON is null or missing 'weeks' key");
       // }
@@ -101,4 +101,5 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       }
     }
   }
+  return null;
 }

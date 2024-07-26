@@ -8,7 +8,6 @@ import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creator.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/profile_pic_editor.dart';
-import 'package:runningapp/pages/logged_in/profile_page/inventory_page/inventory_page.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';

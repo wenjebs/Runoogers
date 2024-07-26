@@ -369,7 +369,7 @@ class _AvatarDisplayWidgetState extends State<AvatarDisplayWidget>
                     }
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       default:
                         if (snapshot.hasData) {
                           Map<String, dynamic> data =
