@@ -112,10 +112,10 @@ class _RunPageState extends ConsumerState<RunPage> {
   }
 
   init() async {
-    // debugPrint("run_page : getting initial position");
+    debugPrint("run_page : getting initial position");
     Position? initialPosition = await Geolocator.getLastKnownPosition();
     setState(() {
-      // debugPrint("run_page : getting initial position done");
+      debugPrint("run_page : getting initial position done");
       currPos = initialPosition;
     });
   }

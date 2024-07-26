@@ -113,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onPressed: () {
                           ref
                               .read(themeProviderRef.notifier)
-                              .toggleTheme(darkmode);
+                              .toggleTheme(!darkmode);
                           debugPrint(darkmode.toString());
                           setState(() {
                             darkmode = !darkmode;

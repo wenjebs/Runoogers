@@ -884,7 +884,7 @@ class Database {
       final String profilePicUrl = userDoc.get('profilePic') as String;
       return profilePicUrl;
     } catch (e) {
-      print('Error fetching profile picture: $e');
+      debugPrint('Error fetching profile picture: $e');
       return 'https://via.placeholder.com/150';
     }
   }
