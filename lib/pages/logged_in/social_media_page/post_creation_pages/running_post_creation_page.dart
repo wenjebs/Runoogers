@@ -11,14 +11,15 @@ class RunningPostCreationPage extends StatefulWidget {
   final double runPace;
   final Repository repository;
   final FirebaseAuth auth;
-  const RunningPostCreationPage(
-      {super.key,
-      required this.photoUrl,
-      required this.runDistance,
-      required this.runTime,
-      required this.runPace,
-      required this.repository,
-      required this.auth});
+  const RunningPostCreationPage({
+    super.key,
+    required this.photoUrl,
+    required this.runDistance,
+    required this.runTime,
+    required this.runPace,
+    required this.repository,
+    required this.auth,
+  });
 
   @override
   RunningPostCreationPageState createState() => RunningPostCreationPageState();
