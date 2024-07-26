@@ -7,6 +7,7 @@ import 'package:runningapp/models/run.dart';
 import 'package:runningapp/models/route_model.dart';
 import 'package:runningapp/models/progress_model.dart';
 import 'package:runningapp/models/quests_model.dart';
+import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/story_page/models/story_model.dart';
 import 'package:runningapp/pages/login_and_registration/auth_page.dart';

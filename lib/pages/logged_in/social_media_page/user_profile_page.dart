@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/friends_list.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_hero.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 
 class UserProfilePage extends StatefulWidget {
   final String userId;
@@ -193,6 +197,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                       ],
                     ),
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: GetUserPostService()
+                        .getPosts([FirebaseAuth.instance.currentUser!.uid]),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      final posts = snapshot.data!.docs.map((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return Post.fromMap(data);
+                      }).toList();
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return RunningPost(
+                            Repository(),
+                            post: post,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ]),
               ),
