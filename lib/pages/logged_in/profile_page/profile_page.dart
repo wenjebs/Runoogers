@@ -8,6 +8,7 @@ import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creator.dart';
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/profile_pic_editor.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/friends_list.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
@@ -34,6 +35,8 @@ class ProfilePage extends ConsumerWidget {
       runsCount = runsSnapshot.value.docs.length;
     } else {}
     final friendsCount = (userInfo?['friends'] as List?)?.length ?? 69;
+    final achievementsCount =
+        (userInfo?['achievements'] as List?)?.length ?? 69;
 
     return Scaffold(
       body: Center(
@@ -58,7 +61,9 @@ class ProfilePage extends ConsumerWidget {
                           return Text('Error: ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           UserModel user = snapshot.data!;
-                          return ProfileHero(avatarUrl: user.avatarUrl);
+                          return ProfileHero(
+                              avatarUrl: user.avatarUrl,
+                              profilePic: user.profilePic);
                         } else {
                           return const Text('Unknown error occurred');
                         }
@@ -128,35 +133,81 @@ class ProfilePage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '$runsCount',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      const Text(
-                        'Runs',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RunsSection()),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$runsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Runs',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '$friendsCount',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      const Text(
-                        'Friends',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AchievementsFeed(repository: Repository())),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$achievementsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Achievements',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FriendsList(
+                                userId:
+                                    FirebaseAuth.instance.currentUser!.uid)),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$friendsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Friends',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -164,22 +215,22 @@ class ProfilePage extends ConsumerWidget {
           ),
 
           // Button to alternate run or achievement section
-          const RunAchievementButton(),
-          Divider(
-            color: Theme.of(context).colorScheme.brightness == Brightness.light
-                ? const Color.fromARGB(255, 236, 236, 236)
-                : const Color.fromARGB(255, 15, 15, 15),
-            thickness: 2,
-          ),
+          // const RunAchievementButton(),
+          // Divider(
+          //   color: Theme.of(context).colorScheme.brightness == Brightness.light
+          //       ? const Color.fromARGB(255, 236, 236, 236)
+          //       : const Color.fromARGB(255, 15, 15, 15),
+          //   thickness: 2,
+          // ),
           // Run or Achievement section
 
-          Consumer(builder: (context, ref, child) {
-            return ref.watch(selectedIndexProvider) == 0
-                ? AchievementsFeed(
-                    repository: Repository(),
-                  )
-                : const RunsSection();
-          }),
+          // Consumer(builder: (context, ref, child) {
+          //   return ref.watch(selectedIndexProvider) == 0
+          //       ? AchievementsFeed(
+          //           repository: Repository(),
+          //         )
+          //       : const RunsSection();
+          // }),
         ]),
       ),
     );

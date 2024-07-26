@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.person_add),
+                                icon: const Icon(Icons.search_rounded),
                               ), // Add Friend Icon
                             ]
                           : [],

@@ -5,7 +5,9 @@ import 'package:o3d/o3d.dart';
 
 class ProfileHero extends StatefulWidget {
   final String avatarUrl;
-  const ProfileHero({super.key, required this.avatarUrl});
+  final String profilePic;
+  const ProfileHero(
+      {super.key, required this.avatarUrl, required this.profilePic});
 
   @override
   State<ProfileHero> createState() => _ProfileHeroState();
@@ -74,22 +76,7 @@ class _ProfileHeroState extends State<ProfileHero> {
                           src: widget.avatarUrl,
                           autoRotate: true,
                         )
-                      : FutureBuilder<String>(
-                          future: fetchProfilePicUrl(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return const Icon(Icons.error);
-                            } else {
-                              return Image.network(
-                                snapshot.data!,
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          },
-                        ),
+                      : Image.network(widget.profilePic, fit: BoxFit.cover),
                 ),
               ),
               if (currentView == 'left')

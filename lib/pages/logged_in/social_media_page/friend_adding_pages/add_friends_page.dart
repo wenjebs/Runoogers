@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:runningapp/database/repository.dart';
+import 'package:runningapp/models/user.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/components/profile_peek.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/friend_adding_pages/friend_requests_list.dart';
 
 class AddFriendsPage extends StatefulWidget {
@@ -39,7 +41,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
     final combinedResults = {
       ...nameQuerySnapshot.docs.map((doc) => doc.data()),
       ...usernameQuerySnapshot.docs.map((doc) => doc.data()),
-    }.toList();
+    }.toList().toSet().toList();
 
     setState(() {
       _searchResults = combinedResults;
@@ -59,7 +61,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Friends'),
+        title: const Text('Search'),
         actions: [
           IconButton(
             icon: const Icon(Icons.mail_outline),
@@ -101,28 +103,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                       itemCount: _searchResults.length,
                       itemBuilder: (context, index) {
                         final user = _searchResults[index];
-                        return ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(user['name']),
-                              Text(
-                                "@${user['username']}",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: friendsList.contains(user['uid'])
-                              ? const Text("Added")
-                              : IconButton(
-                                  icon: const Icon(Icons.person_add),
-                                  onPressed: () => widget.repository
-                                      .sendFriendRequest(user['uid']),
-                                ),
-                        );
+                        return ProfilePeek(user: UserModel.fromMap(user));
                       },
                     ),
             ),

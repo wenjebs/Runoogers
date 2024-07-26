@@ -283,6 +283,27 @@ class Database {
     }
   }
 
+  Future<List<UserModel>> getAllFriendsProfile(String userId) async {
+    List<UserModel> friends = [];
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc('yourUserId')
+        .get();
+    final List<String> friendIds =
+        List<String>.from(userDoc.data()?['friends'] ?? []);
+
+    for (String friendId in friendIds) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(friendId)
+          .get();
+      if (doc.exists) {
+        friends.add(UserModel.fromFirestore(doc));
+      }
+    }
+    return friends;
+  }
+
   ///////////////////////////////////////
   /// TRAINING METHODS
   ///////////////////////////////////////

@@ -1,14 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/profile_page/achievements_page/achievements_feed.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/friends_list.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_hero.dart';
-import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
-import 'package:runningapp/pages/logged_in/profile_page/webtest.dart';
 
 class UserProfilePage extends StatefulWidget {
   final String userId;
@@ -21,83 +19,185 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  late Future<UserModel> _userFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the future in initState
-    _userFuture = widget.repository.getUserProfile(widget.userId);
-  }
+  bool _isRequestSent = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        title: const Text('User Profile'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: FutureBuilder(
-        future: _userFuture,
+    return FutureBuilder<UserModel>(
+        future: widget.repository.getUserProfile(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final user = snapshot.data!;
-            return Center(
-              child: Column(mainAxisSize: MainAxisSize.max, children: [
-                // Profile hero
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  child: ProfileHero(
-                    avatarUrl: user.avatarUrl,
-                  ),
-                ),
-
-                // Profile details
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      ProfileDetails(name: user.name, username: user.username),
-                ),
-                const RunAchievementButton(),
-
-                // Run or Achievement section
-                Builder(builder: (context) {
-                  final userId =
-                      user.id; // Ensure user.id is accessible in the scope
-                  return Consumer(builder: (context, ref, child) {
-                    return ref.watch(selectedIndexProvider) == 0
-                        ? AchievementsFeed(
-                            repository: widget.repository, userId: userId)
-                        : RunsSection(userId: userId);
-                  });
-                }),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const WebTest()), // TODO replace
-                    );
-                  },
-                  child: const Text('3D Avatar Test'),
-                ),
-              ]),
+            return Scaffold(
+              body: Center(
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            );
+          } else if (!snapshot.hasData) {
+            return const Scaffold(
+              body: Center(
+                child: Text('User not found'),
+              ),
             );
           } else {
-            return const Center(child: Text('User not found'));
+            UserModel user = snapshot.data!;
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('User Profile'),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              body: Center(
+                child: Column(mainAxisSize: MainAxisSize.max, children: [
+                  // Profile hero
+                  Material(
+                      elevation: 10,
+                      child: Stack(children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          child: FutureBuilder<UserModel>(
+                              future:
+                                  Repository().getUserProfile(widget.userId),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (snapshot.hasData) {
+                                  UserModel user = snapshot.data!;
+                                  return ProfileHero(
+                                      avatarUrl: user.avatarUrl,
+                                      profilePic: user.profilePic);
+                                } else {
+                                  return const Text('Unknown error occurred');
+                                }
+                              }),
+                        ),
+                      ])),
+                  // Profile details
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: ProfileDetails(
+                        name: user.name, username: user.username),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: (user.friends
+                            .contains(FirebaseAuth.instance.currentUser!.uid)
+                        ? const Text('Friends')
+                        : ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                _isRequestSent = true;
+                              });
+                              await widget.repository
+                                  .sendFriendRequest(user.uid);
+                            },
+                            child: Text(
+                                _isRequestSent ? 'Request Sent' : 'Add Friend'),
+                          )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const RunsSection()),
+                              );
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  user.totalRuns.toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                const Text(
+                                  'Runs',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AchievementsFeed(
+                                        repository: Repository())),
+                              );
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  user.achievements.length.toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                const Text(
+                                  'Achievements',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        FriendsList(userId: user.uid)),
+                              );
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  user.friends.length.toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                const Text(
+                                  'Friends',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            );
           }
-        },
-      ),
-    );
+        });
   }
 }
