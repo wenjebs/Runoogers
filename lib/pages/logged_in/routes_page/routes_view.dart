@@ -65,6 +65,7 @@ class _RoutesViewState extends State<RoutesView> {
                           // Route name
                           Text(
                             routes[index].getName,
+                            key: const Key("routeTitle"),
                             style: const TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,
@@ -209,4 +210,19 @@ class _RoutesViewState extends State<RoutesView> {
       ),
     );
   }
+}
+
+LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+  assert(list.isNotEmpty);
+  double x0 = 999;
+  double x1 = -999;
+  double y0 = 999;
+  double y1 = -999;
+  for (LatLng latLng in list) {
+    if (latLng.latitude > x1) x1 = latLng.latitude;
+    if (latLng.latitude < x0) x0 = latLng.latitude;
+    if (latLng.longitude > y1) y1 = latLng.longitude;
+    if (latLng.longitude < y0) y0 = latLng.longitude;
+  }
+  return LatLngBounds(southwest: LatLng(x0, y0), northeast: LatLng(x1, y1));
 }
