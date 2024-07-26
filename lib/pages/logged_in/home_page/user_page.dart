@@ -38,10 +38,11 @@ class UserPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Welcome, ${user.name}!",
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                 ),
                 trainingOnboarded.when(data: (trainingOnboarded) {

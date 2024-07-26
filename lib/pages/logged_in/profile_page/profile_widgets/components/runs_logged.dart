@@ -29,7 +29,9 @@ class RunsSection extends ConsumerWidget {
                   return ListView(
                     children: runs.docs.map((doc) {
                       Run run = Run.fromFirestore(
-                          doc as DocumentSnapshot<Map<String, dynamic>>, null);
+                        doc as DocumentSnapshot<Map<String, dynamic>>,
+                        null,
+                      );
                       String formattedDate =
                           DateFormat('EEEE \'at\' h:mma').format(
                         DateTime.parse(run.date),

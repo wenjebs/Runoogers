@@ -290,23 +290,93 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
                                   if (save) {
                                     setState(() => savingRun = true);
-                                    String downloadUrl =
-                                        await saveRun(time, distance, ref);
+                                    // ask user for name and description of run
+                                    String name = "";
+                                    String description = "";
+                                    await showDialog(
+                                      context: mounted ? context : context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            "Save Run",
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              TextField(
+                                                onChanged: (value) {
+                                                  name = value;
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: "Run name",
+                                                  hintStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.5),
+                                                  ),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                    left: 5,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextField(
+                                                onChanged: (value) {
+                                                  description = value;
+                                                },
+                                                decoration: InputDecoration(
+                                                  hintText: "Description",
+                                                  hintStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.5),
+                                                  ),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                    left: 5,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("Save"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+                                    String downloadUrl = await saveRun(
+                                      time,
+                                      distance,
+                                      name,
+                                      description,
+                                      ref,
+                                    );
                                     setState(() => savingRun = false);
                                     stopServices(ref);
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => RatingPage(
-                                              widget.repository,
-                                              updateDifficulty:
-                                                  updateDifficulty,
-                                              downloadUrl: downloadUrl,
-                                              runDistance: distance,
-                                              runTime: time,
-                                              runPace:
-                                                  (time / 60000) / distance,
-                                              auth: FirebaseAuth.instance)),
+                                        builder: (context) => RatingPage(
+                                          widget.repository,
+                                          updateDifficulty: updateDifficulty,
+                                          downloadUrl: downloadUrl,
+                                          runDistance: distance,
+                                          runTime: time,
+                                          runPace: (time / 60000) / distance,
+                                          auth: FirebaseAuth.instance,
+                                        ),
+                                      ),
                                     );
                                   } else {
                                     debugPrint(
@@ -408,7 +478,13 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     widget.repository.addPoints(totalPoints.toInt());
   }
 
-  Future<String> saveRun(int time, double distance, WidgetRef ref) async {
+  Future<String> saveRun(
+    int time,
+    double distance,
+    String name,
+    String description,
+    WidgetRef ref,
+  ) async {
     debugPrint("run detail and stop: Run saved");
     // get pace of run
     final double pace;
@@ -416,21 +492,64 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     // show completed run details
     showDialog(
-      context: widget.context,
+      context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Run Completed"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: const Text(
+            "Run Completed!",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
-              Text(
-                "Distance: ${distance.toStringAsFixed(2)} km",
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  "Distance: ${distance.toStringAsFixed(2)} km",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
-              Text(
-                "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s/km",
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s per km",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+
+              // Please wait for save to complete!
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  "Please wait for the run to save...",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
             ],
           ),
@@ -439,7 +558,13 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text("Close"),
+              child: const Text(
+                "Close",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ],
         );
@@ -492,8 +617,8 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       "runs",
       Run(
         id: "",
-        name: "Run",
-        description: "Run",
+        name: name,
+        description: description,
         distance: distance.toStringAsFixed(2),
         time: StopWatchTimer.getDisplayTime(time, hours: false),
         date: DateTime.now().toString(),
