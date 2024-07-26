@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:runningapp/database/repository.dart';
@@ -8,7 +9,9 @@ import 'package:runningapp/pages/logged_in/run_page/run_page.dart';
 class RoutesDetailsPage extends StatelessWidget {
   final List<RouteModel> routes;
   final int index;
-  const RoutesDetailsPage(this.index, this.routes, {super.key});
+  final FirebaseAuth auth;
+  const RoutesDetailsPage(this.index, this.routes,
+      {super.key, required this.auth});
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +88,7 @@ class RoutesDetailsPage extends StatelessWidget {
                               route: routes[index],
                               storyRun: false,
                               title: "Route run",
+                              auth: auth,
                             );
                           },
                         ),

@@ -46,7 +46,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
-            // Assuming your User model has name and username attributes
             final user = snapshot.data!;
             return Center(
               child: Column(mainAxisSize: MainAxisSize.max, children: [
@@ -57,7 +56,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  child: const ProfileHero(),
+                  child: ProfileHero(
+                    avatarUrl: user.avatarUrl,
+                  ),
                 ),
 
                 // Profile details

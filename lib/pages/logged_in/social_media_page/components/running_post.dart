@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +37,8 @@ class RunningPost extends ConsumerWidget {
           post.achievementPoints!);
     } else if (post.isRunPost) {
       debugPrint('Building run post');
-      content = _buildRunPost(context, post.runImageUrl!);
+      content = _buildRunPost(context, post.runImageUrl!, post.runDistance!,
+          post.runDuration.toString(), post.runPace!);
     } else if (post.isLeaderboardPost) {
       debugPrint("Building leaderboard post");
       content = _buildLeaderboardPost(
@@ -68,45 +70,87 @@ class RunningPost extends ConsumerWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: name.when(
-                data: (String name) => InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserProfilePage(
-                                  repository: Repository(),
-                                  userId: post.userId)),
-                        );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                                decoration: TextDecoration.underline,
-                                fontSize: 18,
-                              )),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16.0,
-                            color: Theme.of(context).colorScheme.primary,
-                          ), // Add an icon
-                        ],
-                      ),
-                    ),
-                loading: () => const Text('Loading...'),
-                error: (error, _) => const Text('Error!')),
+            title: Row(
+              children: <Widget>[
+                FutureBuilder<String>(
+                  future: repository.fetchProfilePic(post.userId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimary, // Outline color
+                            width: 2, // Outline thickness
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          backgroundImage: NetworkImage(snapshot.data!),
+                        ),
+                      );
+                    } else {
+                      return const CircleAvatar(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    name.when(
+                        data: (String name) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UserProfilePage(
+                                          repository: Repository(),
+                                          userId: post.userId)),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('@$name',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 18,
+                                      )),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16.0,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ), // Add an icon
+                                ],
+                              ),
+                            ),
+                        loading: () => const Text('Loading...'),
+                        error: (error, _) => const Text('Error!')),
+                    Text(formattedTimestamp,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        )),
+                  ],
+                ),
+              ],
+            ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formattedTimestamp,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    )),
                 Text(post.caption, style: (const TextStyle(fontSize: 16))),
               ],
             ),
@@ -149,6 +193,7 @@ class RunningPost extends ConsumerWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PostCommentFeed(
+                                  auth: FirebaseAuth.instance,
                                   Repository(),
                                   post: post,
                                 ),
@@ -186,33 +231,106 @@ class RunningPost extends ConsumerWidget {
         points: points);
   }
 
-  Widget _buildRunPost(BuildContext context, String runImageUrl) {
-    return InkWell(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              child: InteractiveViewer(
-                panEnabled: false,
-                boundaryMargin: const EdgeInsets.all(80),
-                minScale: 0.5,
-                maxScale: 4,
-                child: Image.network(
-                  runImageUrl,
-                  fit: BoxFit.contain,
+  String _formatTime(int milliseconds) {
+    int seconds = milliseconds ~/ 1000;
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    return '${_twoDigits(hours)}:${_twoDigits(minutes)}:${_twoDigits(remainingSeconds)}';
+  }
+
+  String _twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+
+  Widget _buildRunPost(BuildContext context, String runImageUrl,
+      double distance, String time, double pace) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceEvenly, // Distribute space evenly
+          children: [
+            // Distance
+            Column(
+              children: [
+                Icon(
+                  Icons.directions_run,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  "${distance.toStringAsFixed(2)} km",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+              ],
+            ),
+            // Time
+            Column(
+              children: [
+                Icon(
+                  Icons.timer,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  _formatTime(double.parse(time).toInt()),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            // Pace
+            Column(
+              children: [
+                Icon(
+                  Icons.speed,
+                  color: Theme.of(context).colorScheme.primary,
+                ), // Use an appropriate icon
+                Text(
+                  "${pace.toStringAsFixed(2)} min/km",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Column(
+                  children: [
+                    Dialog(
+                      child: InteractiveViewer(
+                        panEnabled: false,
+                        boundaryMargin: const EdgeInsets.all(80),
+                        minScale: 0.5,
+                        maxScale: 4,
+                        child: Image.network(
+                          runImageUrl,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
-        );
-      },
-      child: Image.network(
-        runImageUrl,
-        height: 200,
-        width: double.infinity,
-        fit: BoxFit.cover,
-      ),
+          child: Image.network(
+            runImageUrl,
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
     );
   }
 

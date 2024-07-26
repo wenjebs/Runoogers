@@ -15,6 +15,9 @@ class Post {
 
   // if its a run post
   final String? runImageUrl;
+  final double? runDistance;
+  final double? runDuration;
+  final double? runPace;
 
   // if its a leaderboard post
   final int? rank;
@@ -34,26 +37,34 @@ class Post {
     this.achievementImageUrl,
     this.achievementPoints,
     this.runImageUrl,
+    this.runDistance,
+    this.runDuration,
+    this.runPace,
     this.rank,
     this.leaderboardPoints,
     this.username,
   });
 
-  factory Post.fromMap(Map<String, dynamic> map) {
+  factory Post.fromMap(Map<String, dynamic> data) {
     return Post(
-      id: map['id'] as String,
-      userId: map['userId'] as String,
-      caption: map['caption'] as String,
-      likes: map['likes'] as int,
-      timestamp: map['timestamp'],
-      achievementDescription: map['achievementDescription'] as String?,
-      achievementTitle: map['achievementTitle'] as String?,
-      achievementImageUrl: map['achievementImageUrl'] as String?,
-      achievementPoints: map['achievementPoints'] as int?,
-      runImageUrl: map['runImageUrl'] as String?,
-      rank: map['rank'] as int?,
-      leaderboardPoints: map['leaderboardPoints'] as int?,
-      username: map['username'] as String?,
+      id: data['id'] ?? '',
+      userId: data['userId'] ?? '',
+      caption: data['caption'] ?? '',
+      likes: data['likes'] ?? 0,
+      timestamp: data['timestamp'] ?? Timestamp.now(),
+      achievementDescription:
+          data['achievementDescription'], // No need for ??, null is acceptable
+      achievementTitle:
+          data['achievementTitle'], // Assuming these can also be null
+      achievementImageUrl: data['achievementImageUrl'],
+      achievementPoints: data['achievementPoints'],
+      runImageUrl: data['runImageUrl'],
+      runDistance: data['runDistance'].toDouble(),
+      runDuration: data['runDuration'].toDouble(),
+      runPace: data['runPace'],
+      rank: data['rank'],
+      leaderboardPoints: data['points'],
+      username: data['username'],
     );
   }
 

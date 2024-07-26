@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -9,12 +9,21 @@ import 'package:runningapp/pages/logged_in/training_page/dynamic_plan/update_pla
 class RatingPage extends ConsumerWidget {
   final bool updateDifficulty;
   final String downloadUrl;
+  final int runTime;
+  final double runDistance;
+  final double runPace;
   final Repository repository;
+  final FirebaseAuth auth;
+
   const RatingPage(
     this.repository, {
     super.key,
     required this.updateDifficulty,
     required this.downloadUrl,
+    required this.auth,
+    required this.runTime,
+    required this.runDistance,
+    required this.runPace,
   });
 
   @override
@@ -28,8 +37,8 @@ class RatingPage extends ConsumerWidget {
             return IconButton(
                 icon: CircleAvatar(child: Text('${index + 1}')),
                 onPressed: () async {
-                  final user = await repository.getUserProfile(
-                      auth.FirebaseAuth.instance.currentUser!.uid);
+                  final user =
+                      await repository.getUserProfile(auth.currentUser!.uid);
 
                   double avgDifficulty = user.averageDifficulty + index + 1.0;
 
@@ -79,7 +88,12 @@ class RatingPage extends ConsumerWidget {
 
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (_) => RunningPostCreationPage(
-                          repository: repository, photoUrl: downloadUrl)));
+                          runDistance: runDistance,
+                          runTime: runTime,
+                          runPace: runPace,
+                          repository: repository,
+                          photoUrl: downloadUrl,
+                          auth: FirebaseAuth.instance)));
                 });
           }),
         ),

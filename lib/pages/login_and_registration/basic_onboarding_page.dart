@@ -1,9 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:runningapp/database/repository.dart';
-import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
+import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_onboarding.dart';
 
 final onboardingProvider =
     StateNotifierProvider<OnboardingNotifier, OnboardingState>(
@@ -51,7 +51,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
 }
 
 class OnboardingPage extends ConsumerStatefulWidget {
-  const OnboardingPage({super.key});
+  const OnboardingPage({super.key, required this.auth});
+  final FirebaseAuth auth;
 
   @override
   OnboardingPageState createState() => OnboardingPageState();
@@ -148,7 +149,7 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
               await ref.read(onboardingProvider.notifier).saveToFirestore();
 
               // Get the current user's ID
-              final userId = FirebaseAuth.instance.currentUser!.uid;
+              final userId = widget.auth.currentUser!.uid;
 
               // Update the 'onboarded' field in Firestore
               await FirebaseFirestore.instance
@@ -159,9 +160,10 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => HomePage(
-                          repository: Repository(),
-                        )),
+                    builder: (context) => AvatarOnboarding(
+                        auth: FirebaseAuth.instance,
+                        storage: FirebaseStorage.instance,
+                        firestore: FirebaseFirestore.instance)),
               );
             },
           ),

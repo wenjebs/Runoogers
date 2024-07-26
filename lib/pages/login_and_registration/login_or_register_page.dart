@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/state/backend/authenticator.dart';
@@ -30,10 +31,12 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
       return LoginPage(
         repository: Repository(),
         authenticator: Authenticator(),
+        auth: FirebaseAuth.instance,
       );
     } else {
       return RegisterPage(
         repository: Repository(),
+        auth: FirebaseAuth.instance,
       );
     }
   }

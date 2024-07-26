@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/database/repository.dart';
@@ -8,8 +9,13 @@ import 'package:runningapp/pages/logged_in/story_page/story_tile_with_image.dart
 import 'active_quest_display_page.dart';
 
 class StoryPage extends ConsumerWidget {
-  const StoryPage(this.repository, {super.key});
+  const StoryPage(
+    this.repository, {
+    super.key,
+    required this.auth,
+  });
   final Repository repository;
+  final FirebaseAuth auth;
   final stories = null;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -186,6 +192,7 @@ class StoryPage extends ConsumerWidget {
                 repository,
                 activeStoryTitle: userInfo?['activeStory'],
                 quests: quests,
+                auth: auth,
               ),
             ),
           );
