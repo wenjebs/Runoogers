@@ -168,9 +168,11 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
       'avatarId': avatarId
     });
 
-    setState(() {
-      isAvatarCreated = true;
-    });
+    if (mounted) {
+      setState(() {
+        isAvatarCreated = true;
+      });
+    }
   }
 
   void onCardClick(String templateId) async {

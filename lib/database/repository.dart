@@ -100,6 +100,10 @@ class Repository {
     return database.getFriendList();
   }
 
+  Future<List<UserModel>> getAllFriendsProfile(String userId) {
+    return database.getAllFriendsProfile(userId);
+  }
+
   // Get user profile
   Future<UserModel> getUserProfile(String userId) {
     return database.getUserProfile(userId);
