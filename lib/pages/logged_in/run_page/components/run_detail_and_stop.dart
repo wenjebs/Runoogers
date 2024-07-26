@@ -513,9 +513,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   "Time: ${StopWatchTimer.getDisplayTime(time, hours: false, milliSecond: false)}",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -523,9 +523,9 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   "Distance: ${distance.toStringAsFixed(2)} km",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -533,21 +533,21 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   "Pace: ${pace.floor()} min ${((pace - pace.floor()) * 60).floor()} s per km",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
 
               // Please wait for save to complete!
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   "Please wait for the run to save...",
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),

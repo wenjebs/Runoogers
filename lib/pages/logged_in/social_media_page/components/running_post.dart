@@ -66,158 +66,162 @@ class RunningPost extends ConsumerWidget {
           '${DateFormat('d MMMM').format(postDate)} at ${DateFormat('h:mma').format(postDate)}';
     }
 
-    return Card(
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Row(
-              children: <Widget>[
-                FutureBuilder<String>(
-                  future: repository.fetchProfilePic(post.userId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimary, // Outline color
-                            width: 2, // Outline thickness
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          backgroundImage: NetworkImage(snapshot.data!),
-                        ),
-                      );
-                    } else {
-                      return const CircleAvatar(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    name.when(
-                        data: (String name) => InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserProfilePage(
-                                          repository: Repository(),
-                                          userId: post.userId)),
-                                );
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('@$name',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        decoration: TextDecoration.underline,
-                                        fontSize: 18,
-                                      )),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16.0,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ), // Add an icon
-                                ],
-                              ),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Card(
+        elevation: 2,
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Row(
+                children: <Widget>[
+                  FutureBuilder<String>(
+                    future: repository.fetchProfilePic(post.userId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary, // Outline color
+                              width: 2, // Outline thickness
                             ),
-                        loading: () => const Text('Loading...'),
-                        error: (error, _) => const Text('Error!')),
-                    Text(formattedTimestamp,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        )),
-                  ],
-                ),
-              ],
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(post.caption, style: (const TextStyle(fontSize: 16))),
-              ],
-            ),
-          ),
-          content,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.thumb_up),
-                      onPressed: () {
-                        repository.addLikeToPost(post.id, post.userId);
-                      },
-                    ),
-                    likes.when(
-                      data: (int count) => Text('$count'),
-                      loading: () => const SizedBox.shrink(),
-                      error: (e, stack) => const Icon(Icons.error_outline),
-                    ),
-                  ],
-                ),
-              ),
-              const VerticalDivider(
-                width: 20,
-                color: Colors.grey,
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.comment),
-                      onPressed: () {
-                        if (!disableCommentButton) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PostCommentFeed(
-                                  auth: FirebaseAuth.instance,
-                                  Repository(),
-                                  post: post,
-                                ),
-                              ));
-                        }
-                      },
-                    ),
-                    Consumer(
-                      builder: (context, ref, _) {
-                        final commentsCount =
-                            ref.watch(commentsCountProvider(post.id));
-                        return commentsCount.when(
-                          data: (comment) => Text('$comment'),
-                          loading: () => const CircularProgressIndicator(),
-                          error: (error, _) => const Text('Error!'),
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            backgroundImage: NetworkImage(snapshot.data!),
+                          ),
                         );
-                      },
-                    ),
-                  ],
-                ),
+                      } else {
+                        return const CircleAvatar(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      name.when(
+                          data: (String name) => InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserProfilePage(
+                                            repository: Repository(),
+                                            userId: post.userId)),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text('@$name',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 18,
+                                        )),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16.0,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ), // Add an icon
+                                  ],
+                                ),
+                              ),
+                          loading: () => const Text('Loading...'),
+                          error: (error, _) => const Text('Error!')),
+                      Text(formattedTimestamp,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          )),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(post.caption, style: (const TextStyle(fontSize: 16))),
+                ],
+              ),
+            ),
+            content,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        icon: const Icon(Icons.thumb_up),
+                        onPressed: () {
+                          repository.addLikeToPost(post.id, post.userId);
+                        },
+                      ),
+                      likes.when(
+                        data: (int count) => Text('$count'),
+                        loading: () => const SizedBox.shrink(),
+                        error: (e, stack) => const Icon(Icons.error_outline),
+                      ),
+                    ],
+                  ),
+                ),
+                const VerticalDivider(
+                  width: 20,
+                  color: Colors.grey,
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        icon: const Icon(Icons.comment),
+                        onPressed: () {
+                          if (!disableCommentButton) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PostCommentFeed(
+                                    auth: FirebaseAuth.instance,
+                                    Repository(),
+                                    post: post,
+                                  ),
+                                ));
+                          }
+                        },
+                      ),
+                      Consumer(
+                        builder: (context, ref, _) {
+                          final commentsCount =
+                              ref.watch(commentsCountProvider(post.id));
+                          return commentsCount.when(
+                            data: (comment) => Text('$comment'),
+                            loading: () => const CircularProgressIndicator(),
+                            error: (error, _) => const Text('Error!'),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

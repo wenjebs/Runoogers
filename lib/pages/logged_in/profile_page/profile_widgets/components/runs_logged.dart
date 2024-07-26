@@ -22,149 +22,146 @@ class RunsSection extends ConsumerWidget {
         title: const Text('Runs'),
         automaticallyImplyLeading: true,
       ),
-      body: Expanded(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.all(30),
-                child: runs.when(
-                  data: (runs) {
-                    if (runs.docs.isEmpty) {
-                      return const Center(child: Text('No runs'));
-                    }
-                    return ListView(
-                      children: runs.docs.map((doc) {
-                        Run run = Run.fromFirestore(
-                            doc as DocumentSnapshot<Map<String, dynamic>>,
-                            null);
-                        String formattedDate =
-                            DateFormat('EEEE \'at\' h:mma').format(
-                          DateTime.parse(run.date),
-                        );
-                        return Card(
-                          color: Theme.of(context).colorScheme.secondaryFixed,
-                          elevation: 4.0,
-                          margin: const EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      doc['name'] ?? 'Unknown',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium,
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                        icon: const Icon(Icons.share),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RunningPostCreationPage(
-                                                auth: FirebaseAuth.instance,
-                                                repository: Repository(),
-                                                photoUrl: doc['imageUrl'] ?? '',
-                                                runDistance:
-                                                    double.parse(run.distance),
-                                                runTime: int.parse(run.time),
-                                                runPace: run.pace,
-                                              ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.all(30),
+              child: runs.when(
+                data: (runs) {
+                  if (runs.docs.isEmpty) {
+                    return const Center(child: Text('No runs'));
+                  }
+                  return ListView(
+                    children: runs.docs.map((doc) {
+                      Run run = Run.fromFirestore(
+                          doc as DocumentSnapshot<Map<String, dynamic>>, null);
+                      String formattedDate =
+                          DateFormat('EEEE \'at\' h:mma').format(
+                        DateTime.parse(run.date),
+                      );
+                      return Card(
+                        color: Theme.of(context).colorScheme.secondaryFixed,
+                        elevation: 4.0,
+                        margin: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    doc['name'] ?? 'Unknown',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                      icon: const Icon(Icons.share),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RunningPostCreationPage(
+                                              auth: FirebaseAuth.instance,
+                                              repository: Repository(),
+                                              photoUrl: doc['imageUrl'] ?? '',
+                                              runDistance:
+                                                  double.parse(run.distance),
+                                              runTime: int.parse(run.time),
+                                              runPace: run.pace,
                                             ),
-                                          );
-                                        }),
-                                  ],
-                                ),
-                                const SizedBox(height: 8.0),
-                                Text(formattedDate),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly, // Distribute space evenly
-                                  children: [
-                                    // Distance
-                                    Column(
-                                      children: [
-                                        Icon(
-                                          Icons.directions_run,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ), // Use an appropriate icon
-                                        Text(
-                                          "${double.parse(run.distance).toStringAsFixed(2)} km",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
                                           ),
+                                        );
+                                      }),
+                                ],
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(formattedDate),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceEvenly, // Distribute space evenly
+                                children: [
+                                  // Distance
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.directions_run,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        "${double.parse(run.distance).toStringAsFixed(2)} km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
-                                    ),
-                                    // Time
-                                    Column(
-                                      children: [
-                                        Icon(
-                                          Icons.timer,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ), // Use an appropriate icon
-                                        Text(
-                                          run.time,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Time
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.timer,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        run.time,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
-                                    ),
-                                    // Pace
-                                    Column(
-                                      children: [
-                                        Icon(
-                                          Icons.speed,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ), // Use an appropriate icon
-                                        Text(
-                                          "${run.pace.toStringAsFixed(2)} min/km",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Pace
+                                  Column(
+                                    children: [
+                                      Icon(
+                                        Icons.speed,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ), // Use an appropriate icon
+                                      Text(
+                                        "${run.pace.toStringAsFixed(2)} min/km",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Image.network(
-                                  doc['imageUrl'] ?? '',
-                                  height: 200,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                              ],
-                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Image.network(
+                                doc['imageUrl'] ?? '',
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ],
                           ),
-                        );
-                      }).toList(),
-                    );
-                  },
-                  loading: () => const SizedBox(
-                    width: 100,
-                    height: 50,
-                    child: Text("Loading runs..."),
-                  ),
-                  error: (err, stack) => Text('Error: $err'),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+                loading: () => const SizedBox(
+                  width: 100,
+                  height: 50,
+                  child: Text("Loading runs..."),
                 ),
+                error: (err, stack) => Text('Error: $err'),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

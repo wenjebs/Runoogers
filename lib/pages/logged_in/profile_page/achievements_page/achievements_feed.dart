@@ -35,28 +35,26 @@ class AchievementsFeedState extends State<AchievementsFeed> {
             if (achievements.isEmpty) {
               return const Center(child: Text('No achievements'));
             }
-            return Expanded(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: achievements.length,
-                      itemBuilder: (context, index) {
-                        final achievement = achievements[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: ShareableAchievement(
-                            picture: achievement['picture'],
-                            name: achievement['name'],
-                            description: achievement['description'],
-                            points: achievement['points'],
-                          ),
-                        );
-                      },
-                    ),
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: achievements.length,
+                    itemBuilder: (context, index) {
+                      final achievement = achievements[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: ShareableAchievement(
+                          picture: achievement['picture'],
+                          name: achievement['name'],
+                          description: achievement['description'],
+                          points: achievement['points'],
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           } else {
             return const Center(child: Text('No achievements found'));

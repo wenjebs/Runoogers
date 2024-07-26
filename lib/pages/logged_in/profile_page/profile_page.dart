@@ -11,9 +11,7 @@ import 'package:runningapp/pages/logged_in/profile_page/avatar_page/avatar_creat
 import 'package:runningapp/pages/logged_in/profile_page/avatar_page/profile_pic_editor.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/friends_list.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/profile_details.dart';
-import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/run_achievement_button.dart';
 import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/components/runs_logged.dart';
-import 'package:runningapp/pages/logged_in/profile_page/providers/chosen_state.dart';
 import 'package:runningapp/pages/logged_in/profile_page/providers/runs_provider.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
@@ -145,7 +143,8 @@ class ProfilePage extends ConsumerWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const RunsSection()),
+                            builder: (context) => const RunsSection(),
+                          ),
                         );
                       },
                       child: Column(
@@ -170,8 +169,10 @@ class ProfilePage extends ConsumerWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  AchievementsFeed(repository: Repository())),
+                            builder: (context) => AchievementsFeed(
+                              repository: Repository(),
+                            ),
+                          ),
                         );
                       },
                       child: Column(

@@ -35,7 +35,10 @@ class UserPage extends ConsumerWidget {
             body: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    top: 10.0,
+                  ),
                   child: Text(
                     "Welcome, ${user.name}!",
                     style: TextStyle(
@@ -46,9 +49,12 @@ class UserPage extends ConsumerWidget {
                   ),
                 ),
                 trainingOnboarded.when(data: (trainingOnboarded) {
-                  return TrainingCard(
-                    repository: repository,
-                    trainingOnboarded: trainingOnboarded,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: TrainingCard(
+                      repository: repository,
+                      trainingOnboarded: trainingOnboarded,
+                    ),
                   );
                 }, loading: () {
                   return const CircularProgressIndicator();

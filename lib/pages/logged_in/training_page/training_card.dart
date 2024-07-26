@@ -61,7 +61,7 @@ class TrainingCard extends StatelessWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT9LQk2qPdPE0IK_35wLlAkh8-5Xsg-6NaIQ&s'), // Background image
+                      'https://img.freepik.com/free-vector/man-running-urban-city-fitness-workout-sport-lifestyle-concept_460848-15388.jpg?size=626&ext=jpg&ga=GA1.1.2113030492.1720483200&semt=ais_hybrid'), // Background image
                   fit: BoxFit.cover, // Cover the entire container space
                 ),
               ),
