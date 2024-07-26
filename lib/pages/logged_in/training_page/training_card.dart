@@ -31,7 +31,10 @@ class TrainingCard extends StatelessWidget {
       future: getTodayTrainingType(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return SizedBox(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.2,
+          );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.data == "No plans") {
