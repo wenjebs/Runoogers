@@ -70,15 +70,15 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       //   throw const FormatException("JSON is null or missing 'weeks' key");
       // }
 
-      List<dynamic> weeks = json['running_plan']['weeks'];
-      for (int i = 0; i < weeks.length; i++) {
-        var week = weeks[i];
-        if (week == null || (i >= 1 && week.length != 7)) {
-          debugPrint(week.length.toString());
-          throw FormatException(
-              "Week ${i + 1} has less than 7 entries, contains null, or is missing");
-        }
-      }
+      // List<dynamic> weeks = json['running_plan']['weeks'];
+      // for (int i = 0; i < weeks.length; i++) {
+      //   var week = weeks[i];
+      //   if (week == null || (i >= 1 && week.length != 7)) {
+      //     debugPrint(week.length.toString());
+      //     throw FormatException(
+      //         "Week ${i + 1} has less than 7 entries, contains null, or is missing");
+      //   }
+      // }
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
