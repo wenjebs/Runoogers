@@ -1,4 +1,4 @@
-# Runoogers
+# Goorunners
 
 <p align="center">
   <img width="460" height="300" src="https://i.imgur.com/9m1Ltof.png">
@@ -262,6 +262,6 @@ We welcome contributions to Goorunners. If you would like to contribute to the d
 
 ## License
 
-Runoogers is licensed under the [License Type](LICENSE).
+Goorunners is licensed under the [License Type](LICENSE).
 
-Thank you for choosing Runoogers! If you encounter any issues or have suggestions for improvements, please don't hesitate to [create an issue](https://github.com/wenjebs/Runoogers/issues) or [contribute to the project](#contributing). We look forward to your feedback and collaboration.
+Thank you for choosing Goorunners! If you encounter any issues or have suggestions for improvements, please don't hesitate to [create an issue](https://github.com/wenjebs/Runoogers/issues) or [contribute to the project](#contributing). We look forward to your feedback and collaboration.
