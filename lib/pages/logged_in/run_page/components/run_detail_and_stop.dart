@@ -63,7 +63,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       user.UserModel model =
           await widget.repository.getUserProfile(widget.auth.currentUser!.uid);
       // every 3 runs prompt user to revamp their plan (rn its turned off)
-      if (model.trainingOnboarded) {
+      if (model.activePlan && model.totalRuns % 3 == 0) {
         setState(() {
           updateDifficulty = true;
         });

@@ -186,6 +186,11 @@ class _TrainingPageState extends State<TrainingPage> {
 
                         await Future.wait(deleteFutures);
 
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId)
+                            .update({'activePlan': false});
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
