@@ -55,177 +55,181 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 title: const Text('User Profile'),
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
-              body: Center(
-                child: Column(mainAxisSize: MainAxisSize.max, children: [
-                  // Profile hero
-                  Material(
-                      elevation: 10,
-                      child: Stack(children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          child: FutureBuilder<UserModel>(
-                              future:
-                                  Repository().getUserProfile(widget.userId),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else if (snapshot.hasData) {
-                                  UserModel user = snapshot.data!;
-                                  return ProfileHero(
-                                      avatarUrl: user.avatarUrl,
-                                      profilePic: user.profilePic);
-                                } else {
-                                  return const Text('Unknown error occurred');
-                                }
-                              }),
-                        ),
-                      ])),
-                  // Profile details
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: ProfileDetails(
-                        name: user.name, username: user.username),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: (user.friends
-                            .contains(FirebaseAuth.instance.currentUser!.uid)
-                        ? const Text('Friends')
-                        : ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                _isRequestSent = true;
-                              });
-                              await widget.repository
-                                  .sendFriendRequest(user.uid);
-                            },
-                            child: Text(
-                                _isRequestSent ? 'Request Sent' : 'Add Friend'),
-                          )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const RunsSection()),
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  user.totalRuns.toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                const Text(
-                                  'Runs',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
+              body: SingleChildScrollView(
+                child: Center(
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    // Profile hero
+                    Material(
+                        elevation: 10,
+                        child: Stack(children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
                             ),
+                            child: FutureBuilder<UserModel>(
+                                future:
+                                    Repository().getUserProfile(widget.userId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else if (snapshot.hasData) {
+                                    UserModel user = snapshot.data!;
+                                    return ProfileHero(
+                                        avatarUrl: user.avatarUrl,
+                                        profilePic: user.profilePic);
+                                  } else {
+                                    return const Text('Unknown error occurred');
+                                  }
+                                }),
                           ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AchievementsFeed(
-                                        repository: Repository())),
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  user.achievements.length.toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                const Text(
-                                  'Achievements',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        FriendsList(userId: user.uid)),
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  user.friends.length.toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                const Text(
-                                  'Friends',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                        ])),
+                    // Profile details
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: ProfileDetails(
+                          name: user.name, username: user.username),
                     ),
-                  ),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: GetUserPostService()
-                        .getPosts([FirebaseAuth.instance.currentUser!.uid]),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      final posts = snapshot.data!.docs.map((doc) {
-                        final data = doc.data() as Map<String, dynamic>;
-                        return Post.fromMap(data);
-                      }).toList();
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index];
-                          return RunningPost(
-                            Repository(),
-                            post: post,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: (user.friends
+                              .contains(FirebaseAuth.instance.currentUser!.uid)
+                          ? const Text('Friends')
+                          : ElevatedButton(
+                              onPressed: () async {
+                                setState(() {
+                                  _isRequestSent = true;
+                                });
+                                await widget.repository
+                                    .sendFriendRequest(user.uid);
+                              },
+                              child: Text(_isRequestSent
+                                  ? 'Request Sent'
+                                  : 'Add Friend'),
+                            )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RunsSection()),
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    user.totalRuns.toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  const Text(
+                                    'Runs',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AchievementsFeed(
+                                          repository: Repository())),
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    user.achievements.length.toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  const Text(
+                                    'Achievements',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FriendsList(userId: user.uid)),
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    user.friends.length.toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  const Text(
+                                    'Friends',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: GetUserPostService()
+                          .getPosts([FirebaseAuth.instance.currentUser!.uid]),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
-                        },
-                      );
-                    },
-                  ),
-                ]),
+                        }
+                        final posts = snapshot.data!.docs.map((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          return Post.fromMap(data);
+                        }).toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index];
+                            return RunningPost(
+                              Repository(),
+                              post: post,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ]),
+                ),
               ),
             );
           }

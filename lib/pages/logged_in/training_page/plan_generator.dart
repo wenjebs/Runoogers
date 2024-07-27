@@ -85,6 +85,10 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
           .doc(userId)
           .collection('trainingPlans')
           .add(json);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'activePlan': true});
       return json;
     } on FormatException catch (e) {
       debugPrint("Failed to generate plan $e");
@@ -98,6 +102,10 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
             .doc(userId)
             .collection('trainingPlans')
             .add(json);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'activePlan': true});
         return json;
       }
     }

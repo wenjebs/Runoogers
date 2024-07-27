@@ -1,26 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final likesCountProvider =
-    StreamProvider.family<int, Map<String, String>>((ref, ids) {
-  // Extract postId and commentId from the passed parameters
-  final postId = ids['postId']!;
-  final commentId = ids['commentId']!;
-
-  // Return a stream that listens to the likes subcollection of the comment document
-  return FirebaseFirestore.instance
-      .collection('posts')
-      .doc(postId)
-      .collection('comments')
-      .doc(commentId)
-      .collection('likes')
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.length); // Map the snapshot to get the count of likes
-});
 
 class RunningPostComment extends StatefulWidget {
   final String postId;
@@ -52,8 +32,7 @@ class _RunningPostCommentState extends State<RunningPostComment> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FutureBuilder<String>(
-            future: widget.repository.fetchProfilePic(
-                widget.userId), // Assuming userId is defined and accessible
+            future: widget.repository.fetchProfilePic(widget.userId),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -94,11 +73,8 @@ class _RunningPostCommentState extends State<RunningPostComment> {
                       Text(widget.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary, // Change text color to make it stand out
-                            decoration:
-                                TextDecoration.underline, // Underline the text
+                            color: Theme.of(context).colorScheme.primary,
+                            decoration: TextDecoration.underline,
                           )),
                       Icon(
                         Icons.arrow_forward_ios,
@@ -109,62 +85,11 @@ class _RunningPostCommentState extends State<RunningPostComment> {
                   ),
                 ),
                 Text(widget.comment),
-                // Text(
-                //   widget.timestamp,
-                //   style: TextStyle(color: Colors.grey, fontSize: 12),
-                // ),
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LikesCountDisplay(
-                postId: widget.postId,
-                commentId: widget.commentId,
-              ),
-              IconButton(
-                icon: const Icon(Icons.thumb_up),
-                onPressed: () {
-                  setState(() {
-                    widget.repository.addLikeToComment(
-                        widget.postId, widget.commentId, widget.userId);
-                  });
-                },
-              ),
-            ],
-          )
         ],
       ),
-    );
-  }
-}
-
-class LikesCountDisplay extends StatelessWidget {
-  final String postId;
-  final String commentId;
-
-  const LikesCountDisplay({
-    super.key,
-    required this.postId,
-    required this.commentId,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        debugPrint("$postId, $commentId");
-        final likesCount = ref.watch(likesCountProvider({
-          'postId': postId,
-          'commentId': commentId,
-        }));
-        return likesCount.when(
-          data: (countX) => Text('$countX'),
-          loading: () => const CircularProgressIndicator(),
-          error: (e, stack) => Text('Error: $e'),
-        );
-      },
     );
   }
 }

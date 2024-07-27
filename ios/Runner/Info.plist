@@ -36,6 +36,8 @@
 	<string>Main</string>
 	<key>UIStatusBarStyle</key>
 	<string></string>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to provide better services even when the app is in the background.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

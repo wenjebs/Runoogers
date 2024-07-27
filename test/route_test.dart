@@ -74,7 +74,9 @@ void main() {
                   id: "1",
                   name: "Route 1",
                   distance: "2",
-                  polylinePoints: {},
+                  polylinePoints: {
+                    const LatLng(0, 0),
+                  },
                   imageUrl: "",
                 ),
               ]));
@@ -132,8 +134,9 @@ void main() {
         expect(find.byType(ListView), findsOneWidget);
 
         await tester.tap(
-          find.byWidgetPredicate(
-              (Widget widget) => widget is InkWell && widget.child is Padding),
+          find.byKey(
+            const Key("routeTitle"),
+          ),
         );
 
         await tester.pumpAndSettle();
@@ -179,8 +182,9 @@ void main() {
         expect(find.byType(ListView), findsOneWidget);
 
         await tester.tap(
-          find.byWidgetPredicate(
-              (Widget widget) => widget is InkWell && widget.child is Padding),
+          find.byKey(
+            const Key("routeTitle"),
+          ),
         );
 
         await tester.pumpAndSettle();

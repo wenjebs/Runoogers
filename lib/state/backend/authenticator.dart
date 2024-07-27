@@ -93,6 +93,7 @@ class Authenticator {
             'friends': [],
             'onboarded': false,
             'trainingOnboarded': false,
+            'activePlan': false,
             'runstats': {
               'totalDistance': 0,
               'totalTime': 0,

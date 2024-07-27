@@ -33,8 +33,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
+
   late int _selectedIndex = 0;
   bool trainingOnboarded = false;
+  bool onboarded = false;
+
   final List<Widget> _pages = [
     UserPage(repository: Repository(), auth: FirebaseAuth.instance),
     RunPage(
@@ -105,6 +108,12 @@ class _HomePageState extends State<HomePage> {
     widget.repository.getTrainingOnboarded().then((value) {
       setState(() {
         trainingOnboarded = value;
+      });
+    });
+
+    widget.repository.getOnboarded().then((value) {
+      setState(() {
+        onboarded = value;
       });
     });
     _selectedIndex = widget.initialIndex;
