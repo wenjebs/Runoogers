@@ -217,7 +217,7 @@ class LeaderboardCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isCurrentUser
-              ? Theme.of(context).colorScheme.onPrimaryFixedVariant
+              ? Theme.of(context).colorScheme.onSecondaryFixedVariant
               : Theme.of(context)
                   .colorScheme
                   .secondaryFixed, // Softer color for current user

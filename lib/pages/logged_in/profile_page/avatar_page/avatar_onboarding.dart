@@ -25,6 +25,8 @@ class AvatarOnboarding extends StatefulWidget {
 }
 
 class AvatarOnboardingState extends State<AvatarOnboarding> {
+  bool isLoading = false;
+  bool fetchingTemplates = true;
   final String partnerSubdomain = 'goorunners';
   String token = '';
   List<dynamic> templates = [];
@@ -44,6 +46,9 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     await createAnonymousUser();
     debugPrint("avatar creator: anonymous user token: $token");
     await fetchTemplates();
+    setState(() {
+      fetchingTemplates = false;
+    });
   }
 
   Future<bool> createAnonymousUser() async {
@@ -171,6 +176,7 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     if (mounted) {
       setState(() {
         isAvatarCreated = true;
+        isLoading = false;
       });
     }
   }
@@ -196,76 +202,122 @@ class AvatarOnboardingState extends State<AvatarOnboarding> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text('Choose an Avatar'),
+        title: const Text(
+          'Choose an Avatar',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
+      body: fetchingTemplates
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Fetching avatars...",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface)),
+                  ),
+                  const CircularProgressIndicator(),
+                ],
               ),
-              itemCount: templates.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    onTap: () async {
-                      onCardClick(templates[index]['id']);
-                      setState(() {
-                        gender = templates[index]['gender'];
-                      });
-
-                      var userId = FirebaseAuth.instance.currentUser?.uid;
-                      if (userId != null) {
-                        await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(userId)
-                            .update({
-                              'gender': templates[index]['gender'],
-                              'avatarType': templates[index]['imageUrl'],
-                            })
-                            .then((_) =>
-                                debugPrint('Avatar type updated successfully'))
-                            .catchError((error) => debugPrint(
-                                'Failed to update avatar type: $error'));
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Image.network(
-                                templates[index]['imageUrl'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        ),
+            )
+          : isLoading
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Creating your avatar, please hold on...",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    Theme.of(context).colorScheme.onSurface)),
                       ),
-                    ));
-              },
-            ),
-          ),
-          if (finalAvatarUrl.isNotEmpty)
-            Text('Final Avatar URL: $finalAvatarUrl'),
-        ],
-      ),
+                      const CircularProgressIndicator(),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                        ),
+                        itemCount: templates.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                onCardClick(templates[index]['id']);
+                                setState(() {
+                                  gender = templates[index]['gender'];
+                                });
+
+                                var userId =
+                                    FirebaseAuth.instance.currentUser?.uid;
+                                if (userId != null) {
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(userId)
+                                      .update({
+                                        'gender': templates[index]['gender'],
+                                        'avatarType': templates[index]
+                                            ['imageUrl'],
+                                      })
+                                      .then((_) => debugPrint(
+                                          'Avatar type updated successfully'))
+                                      .catchError((error) => debugPrint(
+                                          'Failed to update avatar type: $error'));
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Image.network(
+                                          templates[index]['imageUrl'],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
+                    if (finalAvatarUrl.isNotEmpty)
+                      Text(
+                        'Final Avatar URL: $finalAvatarUrl',
+                      ),
+                  ],
+                ),
     );
   }
 }
