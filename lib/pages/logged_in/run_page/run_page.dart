@@ -32,7 +32,7 @@ class RunPage extends ConsumerStatefulWidget {
   final String? activeStoryTitle;
   final QuestProgressModel? questProgress;
   final int? currentQuest;
-
+  final FirebaseFirestore firestore;
   final LocationService locationService;
 
   final Position? currPos;
@@ -52,6 +52,7 @@ class RunPage extends ConsumerStatefulWidget {
     required this.locationService,
     this.currPos,
     required this.auth,
+    required this.firestore,
   });
 
   @override
@@ -217,7 +218,7 @@ class _RunPageState extends ConsumerState<RunPage> {
                             end: const Offset(0, 0)),
                       ],
                       child: RunDetailsAndStop(
-                        firestore: FirebaseFirestore.instance,
+                        firestore: widget.firestore,
                         locationService: widget.locationService,
                         widget.repository,
                         paddingValue: paddingValue,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
@@ -10,7 +11,13 @@ import 'select_points_and_generate_route_page.dart';
 class RoutesView extends StatefulWidget {
   final Repository repository;
   final FirebaseAuth auth;
-  const RoutesView({super.key, required this.repository, required this.auth});
+  final FirebaseFirestore firestore;
+  const RoutesView({
+    super.key,
+    required this.repository,
+    required this.auth,
+    required this.firestore,
+  });
 
   @override
   State<RoutesView> createState() => _RoutesViewState();
@@ -46,8 +53,11 @@ class _RoutesViewState extends State<RoutesView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RoutesDetailsPage(
-                                index, routes,
-                                auth: widget.auth)),
+                                  index,
+                                  routes,
+                                  auth: widget.auth,
+                                  firestore: widget.firestore,
+                                )),
                       );
                     },
                     child: Padding(

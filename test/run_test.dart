@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +21,7 @@ import 'run_test.mocks.dart';
 void main() {
   late MockRepository mockRepository;
   late MockLocationService mockLocationService;
-
+  final FakeFirebaseFirestore fakeFirestore = FakeFirebaseFirestore();
   setUp(() {
     mockRepository = MockRepository();
     mockLocationService = MockLocationService();
@@ -47,6 +48,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -65,6 +67,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -97,6 +100,7 @@ void main() {
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -115,6 +119,7 @@ void main() {
             storyRun: false,
             title: 'Test Run',
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -146,6 +151,7 @@ void main() {
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -185,6 +191,7 @@ void main() {
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
@@ -235,6 +242,7 @@ void main() {
             title: 'Test Run',
             currPos: mockLocationService.currentPosition,
             auth: MockFirebaseAuth(),
+            firestore: fakeFirestore,
           ),
         ),
       );
