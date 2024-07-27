@@ -21,7 +21,7 @@
 
 <br />
 
-Runoogers is a versatile project designed for runners seeking a gamified experience. This comprehensive guide will provide you with everything you need to know to get started with the project, from installation instructions to a detailed description of its features.
+Goorunners is a versatile project designed for runners seeking a gamified experience. This comprehensive guide will provide you with everything you need to know to get started with the project, from installation instructions to a detailed description of its features.
 
 ## Table of Contents
 
@@ -72,7 +72,7 @@ List the key features and functionalities of your project:
 
 ## Installation
 
-Follow these steps to install and run ProjectName on your system.
+Follow these steps to install and run Goorunners on your system.
 
 ### Prerequisites
 
@@ -248,7 +248,7 @@ This will build the project and install it on your connected device or emulator.
 
 ## Contributing
 
-We welcome contributions to ProjectName. If you would like to contribute to the development or report issues, please follow these guidelines:
+We welcome contributions to Goorunners. If you would like to contribute to the development or report issues, please follow these guidelines:
 
 1. Fork the repository.
 
