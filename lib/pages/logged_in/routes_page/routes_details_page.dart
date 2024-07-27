@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,8 +11,14 @@ class RoutesDetailsPage extends StatelessWidget {
   final List<RouteModel> routes;
   final int index;
   final FirebaseAuth auth;
-  const RoutesDetailsPage(this.index, this.routes,
-      {super.key, required this.auth});
+  final FirebaseFirestore firestore;
+  const RoutesDetailsPage(
+    this.index,
+    this.routes, {
+    super.key,
+    required this.auth,
+    required this.firestore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +96,7 @@ class RoutesDetailsPage extends StatelessWidget {
                               storyRun: false,
                               title: "Route run",
                               auth: auth,
+                              firestore: firestore,
                             );
                           },
                         ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +18,7 @@ import 'route_test.mocks.dart';
 
 void main() {
   late MockRepository mockRepository;
-
+  final FakeFirebaseFirestore fakeFirestore = FakeFirebaseFirestore();
   setUpAll(() {
     mockRepository = MockRepository();
     HttpOverrides.global = null;
@@ -34,6 +35,7 @@ void main() {
             home: RoutesView(
               repository: mockRepository,
               auth: MockFirebaseAuth(),
+              firestore: fakeFirestore,
             ),
           ),
         ),
@@ -53,6 +55,7 @@ void main() {
             home: RoutesView(
               repository: mockRepository,
               auth: MockFirebaseAuth(),
+              firestore: fakeFirestore,
             ),
           ),
         ),
@@ -84,6 +87,7 @@ void main() {
             home: RoutesView(
               repository: mockRepository,
               auth: MockFirebaseAuth(),
+              firestore: fakeFirestore,
             ),
           ),
         ),
@@ -120,6 +124,7 @@ void main() {
               home: RoutesView(
                 repository: mockRepository,
                 auth: MockFirebaseAuth(),
+                firestore: fakeFirestore,
               ),
             ),
           ),
@@ -167,6 +172,7 @@ void main() {
               home: RoutesView(
                 repository: mockRepository,
                 auth: MockFirebaseAuth(),
+                firestore: fakeFirestore,
               ),
             ),
           ),
@@ -201,6 +207,7 @@ void main() {
               home: RoutesView(
                 repository: mockRepository,
                 auth: MockFirebaseAuth(),
+                firestore: fakeFirestore,
               ),
             ),
           ),
@@ -228,6 +235,7 @@ void main() {
               home: RoutesView(
                 repository: mockRepository,
                 auth: MockFirebaseAuth(),
+                firestore: fakeFirestore,
               ),
             ),
           ),

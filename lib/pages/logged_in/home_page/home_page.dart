@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,12 +46,14 @@ class _HomePageState extends State<HomePage> {
       title: "",
       storyRun: false,
       auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
     ),
     ProfilePage(auth: FirebaseAuth.instance),
     SocialMediaPage(repository: Repository(), auth: FirebaseAuth.instance),
     StoryPage(
       Repository(),
       auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
     ),
     TrainingPage(
       repository: Repository(),
@@ -68,6 +71,7 @@ class _HomePageState extends State<HomePage> {
     RoutesView(
       repository: Repository(),
       auth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
     ),
   ];
 

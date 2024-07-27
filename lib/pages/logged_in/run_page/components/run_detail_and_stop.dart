@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:runningapp/models/user.dart' as user;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,6 +15,7 @@ import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/googl
 import 'package:runningapp/pages/logged_in/run_page/map_and_location_logic/location_service.dart';
 import 'package:runningapp/pages/logged_in/run_page/paused_page/paused_page.dart';
 import 'package:runningapp/models/progress_model.dart';
+import 'package:runningapp/pages/logged_in/social_media_page/post_creation_pages/running_post_creation_page.dart';
 import 'package:runningapp/providers.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class RunDetailsAndStop extends ConsumerStatefulWidget {
   final LocationService locationService;
   final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
 
   const RunDetailsAndStop(
     this.repository, {
@@ -33,6 +37,7 @@ class RunDetailsAndStop extends ConsumerStatefulWidget {
     this.questProgress,
     this.storyRun,
     required this.locationService,
+    required this.firestore,
   }) : _stopWatchTimer = stopWatchTimer;
 
   final double paddingValue;
@@ -72,6 +77,84 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       // Handle errors or exceptions
       debugPrint("Error fetching user model: $e");
     }
+  }
+
+  Future<void> _checkTrainingPlanAndNavigate(
+      String downloadUrl, double distance, int time) async {
+    final userId = widget.auth.currentUser?.uid;
+    if (userId == null) return;
+
+    final userDoc = widget.firestore.collection('users').doc(userId);
+    final trainingPlanSnapshot =
+        await userDoc.collection('trainingPlans').get();
+
+    if (trainingPlanSnapshot.docs.isNotEmpty) {
+      final trainingPlan = trainingPlanSnapshot.docs.first;
+      final trainingPlanRef = trainingPlan.data();
+      final runningPlan = trainingPlan['running_plan'] as Map<String, dynamic>;
+
+      final today = DateTime.now();
+      final formattedToday = DateFormat('EEEE, d MMMM').format(today);
+
+      for (var week in runningPlan['weeks']) {
+        final dailySchedule = week['daily_schedule'] as List<dynamic>;
+        for (var day in dailySchedule) {
+          debugPrint("Checking day: ${day['day_of_week']}");
+          if (day['day_of_week'] == formattedToday &&
+              day['run_type'] != 'Rest day') {
+            final isCompleted = day['completed'] ?? false;
+
+            if (!isCompleted) {
+              debugPrint(
+                  "Found today's run in the training plan. Today is $formattedToday, and the run day is ${day['day_of_week']}");
+
+              // Update the completed flag to true
+              day['completed'] = true;
+
+              // Update the Firestore document
+              await userDoc
+                  .collection('trainingPlans')
+                  .doc(trainingPlan.id)
+                  .update({
+                'running_plan': runningPlan,
+              });
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RatingPage(
+                    widget.repository,
+                    updateDifficulty: updateDifficulty,
+                    downloadUrl: downloadUrl,
+                    runDistance: distance,
+                    runTime: time,
+                    runPace: (time / 60000) / distance,
+                    auth: FirebaseAuth.instance,
+                  ),
+                ),
+              );
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RunningPostCreationPage(
+          repository: widget.repository,
+          photoUrl: downloadUrl,
+          runDistance: distance,
+          runTime: time,
+          runPace: (time / 60000) / distance,
+          auth: FirebaseAuth.instance,
+        ),
+      ),
+    );
   }
 
   @override
@@ -364,13 +447,16 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     );
                                     setState(() => savingRun = false);
                                     stopServices(ref);
+                                    _checkTrainingPlanAndNavigate(
+                                        downloadUrl, distance, time);
                                     Navigator.pushReplacement(
+                                      // TODO IF ERROR THROWN ITS PROBABLY THIS
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => RatingPage(
-                                          widget.repository,
-                                          updateDifficulty: updateDifficulty,
-                                          downloadUrl: downloadUrl,
+                                        builder: (context) =>
+                                            RunningPostCreationPage(
+                                          repository: widget.repository,
+                                          photoUrl: downloadUrl,
                                           runDistance: distance,
                                           runTime: time,
                                           runPace: (time / 60000) / distance,
@@ -572,7 +658,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     );
 
     // get runs done
-    final String username =
+    final String username1 =
         await widget.repository.fetchUsername(widget.auth.currentUser!.uid);
     final int runsDone = await widget.repository.getRunsDone();
 
@@ -585,7 +671,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       final Directory tempDir = await getTemporaryDirectory();
 
       final path = tempDir.path;
-      final imageFile = File('$path/$username$runsDone.png');
+      final imageFile = File('$path/$username1$runsDone.png');
       // Write the screenshot data to the file
       // TODO this seems problematic
       imageFile.writeAsBytes(screenshot);
@@ -595,7 +681,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
           // Reference to your Firebase Storage location
           var imagesRef = FirebaseStorage.instance
               .ref()
-              .child('images/$username$runsDone.png');
+              .child('images/$username1$runsDone.png');
 
           // Upload the file
           await imagesRef.putFile(imageFile);
@@ -609,7 +695,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       }
     }
     final downloadUrl = await FirebaseStorage.instance
-        .ref('images/$username$runsDone.png')
+        .ref('images/$username1$runsDone.png')
         .getDownloadURL();
     debugPrint("after download url");
     // add run to database

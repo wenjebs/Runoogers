@@ -43,9 +43,7 @@ class AuthPage extends StatelessWidget {
                     }
                   }
                   // Loading or error state
-                  return HomePage(
-                    repository: repository,
-                  );
+                  return OnboardingPage(auth: FirebaseAuth.instance);
                 },
               );
             }

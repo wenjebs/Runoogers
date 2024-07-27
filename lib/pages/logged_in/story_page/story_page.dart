@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +14,9 @@ class StoryPage extends ConsumerWidget {
     this.repository, {
     super.key,
     required this.auth,
+    required this.firestore,
   });
+  final FirebaseFirestore firestore;
   final Repository repository;
   final FirebaseAuth auth;
   final stories = null;
@@ -193,6 +196,7 @@ class StoryPage extends ConsumerWidget {
                 activeStoryTitle: userInfo?['activeStory'],
                 quests: quests,
                 auth: auth,
+                firestore: firestore,
               ),
             ),
           );
