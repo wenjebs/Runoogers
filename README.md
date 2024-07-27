@@ -1,4 +1,25 @@
-# ProjectName ReadMe
+# Runoogers
+
+<p align="center">
+  <img width="460" height="300" src="https://imgur.com/a/imeM4s9">
+</p>
+<div align='center'>
+  
+<a href='https://github.com/wenjebs/Runoogers/releases'>
+  
+<img src='https://img.shields.io/github/v/release/wenjebs/Runoogers?color=%23FDD835&label=version&style=for-the-badge'>
+  
+</a>
+  
+<a href='https://github.com/wenjebs/Runoogers/blob/main/LICENSE'>
+  
+<img src='https://img.shields.io/github/license/wenjebs/Runoogers?style=for-the-badge'>
+  
+</a>
+  
+</div>
+
+<br />
 
 Runoogers is a versatile project designed for runners seeking a gamified experienced. This comprehensive guide will provide you with everything you need to know to get started with the project, from installation instructions to a detailed description of its features.
 
@@ -241,6 +262,6 @@ We welcome contributions to ProjectName. If you would like to contribute to the 
 
 ## License
 
-ProjectName is licensed under the [License Type](LICENSE).
+Runoogers is licensed under the [License Type](LICENSE).
 
 Thank you for choosing Runoogers! If you encounter any issues or have suggestions for improvements, please don't hesitate to [create an issue](https://github.com/your-username/Runoogers/issues) or [contribute to the project](#contributing). We look forward to your feedback and collaboration.
