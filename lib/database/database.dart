@@ -302,6 +302,17 @@ class Database {
     return friends;
   }
 
+  Future<bool> getOnboarded() async {
+    final userId = auth.userId;
+    if (userId == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userRef = firestore.collection('users').doc(userId);
+    final doc = await userRef.get();
+    return doc.data()?['Onboarded'] ?? false;
+  }
+
   ///////////////////////////////////////
   /// TRAINING METHODS
   ///////////////////////////////////////

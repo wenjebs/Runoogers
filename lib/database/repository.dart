@@ -114,6 +114,11 @@ class Repository {
     return database.getTrainingOnboarded();
   }
 
+  // Get onboarded
+  Future<bool> getOnboarded() {
+    return database.getOnboarded();
+  }
+
   // Set training related data
   Future<List<dynamic>> getTrainingPlans() {
     return database.getTrainingPlans();
