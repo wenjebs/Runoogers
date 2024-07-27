@@ -76,7 +76,19 @@ class _ProfileHeroState extends State<ProfileHero> {
                           src: widget.avatarUrl,
                           autoRotate: true,
                         )
-                      : Image.network(widget.profilePic, fit: BoxFit.cover),
+                      : Image.network(
+                          widget.profilePic,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
                 ),
               ),
               if (currentView == 'left')

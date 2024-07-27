@@ -60,7 +60,9 @@ class OnboardingPage extends ConsumerStatefulWidget {
 
 class OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
-
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _ageFocusNode = FocusNode();
   bool _isNameValid = false;
   bool _isAgeValid = false;
 
@@ -77,6 +79,14 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    _nameFocusNode.dispose();
+    _usernameFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -87,12 +97,16 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
         children: [
           OnboardingStep(
             title: "What's your name?",
-            onNext: () => _pageController.nextPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            ),
+            onNext: () async {
+              await _pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeIn,
+              );
+              FocusScope.of(context).requestFocus(_usernameFocusNode);
+            },
             isInputValid: _isNameValid,
             child: TextField(
+              focusNode: _nameFocusNode,
               decoration: const InputDecoration(hintText: "Enter your name"),
               onChanged: (value) {
                 ref.read(onboardingProvider.notifier).updateName(value);
@@ -104,6 +118,7 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
             isInputValid: true,
             title: "Choose a username",
             child: TextField(
+              focusNode: _usernameFocusNode,
               decoration:
                   const InputDecoration(hintText: "Enter your username"),
               onChanged: (value) =>
@@ -121,10 +136,11 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
 
               if (!usernameExists && username.isNotEmpty) {
                 // Username is unique, allow the user to proceed
-                _pageController.nextPage(
+                await _pageController.nextPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
+                FocusScope.of(context).requestFocus(_ageFocusNode);
               } else {
                 // Show an error message if the username is taken
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -139,6 +155,7 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
             isInputValid: _isAgeValid,
             title: "What's your age?",
             child: TextField(
+                focusNode: _ageFocusNode,
                 decoration: const InputDecoration(hintText: "Enter your age"),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
