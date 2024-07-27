@@ -1,7 +1,7 @@
 # Runoogers
 
 <p align="center">
-  <img width="460" height="300" src="https://i.imgur.com/oWnM7SE.png">
+  <img width="460" height="300" src="https://i.imgur.com/9m1Ltof.png">
 </p>
 <div align='center'>
   
@@ -21,7 +21,7 @@
 
 <br />
 
-Runoogers is a versatile project designed for runners seeking a gamified experienced. This comprehensive guide will provide you with everything you need to know to get started with the project, from installation instructions to a detailed description of its features.
+Runoogers is a versatile project designed for runners seeking a gamified experience. This comprehensive guide will provide you with everything you need to know to get started with the project, from installation instructions to a detailed description of its features.
 
 ## Table of Contents
 
