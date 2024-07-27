@@ -61,7 +61,7 @@ class TrainingCard extends StatelessWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://img.freepik.com/free-vector/man-running-urban-city-fitness-workout-sport-lifestyle-concept_460848-15388.jpg?size=626&ext=jpg&ga=GA1.1.2113030492.1720483200&semt=ais_hybrid'), // Background image
+                      'https://img.freepik.com/premium-vector/distant-work-freelance-rest-concept_140689-2819.jpg?w=1800'), // Background image
                   fit: BoxFit.cover, // Cover the entire container space
                 ),
               ),
@@ -176,18 +176,29 @@ class TrainingCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(
-                      'https://cdn2.hubspot.net/hubfs/2936356/maxresdefault.jpg'), // Background image
+                  image: planType == 'Rest day'
+                      ? const NetworkImage(
+                          'https://img.freepik.com/premium-vector/distant-work-freelance-rest-concept_140689-2819.jpg?w=1800',
+                        )
+                      : const NetworkImage(
+                          'https://img.freepik.com/free-vector/man-running-urban-city-fitness-workout-sport-lifestyle-concept_460848-15388.jpg?t=st=1722068662~exp=1722072262~hmac=f5bfb1d1239bb025c41b07824e71fdd382320831b722dd0d4ed1e650e0350033&w=1380',
+                        ), // Background image
                   fit: BoxFit.cover, // Cover the entire container space
+                  onError: (exception, stackTrace) {
+                    debugPrint('Image loading error: $exception');
+                  },
                 ),
               ),
               height: MediaQuery.of(context).size.height *
                   0.2, // 20% of screen height
               width: double.infinity, // Take up full width available
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -197,7 +208,7 @@ class TrainingCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                     Icon(icon),

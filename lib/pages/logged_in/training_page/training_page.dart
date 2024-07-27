@@ -49,47 +49,61 @@ class _TrainingPageState extends State<TrainingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MaterialButton(
-                onPressed: () {
-                  setState(() {
-                    generated = true;
-                  });
-                },
-                color: Theme.of(context).colorScheme.primary,
-                child: const Text('Regenerate'),
-              ),
               TrainingSchedule(runningPlan: runningPlan),
-              MaterialButton(
-                onPressed: () async {
-                  setState(() {
-                    generated = false;
-                  });
-                  String userId = widget.auth.currentUser!.uid;
-                  // Reference to the user's trainingPlans subcollection
-                  var collectionRef = FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .collection('trainingPlans');
-                  // Fetch all documents in the subcollection
-                  var snapshots = await collectionRef.get();
-                  // Delete each document
-                  var deleteFutures = snapshots.docs
-                      .map((doc) => doc.reference.delete())
-                      .toList();
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          generated = true;
+                        });
+                      },
+                      color: Theme.of(context).colorScheme.primary,
+                      child: const Text('Regenerate'),
+                    ),
+                    MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          generated = false;
+                        });
+                        String userId = widget.auth.currentUser!.uid;
+                        // Reference to the user's trainingPlans subcollection
+                        var collectionRef = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId)
+                            .collection('trainingPlans');
+                        // Fetch all documents in the subcollection
+                        var snapshots = await collectionRef.get();
+                        // Delete each document
+                        var deleteFutures = snapshots.docs
+                            .map((doc) => doc.reference.delete())
+                            .toList();
 
-                  await Future.wait(deleteFutures);
+                        await Future.wait(deleteFutures);
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              repository: widget.repository,
-                              initialIndex: 5,
-                            )),
-                  );
-                },
-                color: Theme.of(context).colorScheme.primary,
-                child: const Text('Reset'),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                    repository: widget.repository,
+                                    initialIndex: 5,
+                                  )),
+                        );
+                      },
+                      color: Theme.of(context).colorScheme.primary,
+                      child: const Text('Reset'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -101,15 +115,6 @@ class _TrainingPageState extends State<TrainingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MaterialButton(
-                onPressed: () {
-                  setState(() {
-                    generated = true;
-                  });
-                },
-                color: Theme.of(context).colorScheme.primary,
-                child: const Text('Generate'),
-              ),
               generated
                   ? Consumer(builder: (context, ref, child) {
                       final AsyncValue<Map<String, dynamic>?> jsonPlan =
@@ -133,38 +138,68 @@ class _TrainingPageState extends State<TrainingPage> {
                         return const SizedBox(); // Fallback for unexpected state
                       }
                     })
-                  : const Text("Not generated"),
-              MaterialButton(
-                onPressed: () async {
-                  setState(() {
-                    generated = false;
-                  });
-                  String userId = widget.auth.currentUser!.uid;
-                  // Reference to the user's trainingPlans subcollection
-                  var collectionRef = FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(userId)
-                      .collection('trainingPlans');
-                  // Fetch all documents in the subcollection
-                  var snapshots = await collectionRef.get();
-                  // Delete each document
-                  var deleteFutures = snapshots.docs
-                      .map((doc) => doc.reference.delete())
-                      .toList();
+                  : Text(
+                      "Plan not generated!",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MaterialButton(
+                      onPressed: () {
+                        setState(() {
+                          generated = true;
+                        });
+                      },
+                      color: Theme.of(context).colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text('Generate'),
+                    ),
+                    MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          generated = false;
+                        });
+                        String userId = widget.auth.currentUser!.uid;
+                        // Reference to the user's trainingPlans subcollection
+                        var collectionRef = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId)
+                            .collection('trainingPlans');
+                        // Fetch all documents in the subcollection
+                        var snapshots = await collectionRef.get();
+                        // Delete each document
+                        var deleteFutures = snapshots.docs
+                            .map((doc) => doc.reference.delete())
+                            .toList();
 
-                  await Future.wait(deleteFutures);
+                        await Future.wait(deleteFutures);
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              repository: widget.repository,
-                              initialIndex: 5,
-                            )),
-                  );
-                },
-                color: Theme.of(context).colorScheme.primary,
-                child: const Text('Reset'),
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                    repository: widget.repository,
+                                    initialIndex: 5,
+                                  )),
+                        );
+                      },
+                      color: Theme.of(context).colorScheme.primary,
+                      child: const Text('Reset'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

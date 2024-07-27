@@ -319,6 +319,13 @@ class RunningPost extends ConsumerWidget {
                         child: Image.network(
                           runImageUrl,
                           fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const SizedBox(
+                              width: double.infinity,
+                              height: 200,
+                              child: Center(child: Text("Image not found")),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -332,6 +339,13 @@ class RunningPost extends ConsumerWidget {
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const SizedBox(
+                width: double.infinity,
+                height: 200,
+                child: Center(child: Text("Image not found")),
+              );
+            },
           ),
         ),
       ],

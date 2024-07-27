@@ -13,6 +13,16 @@ class TrainingSchedule extends StatelessWidget {
         child: Column(
           children: runningPlan.map<Widget>((week) {
             return Card(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.2),
+                  width: 2.0, // Set the border width
+                ),
+                borderRadius: BorderRadius.circular(
+                    10.0), // Optional: Set the border radius
+              ),
               elevation: 4,
               margin: const EdgeInsets.all(8),
               child: Padding(
@@ -64,8 +74,18 @@ class TrainingSchedule extends StatelessWidget {
                             break;
                         }
                         return Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.2),
+                              width: 2.0, // Set the border width
+                            ),
+                            borderRadius: BorderRadius.circular(
+                                10.0), // Optional: Set the border radius
+                          ),
                           elevation: 2,
-                          color: Theme.of(context).colorScheme.surface,
                           margin: const EdgeInsets.only(bottom: 8),
                           child: ListTile(
                             leading: Icon(icon),
