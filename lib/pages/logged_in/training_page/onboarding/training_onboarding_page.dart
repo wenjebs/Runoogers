@@ -107,7 +107,7 @@ class _TrainingOnboardingPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("More information about your training plan"),
+        title: const Text("Training onboarding"),
       ),
       body: PageView(
         controller: _pageController,

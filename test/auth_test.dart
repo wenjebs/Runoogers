@@ -33,11 +33,7 @@ void main() {
     when(authenticator.isAlreadyLoggedIn).thenReturn(true);
     when(authenticator.displayName).thenReturn('John Doe');
     when(authenticator.loginWithEmailAndPassword("bob@somedomain.com", "123"))
-        .thenAnswer((_) async {
-      final UserCredential result =
-          await mockFirebaseAuth.signInWithEmailAndPassword(
-              email: "bob@somedomain.com", password: "123");
-    });
+        .thenAnswer((_) async {});
     when(authenticator.loginWithEmailAndPassword("test@gmail.com", "123"))
         .thenAnswer((_) async {
       throw FirebaseAuthException(
