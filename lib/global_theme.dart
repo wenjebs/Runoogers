@@ -42,6 +42,7 @@ class GlobalThemeData {
     onSurface: const Color(0xFF241E30),
     brightness: Brightness.light,
     onPrimaryFixedVariant: Colors.lightBlue[50],
+    onSecondaryFixedVariant: Colors.white,
   );
   static ColorScheme darkColorScheme = const ColorScheme(
     primary: Color.fromARGB(255, 252, 76, 2),
@@ -55,6 +56,7 @@ class GlobalThemeData {
     onSurface: Color.fromARGB(255, 255, 241, 241),
     brightness: Brightness.dark,
     onPrimaryFixedVariant: Color.fromARGB(255, 35, 49, 56),
+    onSecondaryFixedVariant: Color.fromARGB(255, 31, 31, 31),
   );
 }
 
