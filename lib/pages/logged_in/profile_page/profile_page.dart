@@ -40,54 +40,74 @@ class ProfilePage extends ConsumerWidget {
         (userInfo?['achievements'] as List?)?.length ?? 69;
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.max, children: [
-            // Profile hero
-            Material(
-                elevation: 10,
-                child: Stack(children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    child: FutureBuilder<UserModel>(
-                        future:
-                            repository.getUserProfile(auth.currentUser!.uid),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            UserModel user = snapshot.data!;
-                            return ProfileHero(
-                                avatarUrl: user.avatarUrl,
-                                profilePic: user.profilePic);
-                          } else {
-                            return const Text('Unknown error occurred');
-                          }
-                        }),
+      body: SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.max, children: [
+          // Profile hero
+          Material(
+              elevation: 10,
+              child: Stack(children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AvatarCreatorWidget(
-                              auth: FirebaseAuth.instance,
-                            ),
+                  child: FutureBuilder<UserModel>(
+                      future: repository.getUserProfile(auth.currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          UserModel user = snapshot.data!;
+                          return ProfileHero(
+                              avatarUrl: user.avatarUrl,
+                              profilePic: user.profilePic);
+                        } else {
+                          return const Text('Unknown error occurred');
+                        }
+                      }),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AvatarCreatorWidget(
+                            auth: FirebaseAuth.instance,
                           ),
-                        );
-                      },
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Avatar'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      elevation: 4.0,
+                      shadowColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilePicEditor(
+                                auth: FirebaseAuth.instance,
+                                storage: FirebaseStorage.instance,
+                                firestore: FirebaseFirestore.instance)),
+                      ),
                       icon: const Icon(Icons.edit),
-                      label: const Text('Avatar'),
+                      label: const Text('Picture'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor:
                             Theme.of(context).colorScheme.secondary,
@@ -95,161 +115,136 @@ class ProfilePage extends ConsumerWidget {
                         elevation: 4.0,
                         shadowColor: Theme.of(context).colorScheme.onPrimary,
                       ),
-                    ),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: ElevatedButton.icon(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePicEditor(
-                                  auth: FirebaseAuth.instance,
-                                  storage: FirebaseStorage.instance,
-                                  firestore: FirebaseFirestore.instance)),
-                        ),
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Picture'),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          elevation: 4.0,
-                          shadowColor: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      )),
-                ])),
-            // Profile details
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: name != null && username != null
-                  ? ProfileDetails(name: name, username: username)
-                  : const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RunsSection(),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$runsCount',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          const Text(
-                            'Runs',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AchievementsFeed(
-                              repository: Repository(),
-                            ),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$achievementsCount',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          const Text(
-                            'Achievements',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FriendsList(
-                                  userId:
-                                      FirebaseAuth.instance.currentUser!.uid)),
-                        );
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$friendsCount',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          const Text(
-                            'Friends',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            StreamBuilder<QuerySnapshot>(
-              stream: GetUserPostService()
-                  .getPosts([FirebaseAuth.instance.currentUser!.uid]),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
+                    )),
+              ])),
+          // Profile details
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: name != null && username != null
+                ? ProfileDetails(name: name, username: username)
+                : const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: CircularProgressIndicator(),
-                  );
-                }
-                final posts = snapshot.data!.docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  return Post.fromMap(data);
-                }).toList();
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    final post = posts[index];
-                    return RunningPost(
-                      repository,
-                      post: post,
-                    );
-                  },
-                );
-              },
+                  ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RunsSection(),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$runsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Runs',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AchievementsFeed(
+                            repository: Repository(),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$achievementsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Achievements',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FriendsList(
+                                userId:
+                                    FirebaseAuth.instance.currentUser!.uid)),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$friendsCount',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Text(
+                          'Friends',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ]),
-        ),
+          ),
+          StreamBuilder<QuerySnapshot>(
+            stream: GetUserPostService()
+                .getPosts([FirebaseAuth.instance.currentUser!.uid]),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final posts = snapshot.data!.docs.map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return Post.fromMap(data);
+              }).toList();
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  final post = posts[index];
+                  return RunningPost(
+                    repository,
+                    post: post,
+                  );
+                },
+              );
+            },
+          ),
+        ]),
       ),
     );
   }
