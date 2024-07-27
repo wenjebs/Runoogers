@@ -14,14 +14,10 @@ class RoutesView extends StatefulWidget {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
   const RoutesView({
-    
     super.key,
-   
     required this.repository,
-   
     required this.auth,
     required this.firestore,
-  ,
   });
 
   @override
@@ -57,8 +53,11 @@ class _RoutesViewState extends State<RoutesView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => RoutesDetailsPage(
-                                index, routes,
-                                auth: widget.auth)),
+                                  index,
+                                  routes,
+                                  auth: widget.auth,
+                                  firestore: widget.firestore,
+                                )),
                       );
                     },
                     child: Padding(
