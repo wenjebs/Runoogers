@@ -72,7 +72,10 @@ class RunsSection extends ConsumerWidget {
                                               photoUrl: doc['imageUrl'] ?? '',
                                               runDistance:
                                                   double.parse(run.distance),
-                                              runTime: int.parse(run.time),
+                                              runTime:
+                                                  convertTimeToMilliseconds(
+                                                run.time,
+                                              ),
                                               runPace: run.pace,
                                             ),
                                           ),
@@ -144,6 +147,14 @@ class RunsSection extends ConsumerWidget {
                                 height: 200,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const SizedBox(
+                                    width: double.infinity,
+                                    height: 200,
+                                    child:
+                                        Center(child: Text("Image not found")),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -165,4 +176,18 @@ class RunsSection extends ConsumerWidget {
       ),
     );
   }
+}
+
+int convertTimeToMilliseconds(String time) {
+  // Split the time string into minutes, seconds, and milliseconds
+  List<String> parts = time.split(':');
+  int minutes = int.parse(parts[0]);
+  List<String> secondsAndMillis = parts[1].split('.');
+  int seconds = int.parse(secondsAndMillis[0]);
+  int milliseconds = int.parse(secondsAndMillis[1]);
+
+  // Convert everything to milliseconds
+  int totalMilliseconds =
+      (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+  return totalMilliseconds;
 }
