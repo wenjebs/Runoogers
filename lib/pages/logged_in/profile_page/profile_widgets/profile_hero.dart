@@ -58,7 +58,7 @@ class _ProfileHeroState extends State<ProfileHero> {
               if (currentView == 'right')
                 CircleAvatar(
                   backgroundColor:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                   child: IconButton(
                     icon: const Icon(Icons.arrow_left),
                     onPressed: () {
@@ -72,25 +72,42 @@ class _ProfileHeroState extends State<ProfileHero> {
                 width: 200,
                 height: 200,
                 child: Center(
-                  child: currentView == 'right'
-                      ? O3D(
-                          src: widget.avatarUrl,
-                          autoRotate: true,
-                        )
-                      : Image.network(
-                          widget.profilePic,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        ),
-                ),
+                    child: currentView == 'right'
+                        ? O3D(
+                            src: widget.avatarUrl,
+                            autoRotate: true,
+                          )
+                        : Material(
+                            elevation: 10.0,
+                            shape: const CircleBorder(),
+                            child: Container(
+                              width: 200.0, // Adjust the width as needed
+                              height: 200.0, // Adjust the height as needed
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                child: Image.network(
+                                  widget.profilePic,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    } else {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          )),
               ),
               if (currentView == 'left')
                 CircleAvatar(
