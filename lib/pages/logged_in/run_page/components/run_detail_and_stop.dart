@@ -90,7 +90,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     if (trainingPlanSnapshot.docs.isNotEmpty) {
       final trainingPlan = trainingPlanSnapshot.docs.first;
-      final trainingPlanRef = trainingPlan.data();
+      // final trainingPlanRef = trainingPlan.data();
       final runningPlan = trainingPlan['running_plan'] as Map<String, dynamic>;
 
       final today = DateTime.now();

@@ -44,8 +44,9 @@ class ProfilePage extends ConsumerWidget {
         child: Column(mainAxisSize: MainAxisSize.max, children: [
           // Profile hero
           Material(
-              elevation: 10,
-              child: Stack(children: [
+            elevation: 10,
+            child: Stack(
+              children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200,
@@ -63,60 +64,67 @@ class ProfilePage extends ConsumerWidget {
                         } else if (snapshot.hasData) {
                           UserModel user = snapshot.data!;
                           return ProfileHero(
-                              avatarUrl: user.avatarUrl,
-                              profilePic: user.profilePic);
+                            avatarUrl: user.avatarUrl,
+                            profilePic: user.profilePic,
+                          );
                         } else {
                           return const Text('Unknown error occurred');
                         }
                       }),
                 ),
                 Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AvatarCreatorWidget(
-                            auth: FirebaseAuth.instance,
+                  bottom: 10,
+                  right: 10,
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AvatarCreatorWidget(
+                                auth: FirebaseAuth.instance,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          elevation: 4.0,
+                          shadowColor: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        child: const Icon(Icons.shopping_bag),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfilePicEditor(
+                              auth: FirebaseAuth.instance,
+                              storage: FirebaseStorage.instance,
+                              firestore: FirebaseFirestore.instance,
+                            ),
                           ),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.edit),
-                    label: const Text('Avatar'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.secondary,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      elevation: 4.0,
-                      shadowColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          elevation: 4.0,
+                          shadowColor: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                        child: const Icon(Icons.edit),
+                      ),
+                    ],
                   ),
                 ),
-                Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child: ElevatedButton.icon(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfilePicEditor(
-                                auth: FirebaseAuth.instance,
-                                storage: FirebaseStorage.instance,
-                                firestore: FirebaseFirestore.instance)),
-                      ),
-                      icon: const Icon(Icons.edit),
-                      label: const Text('Picture'),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        elevation: 4.0,
-                        shadowColor: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    )),
-              ])),
+              ],
+            ),
+          ),
           // Profile details
           Padding(
             padding: const EdgeInsets.all(2.0),
@@ -218,12 +226,21 @@ class ProfilePage extends ConsumerWidget {
             ),
           ),
           StreamBuilder<QuerySnapshot>(
-            stream: GetUserPostService()
-                .getPosts([FirebaseAuth.instance.currentUser!.uid]),
+            stream: GetUserPostService().getPosts(
+              [FirebaseAuth.instance.currentUser!.uid],
+            ),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(
                   child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 64.0),
+                    child: Text('No posts found, go for a run!'),
+                  ),
                 );
               }
               final posts = snapshot.data!.docs.map((doc) {

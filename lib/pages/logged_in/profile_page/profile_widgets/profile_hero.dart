@@ -33,7 +33,8 @@ class _ProfileHeroState extends State<ProfileHero> {
       }
     } catch (e) {
       // Handle any errors that occur during the fetch operation
-      print(e); // Consider logging the error or handling it appropriately
+      debugPrint(e
+          .toString()); // Consider logging the error or handling it appropriately
       return 'https://example.com/default-profile-pic.jpg'; // Return a default URL in case of error
     }
   }
