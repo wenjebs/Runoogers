@@ -327,6 +327,7 @@ class LeaderboardCard extends StatelessWidget {
                         builder: (context) => UserProfilePage(
                           repository: repository,
                           userId: userId,
+                          auth: FirebaseAuth.instance,
                         ),
                       ),
                     );

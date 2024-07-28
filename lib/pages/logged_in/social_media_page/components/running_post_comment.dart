@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/user_profile_page.dart';
@@ -63,6 +64,7 @@ class _RunningPostCommentState extends State<RunningPostComment> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => UserProfilePage(
+                              auth: FirebaseAuth.instance,
                               repository: widget.repository,
                               userId: widget.userId)),
                     );

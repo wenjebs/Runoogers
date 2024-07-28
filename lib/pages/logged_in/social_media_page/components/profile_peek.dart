@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/user.dart';
@@ -18,6 +19,7 @@ class ProfilePeek extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => UserProfilePage(
+                auth: FirebaseAuth.instance,
                 userId: user.uid,
                 repository: Repository(),
               ),

@@ -115,6 +115,7 @@ class RunningPost extends ConsumerWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => UserProfilePage(
+                                            auth: FirebaseAuth.instance,
                                             repository: Repository(),
                                             userId: post.userId)),
                                   );

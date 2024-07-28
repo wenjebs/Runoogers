@@ -15,8 +15,12 @@ import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_p
 class UserProfilePage extends StatefulWidget {
   final String userId;
   final Repository repository;
+  final FirebaseAuth auth;
   const UserProfilePage(
-      {super.key, required this.userId, required this.repository});
+      {super.key,
+      required this.userId,
+      required this.repository,
+      required this.auth});
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
@@ -94,24 +98,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       child: ProfileDetails(
                           name: user.name, username: user.username),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: (user.friends
-                              .contains(FirebaseAuth.instance.currentUser!.uid)
-                          ? const Text('Friends')
-                          : ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
-                                  _isRequestSent = true;
-                                });
-                                await widget.repository
-                                    .sendFriendRequest(user.uid);
-                              },
-                              child: Text(_isRequestSent
-                                  ? 'Request Sent'
-                                  : 'Add Friend'),
-                            )),
-                    ),
+                    if (user.uid != widget.auth.currentUser!.uid)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: (user.friends.contains(
+                                FirebaseAuth.instance.currentUser!.uid)
+                            ? const Text('Friends')
+                            : ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    _isRequestSent = true;
+                                  });
+                                  await widget.repository
+                                      .sendFriendRequest(user.uid);
+                                },
+                                child: Text(_isRequestSent
+                                    ? 'Request Sent'
+                                    : 'Add Friend'),
+                              )),
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Row(
