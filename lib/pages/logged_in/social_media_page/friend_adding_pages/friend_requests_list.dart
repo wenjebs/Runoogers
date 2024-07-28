@@ -29,6 +29,7 @@ class _FriendRequestPageState extends State<FriendRequestPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Friend Requests'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: FutureBuilder<List<String>>(
         future: widget.repository.getFriendRequests(),

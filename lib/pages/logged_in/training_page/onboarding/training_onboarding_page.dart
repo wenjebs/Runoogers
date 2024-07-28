@@ -106,9 +106,6 @@ class _TrainingOnboardingPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Training onboarding"),
-      ),
       body: PageView(
         controller: _pageController,
         children: [

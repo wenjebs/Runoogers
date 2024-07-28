@@ -74,7 +74,8 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
       for (int i = 0; i < weeks.length; i++) {
         debugPrint("weeks.length = ${weeks.length}");
         var week = weeks[i];
-        if (week == null || (i >= 1 && week.length != 7)) {
+        List<dynamic> dailySchedule = week['daily_schedule'];
+        if (week == null || (i >= 1 && dailySchedule.length != 7)) {
           debugPrint(week.length.toString());
           throw FormatException(
               "Week ${i + 1} has less than 7 entries, contains null, or is missing");

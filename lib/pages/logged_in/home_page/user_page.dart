@@ -6,6 +6,7 @@ import 'package:runningapp/database/repository.dart';
 import 'package:runningapp/models/social_media_post.dart';
 import 'package:runningapp/models/user.dart';
 import 'package:runningapp/pages/logged_in/home_page/home_page.dart';
+import 'package:runningapp/pages/logged_in/profile_page/profile_widgets/friends_list.dart';
 import 'package:runningapp/pages/logged_in/providers/user_info_provider.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/components/running_post.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
@@ -188,8 +189,9 @@ class ServiceIcon extends StatelessWidget {
                     ServiceIcon(title: 'Training', icon: Icons.fitness_center),
                     ServiceIcon(title: 'Track Run', icon: Icons.directions_run),
                     ServiceIcon(title: 'Story', icon: Icons.book),
-                    ServiceIcon(title: 'Settings', icon: Icons.settings),
+                    ServiceIcon(title: 'Friends', icon: Icons.people),
                     ServiceIcon(title: 'Social Feed', icon: Icons.share),
+                    ServiceIcon(title: 'Settings', icon: Icons.settings),
                   ],
                 ),
               );
@@ -254,6 +256,13 @@ class ServiceIcon extends StatelessWidget {
                       initialIndex: 3,
                       repository: Repository(),
                     )),
+          );
+        } else if (title == 'Friends') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FriendsList(
+                    userId: FirebaseAuth.instance.currentUser!.uid)),
           );
         }
       },

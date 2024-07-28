@@ -32,7 +32,6 @@ class _TrainingPageState extends State<TrainingPage> {
   void initState() {
     super.initState();
     _fetchTrainingPlans();
-    // debugPrint(runningPlan.toString());
   }
 
   String getFormattedTodayDate() {
@@ -88,7 +87,12 @@ class _TrainingPageState extends State<TrainingPage> {
                             .map((doc) => doc.reference.delete())
                             .toList();
 
+                        var userRef = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId);
+
                         await Future.wait(deleteFutures);
+                        await userRef.update({'trainingOnboarded': false});
 
                         Navigator.pushReplacement(
                           context,
@@ -184,7 +188,12 @@ class _TrainingPageState extends State<TrainingPage> {
                             .map((doc) => doc.reference.delete())
                             .toList();
 
+                        var userRef = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(userId);
+
                         await Future.wait(deleteFutures);
+                        await userRef.update({'trainingOnboarded': false});
 
                         await FirebaseFirestore.instance
                             .collection('users')

@@ -20,6 +20,9 @@ class _SettingsPageState extends State<SettingsPage> {
   final _formKey = GlobalKey<FormState>();
   final _formKeyTwo = GlobalKey<FormState>();
   String _newName = '';
+  int _newAge = 0;
+  int _newTimesPerWeek = 0;
+  double _newTargetDistance = 0.0;
   UserModel? _user;
 
   @override
@@ -35,6 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
       setState(() {
         _user = userProfile;
         _newName = userProfile.name;
+        _newAge = int.parse(userProfile.age);
       });
     }
   }
@@ -43,7 +47,8 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      UserModel updatedUser = _user!.copyWith(name: _newName);
+      UserModel updatedUser =
+          _user!.copyWith(name: _newName, age: _newAge.toString());
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_user!.uid)
@@ -56,126 +61,158 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: _user?.trainingOnboarded == true ? 1 : 1,
       child: Scaffold(
         appBar: AppBar(
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Profile'),
-              Tab(text: 'Onboarding'),
-            ],
+          bottom: TabBar(
+            tabs: _user?.trainingOnboarded == true
+                ? const [
+                    Tab(text: 'Profile'),
+                  ]
+                : const [
+                    Tab(text: 'Profile'),
+                  ],
           ),
         ),
         body: TabBarView(
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  FutureBuilder<UserModel>(
-                    future: widget.repository
-                        .getUserProfile(widget.auth.currentUser!.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        _user = snapshot.data;
-                        return Flexible(
-                          child: Form(
-                            key: _formKey,
-                            child: ListView(
-                              padding: const EdgeInsets.all(16),
-                              children: [
-                                TextFormField(
-                                  initialValue: _newName,
-                                  decoration:
-                                      const InputDecoration(labelText: 'Name'),
-                                  onSaved: (value) => _newName = value ?? '',
-                                  onChanged: (value) => _newName = value,
-                                ),
-                                ElevatedButton(
-                                  onPressed: _updateUserData,
-                                  child: const Text('Update'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const Text('No user data found');
-                      }
-                    },
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          ref
-                              .read(themeProviderRef.notifier)
-                              .toggleTheme(!darkmode);
-                          debugPrint(darkmode.toString());
-                          setState(() {
-                            darkmode = !darkmode;
-                          });
-                        },
-                        child: const Text('Toggle Theme'),
-                      );
-                    },
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        // Repository.updateQuestProgress(23, 100, 0, "ivan");
-                      },
-                      child: const Text("Test"))
+          children: _user?.trainingOnboarded == true
+              ? [
+                  _buildProfileTab(),
+                ]
+              : [
+                  _buildProfileTab(),
                 ],
-              ),
-            ),
-            Center(
-              child: Column(
-                children: [
-                  FutureBuilder<UserModel>(
-                    future: widget.repository
-                        .getUserProfile(widget.auth.currentUser!.uid),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        _user = snapshot.data;
-                        return Flexible(
-                          child: Form(
-                            key: _formKeyTwo,
-                            child: ListView(
-                              padding: const EdgeInsets.all(16),
-                              children: [
-                                TextFormField(
-                                  initialValue: "placeholder",
-                                  decoration: const InputDecoration(
-                                      labelText:
-                                          'Times available to train per week'),
-                                  onSaved: (value) => _newName = value ?? '',
-                                  onChanged: (value) => _newName = value,
-                                ),
-                                ElevatedButton(
-                                  onPressed: _updateUserData,
-                                  child: const Text('Update'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const Text('No user data found');
-                      }
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileTab() {
+    return Center(
+      child: Column(
+        children: [
+          FutureBuilder<UserModel>(
+            future:
+                widget.repository.getUserProfile(widget.auth.currentUser!.uid),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                _user = snapshot.data;
+                return Flexible(
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        TextFormField(
+                          initialValue: _newName,
+                          decoration: const InputDecoration(labelText: 'Name'),
+                          onSaved: (value) => _newName = value ?? '',
+                          onChanged: (value) => _newName = value,
+                        ),
+                        TextFormField(
+                          initialValue: _newAge.toString(),
+                          decoration: const InputDecoration(labelText: 'Age'),
+                          keyboardType: TextInputType.number,
+                          onSaved: (value) =>
+                              _newAge = int.tryParse(value ?? '0') ?? 0,
+                          onChanged: (value) =>
+                              _newAge = int.tryParse(value) ?? 0,
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateUserData,
+                          child: const Text('Update'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return const Text('No user data found');
+              }
+            },
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              return ElevatedButton(
+                onPressed: () {
+                  ref.read(themeProviderRef.notifier).toggleTheme(!darkmode);
+                  debugPrint(darkmode.toString());
+                  setState(() {
+                    darkmode = !darkmode;
+                  });
+                },
+                child: const Text('Toggle Theme'),
+              );
+            },
+          ),
+          ElevatedButton(
+              onPressed: () {
+                // Repository.updateQuestProgress(23, 100, 0, "ivan");
+              },
+              child: const Text("Test"))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOnboardingTab() {
+    return Center(
+      child: Column(
+        children: [
+          FutureBuilder<UserModel>(
+            future:
+                widget.repository.getUserProfile(widget.auth.currentUser!.uid),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                _user = snapshot.data;
+                return Flexible(
+                  child: Form(
+                    key: _formKeyTwo,
+                    child: ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        TextFormField(
+                          initialValue: _newTimesPerWeek.toString(),
+                          decoration: const InputDecoration(
+                              labelText: 'Times available to train per week'),
+                          keyboardType: TextInputType.number,
+                          onSaved: (value) => _newTimesPerWeek =
+                              int.tryParse(value ?? '0') ?? 0,
+                          onChanged: (value) =>
+                              _newTimesPerWeek = int.tryParse(value) ?? 0,
+                        ),
+                        TextFormField(
+                          initialValue: _newTargetDistance.toString(),
+                          decoration: const InputDecoration(
+                              labelText: 'Target Distance (km)'),
+                          keyboardType: TextInputType.number,
+                          onSaved: (value) => _newTargetDistance =
+                              double.tryParse(value ?? '0.0') ?? 0.0,
+                          onChanged: (value) => _newTargetDistance =
+                              double.tryParse(value) ?? 0.0,
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateUserData,
+                          child: const Text('Update'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return const Text('No user data found');
+              }
+            },
+          ),
+        ],
       ),
     );
   }
