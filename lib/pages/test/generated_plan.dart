@@ -53,26 +53,6 @@ class _SectionTextInputStreamState extends State<SectionTextStreamInput> {
             ),
           ),
 
-          // this widget js streams the content
-          // Expanded(
-          //   child: GeminiResponseTypeView(
-          //     builder: (context, child, response, loading) {
-          //       if (loading) {
-          //         return Lottie.asset('lib/assets/lottie/ai.json');
-          //       }
-
-          //       if (response != null) {
-          //         return Markdown(
-          //           data: response,
-          //           selectable: true,
-          //         );
-          //       } else {
-          //         return const Center(child: Text('Search something!'));
-          //       }
-          //     },
-          //   ),
-          // ),
-
           /// if the returned finishReason isn't STOP
           if (finishReason != null) Text(finishReason!),
 

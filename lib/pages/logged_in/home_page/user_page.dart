@@ -96,6 +96,14 @@ class UserPage extends ConsumerWidget {
                           return const Center(
                               child: CircularProgressIndicator());
                         }
+                        if (snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 64.0),
+                              child: Text('No posts found, go for a run!'),
+                            ),
+                          );
+                        }
                         final posts = snapshot.data!.docs.map((doc) {
                           final data = doc.data() as Map<String, dynamic>;
                           debugPrint(data.toString());

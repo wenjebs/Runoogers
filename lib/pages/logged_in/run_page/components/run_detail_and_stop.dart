@@ -90,7 +90,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
 
     if (trainingPlanSnapshot.docs.isNotEmpty) {
       final trainingPlan = trainingPlanSnapshot.docs.first;
-      final trainingPlanRef = trainingPlan.data();
+      // final trainingPlanRef = trainingPlan.data();
       final runningPlan = trainingPlan['running_plan'] as Map<String, dynamic>;
 
       final today = DateTime.now();
@@ -674,7 +674,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       final imageFile = File('$path/$username1$runsDone.png');
       // Write the screenshot data to the file
       // TODO this seems problematic
-      imageFile.writeAsBytes(screenshot);
+      await imageFile.writeAsBytes(screenshot);
       // Ensure the file has been created and contains data
       if (await imageFile.exists()) {
         try {

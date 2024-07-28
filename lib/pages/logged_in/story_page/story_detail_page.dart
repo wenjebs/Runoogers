@@ -79,24 +79,17 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
                   const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
-                      // onPressed: () => Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         // TODO, handle no permission unhandled exception
-                      //         builder: (context) => const RunPage(
-                      //           storyRun: true,
-                      //         ),
-                      //       ),
-                      //     ),
                       onPressed: active
                           ? null
                           : () {
-                              widget.repository
-                                  .setUserActiveStory(widget.userID, widget.id);
+                              widget.repository.setUserActiveStory(
+                                widget.userID,
+                                widget.id,
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                      'Active story set successfully'),
+                                  content:
+                                      Text('Active story set successfully'),
                                   duration: Duration(seconds: 2),
                                 ),
                               );
