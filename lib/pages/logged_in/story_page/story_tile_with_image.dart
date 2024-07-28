@@ -65,8 +65,6 @@ class StoryTileWithImage extends StatelessWidget {
                 SizedBox(
                   child: image,
                 ),
-
-                // TODO change this description
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(

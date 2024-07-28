@@ -52,32 +52,62 @@ class _ProfileHeroState extends State<ProfileHero> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (currentView == 'right')
-                CircleAvatar(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_left),
-                    onPressed: () {
-                      setState(() {
-                        currentView = 'left';
-                      });
-                    },
-                  ),
-                ),
-              SizedBox(
-                width: 200,
-                height: 200,
-                child: Center(
-                    child: currentView == 'right'
-                        ? O3D(
-                            src: widget.avatarUrl,
-                            autoRotate: true,
-                          )
-                        : Material(
+          Positioned(
+            left: 10,
+            bottom: 10,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                elevation: 4.0,
+                shadowColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+              onPressed: () {
+                setState(() {
+                  if (currentView == 'right') {
+                    currentView = 'left';
+                  } else {
+                    currentView = 'right';
+                  }
+                });
+              },
+              child:
+                  currentView == 'left' ? const Text("3D") : const Text("2D"),
+            ),
+          ),
+
+          // 3D / 2D AVATAR
+          Center(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Center(
+                  child: currentView == 'right'
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Material(
+                            elevation: 10.0,
+                            shape: const CircleBorder(),
+                            child: Container(
+                              width: 200.0, // Adjust the width as needed
+                              height: 200.0, // Adjust the height as needed
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                              child: O3D(
+                                src: widget.avatarUrl,
+                                autoRotate: true,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Material(
                             elevation: 10.0,
                             shape: const CircleBorder(),
                             child: Container(
@@ -107,22 +137,9 @@ class _ProfileHeroState extends State<ProfileHero> {
                                 ),
                               ),
                             ),
-                          )),
-              ),
-              if (currentView == 'left')
-                CircleAvatar(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_right),
-                    onPressed: () {
-                      setState(() {
-                        currentView = 'right';
-                      });
-                    },
-                  ),
-                ),
-            ],
+                          ),
+                        )),
+            ),
           ),
         ],
       ),

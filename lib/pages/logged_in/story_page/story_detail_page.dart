@@ -82,8 +82,10 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
                       onPressed: active
                           ? null
                           : () {
-                              widget.repository
-                                  .setUserActiveStory(widget.userID, widget.id);
+                              widget.repository.setUserActiveStory(
+                                widget.userID,
+                                widget.id,
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content:
