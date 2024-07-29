@@ -14,14 +14,14 @@ class RunStatsPage extends ConsumerWidget {
       body: userInfoAsyncValue.when(
         data: (snapshot) {
           if (snapshot != null) {
-            final fastestTime = snapshot['fastestTime'] ?? 0;
-            final double totalTime = snapshot['totalTime'] ?? 0; // in ms
+            // final fastestTime = snapshot['fastestTime'] ?? 0;
+            final int totalTime = snapshot['totalTime'] ?? 0; // in ms
             final double hours = totalTime / 3600000;
             final double minutes = (totalTime % 3600000) / 60000;
             final double seconds = ((totalTime % 3600000) % 60000) / 1000;
-            final longestDistance = snapshot['longestDistance'] ?? 0;
+            // final longestDistance = snapshot['longestDistance'] ?? 0;
             final totalRuns = snapshot['totalRuns'] ?? 0;
-            final totalDistance = snapshot['totalDistance'] ?? 0;
+            // final totalDistance = snapshot['totalDistance'] ?? 0;
             final double totalDistanceRan = snapshot['totalDistanceRan'] ?? 0;
             final points = snapshot['points'] ?? 0;
             return SingleChildScrollView(
@@ -31,26 +31,14 @@ class RunStatsPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     StatCard(
-                        title: 'Fastest Time',
-                        value: '$fastestTime',
-                        icon: Icons.timer),
-                    StatCard(
                         title: 'Total Time',
                         value:
                             '${hours.toStringAsFixed(0)} hrs\n${minutes.toStringAsFixed(0)} mins\n${seconds.toStringAsFixed(0)} seconds',
                         icon: Icons.hourglass_bottom),
                     StatCard(
-                        title: 'Longest Distance',
-                        value: '$longestDistance',
-                        icon: Icons.route),
-                    StatCard(
                         title: 'Total Runs',
                         value: '$totalRuns',
                         icon: Icons.directions_run),
-                    StatCard(
-                        title: 'Total Distance',
-                        value: '$totalDistance',
-                        icon: Icons.map),
                     StatCard(
                         title: 'Total Distance Ran',
                         value:
