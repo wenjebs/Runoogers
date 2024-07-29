@@ -8,7 +8,7 @@ void main() {
   // Define test values
   final testSnapshot = {
     'fastestTime': '5:00',
-    'totalTime': 10.0,
+    'totalTime': 10,
     'longestDistance': '10 km',
     'totalRuns': '5',
     'totalDistance': '50 km',
@@ -52,7 +52,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Check that the stats are displayed correctly
-      expect(find.text('Fastest Time'), findsOneWidget);
+      expect(find.text('Total Runs'), findsOneWidget);
       expect(find.text('Total Time'), findsOneWidget);
       // Add checks for the rest of the stats similarly
     });
