@@ -56,7 +56,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
     dayAfterTomorrowsDate: getFormattedDayAfterTomorrowDate(),
   ).prompt;
 
-  int maxAttempts = 5;
+  int maxAttempts = 3;
   int attempts = 0;
 
   // Encode it into a json
@@ -76,6 +76,7 @@ Future<Map<String, dynamic>?> plan(PlanRef ref) async {
         var week = weeks[i];
         List<dynamic> dailySchedule = week['daily_schedule'];
         if (week == null || (i >= 1 && dailySchedule.length != 7)) {
+          // change
           debugPrint(week.length.toString());
           throw FormatException(
               "Week ${i + 1} has less than 7 entries, contains null, or is missing");
