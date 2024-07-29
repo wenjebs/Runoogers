@@ -15,7 +15,7 @@ class RunStatsPage extends ConsumerWidget {
         data: (snapshot) {
           if (snapshot != null) {
             // final fastestTime = snapshot['fastestTime'] ?? 0;
-            final int totalTime = snapshot['totalTime'] ?? 0; // in ms
+            final double totalTime = snapshot['totalTime'] ?? 0; // in ms
             final double hours = totalTime / 3600000;
             final double minutes = (totalTime % 3600000) / 60000;
             final double seconds = ((totalTime % 3600000) % 60000) / 1000;
@@ -41,8 +41,7 @@ class RunStatsPage extends ConsumerWidget {
                         icon: Icons.directions_run),
                     StatCard(
                         title: 'Total Distance Ran',
-                        value:
-                            '${(totalDistanceRan / 1000).toStringAsFixed(2)} km',
+                        value: '${(totalDistanceRan).toStringAsFixed(2)} km',
                         icon: Icons.terrain),
                     StatCard(
                         title: 'Points', value: '$points', icon: Icons.star),
