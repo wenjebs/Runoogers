@@ -119,21 +119,22 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                 'running_plan': runningPlan,
               });
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RatingPage(
-                    widget.repository,
-                    updateDifficulty: updateDifficulty,
-                    downloadUrl: downloadUrl,
-                    runDistance: distance,
-                    runTime: time,
-                    runPace: (time / 60000) / distance,
-                    auth: FirebaseAuth.instance,
+              if (mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RatingPage(
+                      widget.repository,
+                      updateDifficulty: updateDifficulty,
+                      downloadUrl: downloadUrl,
+                      runDistance: distance,
+                      runTime: time,
+                      runPace: (time / 60000) / distance,
+                      auth: FirebaseAuth.instance,
+                    ),
                   ),
-                ),
-              );
-              return;
+                );
+              }
             }
           }
         }

@@ -15,7 +15,7 @@ class RunStatsPage extends ConsumerWidget {
         data: (snapshot) {
           if (snapshot != null) {
             final fastestTime = snapshot['fastestTime'] ?? 0;
-            final double totalTime = snapshot['totalTime'] ?? 0; // in ms
+            final int totalTime = snapshot['totalTime'] ?? 0; // in ms
             final double hours = totalTime / 3600000;
             final double minutes = (totalTime % 3600000) / 60000;
             final double seconds = ((totalTime % 3600000) % 60000) / 1000;
