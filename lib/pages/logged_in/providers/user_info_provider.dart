@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:runningapp/pages/logged_in/social_media_page/services/get_user_post_service.dart';
 
 final userProvider =
-    Provider<User?>((ref) => FirebaseAuth.instance.currentUser);
+    StreamProvider<User?>((ref) => FirebaseAuth.instance.authStateChanges());
 
 final userInfoProvider = StreamProvider.autoDispose<QuerySnapshot>((ref) {
   final user = ref.watch(userProvider);
@@ -27,16 +27,21 @@ final friendsProvider = StreamProvider.autoDispose<List<String>>((ref) async* {
   });
 });
 
-final trainingOnboardedProvider = StreamProvider.autoDispose<bool>((ref) {
-  final user = ref.watch(userProvider);
-  if (user != null) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .snapshots()
-        .map((snapshot) => snapshot.data()?['trainingOnboarded'] ?? false);
-  }
-  return const Stream.empty();
+final trainingOnboardedProvider = FutureProvider.autoDispose<bool>((ref) {
+  final userAsync = ref.watch(userProvider);
+  return userAsync.when(
+    data: (user) async {
+      if (user == null) {
+        return false; // Default value when user is not logged in
+      }
+      final uid = user.uid;
+      final doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      return doc.data()?['trainingOnboarded'] ?? false;
+    },
+    loading: () => false, // Default value while loading
+    error: (error, stack) => false, // Default value on error
+  );
 });
 
 final userInformationProvider =

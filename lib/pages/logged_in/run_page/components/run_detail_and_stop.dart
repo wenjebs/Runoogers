@@ -79,10 +79,10 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
     }
   }
 
-  Future<void> _checkTrainingPlanAndNavigate(
+  Future<bool> _checkTrainingPlanAndNavigate(
       String downloadUrl, double distance, int time) async {
     final userId = widget.auth.currentUser?.uid;
-    if (userId == null) return;
+    if (userId == null) return false;
 
     final userDoc = widget.firestore.collection('users').doc(userId);
     final trainingPlanSnapshot =
@@ -118,44 +118,14 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                   .update({
                 'running_plan': runningPlan,
               });
-
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RatingPage(
-                      widget.repository,
-                      updateDifficulty: updateDifficulty,
-                      downloadUrl: downloadUrl,
-                      runDistance: distance,
-                      runTime: time,
-                      runPace: (time / 60000) / distance,
-                      auth: FirebaseAuth.instance,
-                    ),
-                  ),
-                );
-              }
             }
           }
         }
       }
+      return true;
     }
 
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RunningPostCreationPage(
-          repository: widget.repository,
-          photoUrl: downloadUrl,
-          runDistance: distance,
-          runTime: time,
-          runPace: (time / 60000) / distance,
-          auth: FirebaseAuth.instance,
-        ),
-      ),
-    );
+    return false;
   }
 
   @override
@@ -448,23 +418,51 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
                                     );
                                     setState(() => savingRun = false);
                                     stopServices(ref);
-                                    _checkTrainingPlanAndNavigate(
-                                        downloadUrl, distance, time);
-                                    Navigator.pushReplacement(
-                                      // TODO IF ERROR THROWN ITS PROBABLY THIS
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            RunningPostCreationPage(
-                                          repository: widget.repository,
-                                          photoUrl: downloadUrl,
-                                          runDistance: distance,
-                                          runTime: time,
-                                          runPace: (time / 60000) / distance,
-                                          auth: FirebaseAuth.instance,
-                                        ),
-                                      ),
-                                    );
+                                    bool goRatings =
+                                        await _checkTrainingPlanAndNavigate(
+                                            downloadUrl, distance, time);
+                                    if (widget.context != null &&
+                                        downloadUrl != null) {
+                                      if (goRatings) {
+                                        // Replace someCondition with the actual condition you are using
+                                        Navigator.pushReplacement(
+                                          widget.context!,
+                                          MaterialPageRoute(
+                                            builder: (context) => RatingPage(
+                                              widget.repository,
+                                              downloadUrl: downloadUrl!,
+                                              runDistance: distance,
+                                              runTime: time,
+                                              runPace:
+                                                  (time / 60000) / distance,
+                                              auth: FirebaseAuth.instance,
+                                              updateDifficulty:
+                                                  updateDifficulty,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          widget.context!,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RunningPostCreationPage(
+                                              repository: widget.repository,
+                                              photoUrl: downloadUrl!,
+                                              runDistance: distance,
+                                              runTime: time,
+                                              runPace:
+                                                  (time / 60000) / distance,
+                                              auth: FirebaseAuth.instance,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      // Handle the case where context or downloadUrl is null
+                                      debugPrint(
+                                          "Context or downloadUrl is null");
+                                    }
                                   } else {
                                     debugPrint(
                                         "run detail and stop: Run not saved");
@@ -674,7 +672,6 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
       final path = tempDir.path;
       final imageFile = File('$path/$username1$runsDone.png');
       // Write the screenshot data to the file
-      // TODO this seems problematic
       await imageFile.writeAsBytes(screenshot);
       // Ensure the file has been created and contains data
       if (await imageFile.exists()) {
@@ -729,7 +726,7 @@ class _RunDetailsAndStopState extends ConsumerState<RunDetailsAndStop> {
         await widget.repository.updateUserAchievements(distance, time);
     if (newAchievements.isNotEmpty) {
       // Show dialog with the list of new achievements
-      showDialog(
+      await showDialog(
         context: widget.context,
         builder: (BuildContext context) {
           return AlertDialog(

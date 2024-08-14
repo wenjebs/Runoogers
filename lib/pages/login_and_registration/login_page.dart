@@ -289,11 +289,6 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         // google button
                         SquareTile(imagePath: 'lib/assets/images/google.png'),
-
-                        SizedBox(width: 25),
-
-                        // apple button
-                        SquareTile(imagePath: 'lib/assets/images/apple.png')
                       ],
                     ),
 

@@ -17,12 +17,14 @@ class RunStatsPage extends ConsumerWidget {
             // final fastestTime = snapshot['fastestTime'] ?? 0;
             final double totalTime = snapshot['totalTime'] ?? 0; // in ms
             final double hours = totalTime / 3600000;
-            final double minutes = (totalTime % 3600000) / 60000;
-            final double seconds = ((totalTime % 3600000) % 60000) / 1000;
+            final double minutes = (totalTime % 3600000).toDouble() / 60000;
+            final double seconds =
+                ((totalTime % 3600000) % 60000).toDouble() / 1000;
             // final longestDistance = snapshot['longestDistance'] ?? 0;
             final totalRuns = snapshot['totalRuns'] ?? 0;
             // final totalDistance = snapshot['totalDistance'] ?? 0;
-            final double totalDistanceRan = snapshot['totalDistanceRan'] ?? 0;
+            final double totalDistanceRan =
+                (snapshot['totalDistanceRan'] ?? 0).toDouble();
             final points = snapshot['points'] ?? 0;
             return SingleChildScrollView(
               child: Padding(

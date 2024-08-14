@@ -47,6 +47,7 @@ class RunningPostCreationPageState extends State<RunningPostCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Create Post'),
       ),
       body: Padding(

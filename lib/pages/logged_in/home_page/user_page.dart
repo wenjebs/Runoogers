@@ -19,8 +19,10 @@ class UserPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint('current user is ${auth.currentUser!.uid}');
     final friendUids = ref.watch(friendsProvider);
     final trainingOnboarded = ref.watch(trainingOnboardedProvider);
+    final userId = ref.watch(userProvider);
     return FutureBuilder<UserModel>(
       future: repository.getUserProfile(auth.currentUser!.uid),
       builder: (context, snapshot) {
