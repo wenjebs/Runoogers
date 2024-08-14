@@ -64,73 +64,126 @@ class LeaderboardsPage extends StatelessWidget {
                                   break;
                                 }
                               }
-                              return CustomScrollView(
-                                slivers: <Widget>[
-                                  if (globalLeaderboard.length >= 3)
-                                    SliverToBoxAdapter(
-                                      child: Column(
-                                        children: [
-                                          LeaderboardCard(
-                                            shareable: true,
-                                            isCurrentUser: true,
-                                            userId: globalLeaderboard[
-                                                currentUserPlace! - 1]['uid'],
-                                            index: currentUserPlace,
-                                            name: globalLeaderboard[
-                                                currentUserPlace - 1]['name'],
-                                            username: globalLeaderboard[
-                                                    currentUserPlace - 1]
-                                                ['username'],
-                                            points: globalLeaderboard[
-                                                currentUserPlace - 1]['points'],
+                              if (globalLeaderboard.length >= 3) {
+                                return CustomScrollView(
+                                  slivers: <Widget>[
+                                    if (globalLeaderboard.length >= 3)
+                                      SliverToBoxAdapter(
+                                        child: Column(
+                                          children: [
+                                            LeaderboardCard(
+                                              shareable: true,
+                                              isCurrentUser: true,
+                                              userId: globalLeaderboard[
+                                                  currentUserPlace! - 1]['uid'],
+                                              index: currentUserPlace,
+                                              name: globalLeaderboard[
+                                                  currentUserPlace - 1]['name'],
+                                              username: globalLeaderboard[
+                                                      currentUserPlace - 1]
+                                                  ['username'],
+                                              points: globalLeaderboard[
+                                                      currentUserPlace - 1]
+                                                  ['points'],
+                                              repository: repository,
+                                              profilePic: globalLeaderboard[
+                                                      currentUserPlace - 1]
+                                                  ['profilePic'],
+                                              auth: auth,
+                                            ),
+                                            PodiumWidget(
+                                              firstPlace: UserModel.fromMap(
+                                                  globalLeaderboard[0]),
+                                              secondPlace: UserModel.fromMap(
+                                                  globalLeaderboard[1]),
+                                              thirdPlace: UserModel.fromMap(
+                                                  globalLeaderboard[2]),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                          final skipThree = index + 3;
+                                          return LeaderboardCard(
+                                            shareable: false,
+                                            isCurrentUser:
+                                                auth.currentUser!.uid ==
+                                                    globalLeaderboard[skipThree]
+                                                        ['uid'],
+                                            userId: globalLeaderboard[skipThree]
+                                                ['uid'],
+                                            index: skipThree + 1,
+                                            name: globalLeaderboard[skipThree]
+                                                ['name'],
+                                            username:
+                                                globalLeaderboard[skipThree]
+                                                    ['username'],
+                                            points: globalLeaderboard[skipThree]
+                                                ['points'],
                                             repository: repository,
-                                            profilePic: globalLeaderboard[
-                                                    currentUserPlace - 1]
-                                                ['profilePic'],
+                                            profilePic:
+                                                globalLeaderboard[skipThree]
+                                                    ['profilePic'],
                                             auth: auth,
-                                          ),
-                                          PodiumWidget(
-                                            firstPlace: UserModel.fromMap(
-                                                globalLeaderboard[0]),
-                                            secondPlace: UserModel.fromMap(
-                                                globalLeaderboard[1]),
-                                            thirdPlace: UserModel.fromMap(
-                                                globalLeaderboard[2]),
-                                          ),
-                                        ],
+                                          );
+                                        },
+                                        childCount:
+                                            globalLeaderboard.length - 3,
                                       ),
                                     ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) {
-                                        final skipThree = index + 3;
-                                        return LeaderboardCard(
-                                          shareable: false,
-                                          isCurrentUser:
-                                              auth.currentUser!.uid ==
-                                                  globalLeaderboard[skipThree]
-                                                      ['uid'],
-                                          userId: globalLeaderboard[skipThree]
-                                              ['uid'],
-                                          index: skipThree + 1,
-                                          name: globalLeaderboard[skipThree]
-                                              ['name'],
-                                          username: globalLeaderboard[skipThree]
-                                              ['username'],
-                                          points: globalLeaderboard[skipThree]
-                                              ['points'],
-                                          repository: repository,
-                                          profilePic:
-                                              globalLeaderboard[skipThree]
-                                                  ['profilePic'],
-                                          auth: auth,
-                                        );
-                                      },
-                                      childCount: globalLeaderboard.length - 3,
+                                  ],
+                                );
+                              } else {
+                                return Column(
+                                  children: [
+                                    LeaderboardCard(
+                                      shareable: true,
+                                      isCurrentUser: true,
+                                      userId: globalLeaderboard[
+                                          currentUserPlace! - 1]['uid'],
+                                      index: currentUserPlace,
+                                      name: globalLeaderboard[
+                                          currentUserPlace - 1]['name'],
+                                      username: globalLeaderboard[
+                                          currentUserPlace - 1]['username'],
+                                      points: globalLeaderboard[
+                                          currentUserPlace - 1]['points'],
+                                      repository: repository,
+                                      profilePic: globalLeaderboard[
+                                          currentUserPlace - 1]['profilePic'],
+                                      auth: auth,
                                     ),
-                                  ),
-                                ],
-                              );
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemCount: globalLeaderboard.length,
+                                        itemBuilder: (context, index) {
+                                          return LeaderboardCard(
+                                            shareable: false,
+                                            isCurrentUser: auth
+                                                    .currentUser!.uid ==
+                                                globalLeaderboard[index]['uid'],
+                                            userId: globalLeaderboard[index]
+                                                ['uid'],
+                                            index: index + 1,
+                                            name: globalLeaderboard[index]
+                                                ['name'],
+                                            username: globalLeaderboard[index]
+                                                ['username'],
+                                            points: globalLeaderboard[index]
+                                                ['points'],
+                                            repository: repository,
+                                            profilePic: globalLeaderboard[index]
+                                                ['profilePic'],
+                                            auth: auth,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
                             },
                           ),
                         ),
@@ -217,10 +270,8 @@ class LeaderboardCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: isCurrentUser
-              ? Theme.of(context).colorScheme.onSecondaryFixedVariant
-              : Theme.of(context)
-                  .colorScheme
-                  .secondaryFixed, // Softer color for current user
+              ? Theme.of(context).colorScheme.onPrimaryFixedVariant
+              : Theme.of(context).colorScheme.secondaryFixed,
           borderRadius: BorderRadius.circular(
             20,
           ), // Increased border radius for roundness
