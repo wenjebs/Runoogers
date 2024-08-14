@@ -174,7 +174,10 @@ class OnboardingPageState extends ConsumerState<OnboardingPage> {
               await FirebaseFirestore.instance
                   .collection('users')
                   .doc(userId)
-                  .update({'onboarded': true});
+                  .update({
+                'onboarded': true,
+                'points': 500,
+              });
 
               Navigator.pushReplacement(
                 context,
