@@ -524,22 +524,31 @@ class Database {
     final userDoc = await userRef.get();
 
     List<String> current = List<String>.from(userDoc.data()!['achievements']);
+    int currentPoints = userDoc.data()!['points'] ?? 0;
 
     if (distance > 5 && !current.contains('seasonedRunner')) {
       unlocked.add("Seasoned Runner");
       await userRef.update({
         'achievements': FieldValue.arrayUnion(['seasonedRunner']),
       });
+      currentPoints += 5000;
     }
 
     if ((time / 60000) / distance < 5 && !current.contains('speedyGonzales')) {
       // 1km under 5 minutes achievement
       unlocked.add('Speedy Gonzales');
       await userRef.update({
-        'achievements': FieldValue.arrayUnion(['speedyGonzales']),
+        'achievements': FieldValue.arrayUnion(
+          ['speedyGonzales'],
+        ),
       });
+      currentPoints += 3000;
     }
     debugPrint("achivement done");
+
+    await userRef.update({
+      'points': currentPoints,
+    });
 
     return unlocked;
   }
